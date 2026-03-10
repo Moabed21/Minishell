@@ -106,4 +106,17 @@ interrupt != terminate
 each signal has a default handler ex. terminate in SIGUSR1 unless we change the behavior of it
 
 CTRL + C SIGINT : used to catch this keybind
-CTRL + D (SIGKILL assumed)  : 
+CTRL + D (SIGQUIT) : 
+CTRL + \ EOF : end of file
+
+## pipes
+
+to create a pipe just use pipe(fd)
+
+then use fork , in the order the file descriptors will be copied over 
+that means if you close the file de in the ex. child process they will
+remain open in the other process(independent from each other)
+
+## redir
+cat  > out.txt to redirect the output to outfile
+cat < infile OR < file cat  to take an input from a file 
