@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 19:23:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/09 12:38:51 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/12 15:02:22 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //this is the signals part
 
-#include "execution-part.h"
+#include "../headers/execution-part.h"
 
 void    quit_sig(int sig)
 {
@@ -25,20 +25,24 @@ void    do_nothing(int pid)
 }
 void    signals_handling()
 {
-    signal(SIGINT, quit_sig); // CTRL + c
-    signal(SIGINT, quit_sig); // CTRL +
-    signal(SIGQUIT, do_nothing); // CTRL + "\"
+    // signal(SIGINT, quit_sig); // CTRL + c
+    // signal(SIGINT, quit_sig); // CTRL +
+    // signal(SIGQUIT, do_nothing); // CTRL + "\"
+
+    /*using signal function is easy but its not recommended
+    due to the differenciation
+    */
 }
 
 int main(int ac,char**av,char**envp)
 {
     char *s;
     signals_handling();
-    while (1)
-    {
-        // shell_protection(function)
-        // parsing
-        //execution
-    }
-    
+    printf("%d",ttyslot);
+    // while (1)
+    // {
+    //     // shell_protection(function)
+    //     // parsing
+    //     // execution will be called in last part of parsing
+    // }
 }

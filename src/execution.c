@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution-part.h                                   :+:      :+:    :+:   */
+/*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/06 19:19:33 by moabed           ###   ########.fr       */
+/*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
+/*   Updated: 2026/03/12 19:09:27 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXECUTION_PART_H
-#define EXECUTION_PART_H
+#include "../headers/execution-part.h"
 
-#include "parsing-part.h"
-#include "libs.h"
-
-#endif
+void    execution(t_cmd *input_list)
+{
+    
+}
