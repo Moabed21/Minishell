@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:21:53 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/03/14 16:10:35 by shathaamarn      ###   ########.fr       */
+/*   Updated: 2026/03/15 05:16:56 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../headers/parsing-part.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
