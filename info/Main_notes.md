@@ -65,7 +65,8 @@ when a command is prompted to shell , it builds a tree representation
 
 2) rl_clear_history(): The rl_clear_line() function clears the history list by deleting all of the entries. The rl_clear_line() function frees data that the readline library saves in the histroy list.
 
-3) rl_on_new_line(): The rl_on_new_line() function tells the update routine that we have moved onto a new empty line, usually used after outputting a line.
+3) rl_on_new_line(): The rl_on_new_line() function tells the update routine that we have moved onto a new empty line, usually used after outputting a line,
+(used in ctrl+c to display a newline).
 
 4) rl_redisplay(): The rl_redisplay() change what's displayed on the screen to reflect the current contents of rl_line_buffer.
 
@@ -131,8 +132,7 @@ cat < infile OR < file cat  to take an input from a file
 
 terminals can be either a hardware terminals (tty) or pseudo-terminals (pty).
 
-ttys are connected over interface such as serial port (ttyS0) or USB(ttyUSB0)
-or over PC screen(tty1).
+ttys are connected over interface such as serial port (ttyS0) or USB(ttyUSB0) or over PC screen(tty1).
 
 pty's are provided by terminal emulator which is an application ex of pty : 
 sshd , telnet, tmux relay and output from and to another terminal.
@@ -141,5 +141,5 @@ experiment: run tty command , take the result ex./dev/pts/0 0 is an entry, in
 another shell command echo hello >/dev/pts/0 , the output is popped on the first terminal.
 
 its easy to pop up an output to different terminals using write function,
-if multipe programs tries to read from same termianl each charachter is routed to
+if multipe programs tries to read from same terminal each charachter is routed to
 different program

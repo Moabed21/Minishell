@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 19:23:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/15 06:25:49 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/20 11:20:20 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,35 @@
 
 #include "../headers/execution-part.h"
 
-void    quit_sig(int sig)
+//break the loop
+void    ctrl_d(int sig)
 {
-    printf("Quit Succeed\n");
-    exit(1);
+    exit(130);
+}
+
+void ctrl_c(int pid)
+{
+    printf("\n");
+    rl_on_new_line();
+    rl_replace_line("",0);
+    rl_redisplay();
 }
 
 void    do_nothing(int pid)
 {
+    (void)pid;
+    rl_redisplay();
     return ;
 }
 
 void    signals_handling()
 {
-    // signal(SIGINT, quit_sig); // CTRL + c
-    // signal(SIGINT, quit_sig); // CTRL +
-    // signal(SIGQUIT, do_nothing); // CTRL + "\"
+    // CTRL + c
+    signal(SIGINT, ctrl_c);
+    // signal(); // CTRL + D (EOF)
+    signal(SIGQUIT, do_nothing); // CTRL + "\"
 
     /*using signal function is easy but its not recommended
     due to the differenciation
     */
-}
-
-int main(int ac,char**av,char**envp)
-{
-    char *s;
-    signals_handling();
-    // while (1)
-    // {
-    //     // shell_protection(function)
-    //     // parsing
-    //     // execution will be called in last part of parsing
-    // }
 }
