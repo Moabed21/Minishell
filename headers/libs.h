@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:17:10 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/15 06:17:12 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/20 07:22:12 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 // #define _DEFAULT_SOURCE
 #include "../libft/libft.h"
 #include <readline/readline.h>
+#include <readline/history.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
