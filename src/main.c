@@ -6,18 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/20 11:53:47 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/22 10:38:12 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
-
-void    shell_protection()
-{
-    // if(!isatty(STDIN_FILENO))
-        // exit(3);
-    
-}
 
 int main(int ac,char **av,char **envp)
 {
