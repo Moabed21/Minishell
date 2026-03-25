@@ -6,63 +6,97 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/22 13:15:17 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/24 18:05:25 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
-void	input_handle(t_redir *redir, t_exec *instance)
+void	output_handle(t_redir *red, t_exec *minishell)
 {
-	int fd;
-	
-}
-void	redir_handle(t_redir *redir, t_exec *instance)
-{
-	if (redir->type == INPUT)
+	int	fd;
+
+	fd = -1;
+	fd = open(red->filename, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if (fd == -1)
 	{
-		input_handle(redir, instance);
+		// close(fds[0]);
+		// close(fds[1]);
+		// perror(red->filename);
+		// exit(EXIT_FAILURE);
 	}
-	
+	red->file_d = fd;
+}
+void	input_handle(t_redir *red, t_exec *minishell)
+{
+	int	fd;
+
+	if (access(red->filename, F_OK) == 0)
+		fd = open(red->filename, O_RDONLY);
+	if (fd == -1)
+	{
+		// ruin_everything(cmds_list);
+	}
+	red->file_d = fd;
+}
+void	redir_handle(t_redir *redir, t_exec *minishell)
+{
+	while(redir)
+	{
+		if (redir->type == INPUT)
+		{
+			input_handle(redir, minishell);
+		}
+		if (redir->type == TRUNC)
+		{
+			output_handle(redir,minishell);
+		}
+		redir = redir->next;
+	}
 }
 
-void	execute_one_cmd(t_cmd *cmds_list, t_exec *instance)
+void	execute_one_cmd(t_exec *minishell)
 {
 	// before executing check if there is a redir
-	if (cmds_list->redir != NULL)
+	minishell->cmds->fork_id = fork();
+	if (minishell->cmds->fork_id == -1)
 	{
-		redir_handle(cmds_list->redir, instance);
+		
+	}
+	if (minishell->cmds->redir != NULL)
+	{
+		redir_handle(minishell->cmds->redir, minishell);
 	}
 }
-ruin_everything(t_cmd *cmds_list, t_env *first_env_node)
+void	ruin_everything(t_cmd *cmds_list)
 {
-	
 }
-void	multiple_cmds(t_cmd *cmds_list, t_exec *instance)
+void	multiple_cmds(t_cmd *cmds_list)
 {
-	if(pipe(instance->fd) == -1)
-		ruin_everything(cmds_list,instance->first_env_node);
-	instance->fork_id = fork();
-	if(instance->fork_id == -1)
-	{}
+	if (pipe(cmds_list->fd) == -1)
+		ruin_everything(cmds_list);
+	cmds_list->fork_id = fork();
+	if (cmds_list->fork_id == -1)
+	{
+		ruin_everything(cmds_list);
+	}
 }
 
-void	execution(t_cmd *cmds_list, char **envp)
+void	execution(t_exec *minishell, char **envp)
 {
 	t_env	*env;
-	t_exec	instance;
 
 	env = env_init(envp);
-	instance.first_env_node = env;
+	minishell->first_env_node = env;
 	// here is the execution tree root
-	if (!cmds_list->next)
-		execute_one_cmd(cmds_list, &instance);
+	if (!minishell->cmds->next)
+		execute_one_cmd(minishell);
 	else
-		multiple_cmds(cmds_list, &instance);
+		multiple_cmds(minishell);
 	// case 1) having only one command
 	// case 2) having one with redir
 	// case 3) having 2 cmds (without redirs)
 	// case 4) having 2 with redirs
-	// the main behavior is to execute the command first then look if there is redirs
+	// the main behavior is to look if there is redirs then execute the command,
 	// if there is , execute it then look for the second command if existed
 }

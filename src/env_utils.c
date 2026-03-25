@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 09:15:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/22 09:16:13 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/24 09:45:02 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ t_env	*env_init(char **env)
 	int size;
 
 	size = 0;
+	environment = new_node(env[size]);
 	head = environment;
-	environment->variable = env[size];
 	size++;
 	while (env[size])
 	{

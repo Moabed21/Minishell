@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/22 10:38:12 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/24 19:41:09 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,27 @@
 
 int main(int ac,char **av,char **envp)
 {
-    t_cmd *cmds_list;
-    
-    signals_handling();
+    t_exec shell;
     char *input;
-    // while (1)
-    // {
-            shell_protection();
-            input = readline("minishell> ");
-            add_history(input);
-            cmds_list = parsing(input);
-            execution(cmds_list, envp);
-    // }
+    
+    shell.last_status = 0;
+    while (1)
+    {
+        signals_handling();
+        shell_protection();
+        input = readline("minishell> ");
+        if(!input)
+            break;
+        if(global_sig !=0)
+        {
+            shell.last_status = global_sig;
+            global_sig = 0;
+        }
+        add_history(input);
+        shell.cmds = parsing(input);
+        execution(&shell, envp);
+        free(input);
+    }
+    return (shell.last_status);
     //the return value will bw the last status of execution
 }
