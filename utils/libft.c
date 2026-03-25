@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:21:53 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/03/15 05:16:56 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/22 06:50:15 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ char	*ft_strdup(const char *s)
 	str[i] = '\0';
 	return ((char *)str);
 }
+
 void	ft_putendl_fd(char *s, int fd)
 {
 	ft_putstr_fd(s, fd);

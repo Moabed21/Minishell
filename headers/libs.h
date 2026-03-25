@@ -6,13 +6,14 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:17:10 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/21 22:13:06 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/24 13:13:13 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBS_H
 #define LIBS_H
 
+#define _POSIX_C_SOURCE 200809L
 //readline
 #include <stdio.h>
 #include <readline/readline.h>
@@ -22,5 +23,5 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
-
+#include <fcntl.h>
 #endif

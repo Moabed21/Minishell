@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/22 12:12:55 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/24 19:00:28 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 #include "parsing-part.h"
 #include "libs.h"
 
-void    execution(t_cmd *cmds_list, char **envp);
+int	global_sig;
+void	execution(t_exec *minishell, char **envp);
 void    signals_handling();
 //env_utils
 void env_ruin(t_env *head);
@@ -33,15 +34,9 @@ typedef struct s_env
 
 typedef struct s_exec
 {
-	//if im executing a command , what do i need ?
-	//1) fd[2] the pipe, the fork id, the return status, the env i have to loop on
-	//to execute, a file descriptor for opening and closing
-	int fd[2];
-	int fork_id;
-	int ret_stat;
-	int input_file_d;
-	int output_file_d;
 	t_env *first_env_node;
+	t_cmd *cmds;
+	int last_status;
 }t_exec;
 
 

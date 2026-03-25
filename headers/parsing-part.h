@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/03/15 06:15:15 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/23 12:19:41 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_token
 typedef struct s_redir
 {
 	t_token_type    type;
+	int				file_d; //every redir has a file for either input or output , to deal with him we need an fd
 	char            *filename;
 	struct s_redir  *next;     // linked list for multiple redirs
 } t_redir;
@@ -55,7 +56,11 @@ typedef struct s_redir
 //command struct
 typedef struct s_cmd
 {
-	char            **args;
+	int fd[2];		// for pipe()
+	int fork_id;	// every command will be handled by one child
+	int		ret_stat;
+	char	**args;
+	t_env *env; 	// point to the env for every command
 	t_redir         *redir;
 	struct s_cmd    *next; // for pipes
 }   t_cmd;
