@@ -6,15 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 19:23:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/24 19:19:32 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/31 06:58:28 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //this is the signals part
 
 #include "../headers/execution-part.h"
-
-
 
 void ctrl_c(int pid)
 {

@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/03/23 12:19:41 by moabed           ###   ########.fr       */
+/*   Updated: 2026/03/31 07:19:47 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "libs.h"
 
-//token struct
+//token enum
 typedef enum e_token_type
 {
 	WORD,
@@ -56,11 +56,10 @@ typedef struct s_redir
 //command struct
 typedef struct s_cmd
 {
-	int fd[2];		// for pipe()
 	int fork_id;	// every command will be handled by one child
-	int		ret_stat;
-	char	**args;
-	t_env *env; 	// point to the env for every command
+	int				ret_stat;
+	char			**args;
+	t_cmd_type 		cmd_type; // to see if the command is from built-ins
 	t_redir         *redir;
 	struct s_cmd    *next; // for pipes
 }   t_cmd;

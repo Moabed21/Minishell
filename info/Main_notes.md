@@ -143,3 +143,5 @@ another shell command echo hello >/dev/pts/0 , the output is popped on the first
 its easy to pop up an output to different terminals using write function,
 if multipe programs tries to read from same terminal each charachter is routed to
 different program
+
+what is expantion ? simply the interpretation of a variable data from variable name ex. echo $? to get the last status of execution
