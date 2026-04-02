@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 09:15:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/24 09:45:02 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/02 14:22:37 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,38 +19,54 @@ t_env	*new_node(char *str)
 	node = malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
-	node->variable = str;
+	node->variable = ft_strdup(str);
 	node->next = NULL;
 	return (node);
 }
-void	env_ruin(t_env *head)
+void	env_ruin(t_env **head)
 {
 	t_env	*node;
 
-	node = head;
-	while (head->next != NULL)
+	node = (*head);
+	while ((*head)->next != NULL)
 	{
 		node = node->next;
-		free(head);
-		head = node;
+		free((*head)->variable);
+		free((*head));
+		(*head) = node;
 	}
-	free(head);
+	free((*head)->variable);
+	free((*head));
+	*head = NULL;
 }
+
 t_env	*env_init(char **env)
 {
-	t_env *environment;
-	t_env *head;
-	int size;
+	int		size;
+	t_env	*head;
+	t_env	*ptr;
 
 	size = 0;
-	environment = new_node(env[size]);
-	head = environment;
+	ptr = new_node(env[size]);
+	head = ptr;
 	size++;
 	while (env[size])
 	{
-		environment->next = new_node(env[size]);
-		environment = environment->next;
+		ptr->next = new_node(env[size]);
+		ptr = ptr->next;
 		size++;
 	}
 	return (head);
+}
+
+void	env_add_last(t_env **env, char *target)
+{
+	t_env	*ptr;
+
+	ptr = (*env);
+	while (ptr->next)
+	{
+		ptr = ptr->next;
+	}
+	ptr->next = new_node(target);
 }
