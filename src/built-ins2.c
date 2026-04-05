@@ -6,12 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/02 21:26:53 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/05 17:14:16 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
+// done
 void	e_env(t_cmd *node, t_exec *shell)
 {
 	t_env	*ptr;
@@ -28,12 +29,49 @@ void	e_env(t_cmd *node, t_exec *shell)
 	}
 	shell->last_status = 0;
 }
+// done
+int	not_a_num(t_cmd *node, char *str)
+{
+	int	i;
 
+	i = 0;
+	if (!str)
+		return (0);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+		{
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+// done
 void	e_exit(t_cmd *node, t_exec *shell)
 {
+	if (node->args[1] && not_a_num(node, node->args[1]))
+	{
+		write(node->fd_out, "minishell: exit: ", 18);
+		write(node->fd_out, node->args[1], ft_strlen(node->args[1]));
+		write(node->fd_out, ": numeric arguments required\n", 30);
+		shell->last_status = 2;
+		return ;
+	}
+	if (node->args[2])
+	{
+		write(node->fd_out, "minishell: exit: too many arguments\n", 37);
+		shell->last_status = 2;
+		return ;
+	}
+	if (node->args[1])
+		shell->last_status = ft_atoi(node->args[1]);
+	else
+		shell->last_status = 0;
 	env_ruin(&shell->first_env_node);
 	exit(shell->last_status);
-	shell->last_status = 0;
 }
 
 t_cmd_type	is_builtin(t_cmd *node)
