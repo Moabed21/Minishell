@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 09:15:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/02 14:22:37 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/05 15:44:30 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	env_ruin(t_env **head)
 	t_env	*node;
 
 	node = (*head);
+	if (!(*head))
+		return ;
 	while ((*head)->next != NULL)
 	{
 		node = node->next;
@@ -63,6 +65,8 @@ void	env_add_last(t_env **env, char *target)
 {
 	t_env	*ptr;
 
+	if (!*env)
+		return ;
 	ptr = (*env);
 	while (ptr->next)
 	{
