@@ -6,19 +6,12 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/05 16:01:05 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/07 18:48:59 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
-void	shell_protection(void)
-{
-	if (!isatty(STDIN_FILENO))
-		exit(3);
-	if (!isatty(STDOUT_FILENO))
-		exit(3);
-}
 int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
@@ -28,13 +21,14 @@ int	ft_strcmp(char *s1, char *s2)
 	{
 		if (s1[i] != s2[i])
 			return (s1[i] - s2[i]);
+		i++;
 	}
 	return (0);
 }
 
 int	replace(char *target, t_env *env)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (target[i] != '=' && target[i])
@@ -52,4 +46,52 @@ int	replace(char *target, t_env *env)
 		env = env->next;
 	}
 	return (0);
+}
+
+int	has_no_equal(char *search)
+{
+	int	i;
+
+	i = 0;
+	while (search[i])
+	{
+		if (search[i] == '=')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	error_display(int fd, char *cmd, char *right_end, t_exec *shell)
+{
+	int	cmdlen;
+	int	rightlen;
+
+	rightlen = ft_strlen(right_end);
+	cmdlen = ft_strlen(cmd);
+	write(fd, "minishell: ", 12);
+	write(fd, cmd, cmdlen);
+	write(fd, right_end, rightlen);
+	write(fd, "\n", 1);
+	shell->last_status = 2;
+}
+
+char	*get_value(char *key, t_env *env)
+{
+	char *str;
+	int	keylen;
+
+	keylen = ft_strlen(key);
+	while (env)
+	{
+		if (!ft_strncmp(key, env->variable, keylen) && env->variable[keylen] == '=')
+		{
+			str = env->variable + keylen + 1;
+			break ;
+		}
+		env = env->next;
+	}
+	if (!str)
+		return (NULL);
+	return (str);
 }
