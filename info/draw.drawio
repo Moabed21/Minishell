@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="TZWwLtqii3d_dpKJBYKl" name="Page-1">
-        <mxGraphModel dx="1244" dy="481" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#E7E7E7" math="0" shadow="0">
+        <mxGraphModel dx="616" dy="563" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#E7E7E7" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -55,19 +55,79 @@
                 <mxCell id="70" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="730" y="140" width="90" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="71" value="1)signals" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="280" y="10" width="110" height="55" as="geometry"/>
-                </mxCell>
-                <mxCell id="73" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.841;entryY=-0.041;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="72" edge="1" target="74">
+                <mxCell id="76" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="75" target="77">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="160" y="120" as="targetPoint"/>
+                        <mxPoint x="155" y="110" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="123" y="60"/>
+                        </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="72" value="execution(t_cmd *cmds_list)" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
-                    <mxGeometry x="110" y="10" width="110" height="60" as="geometry"/>
+                <mxCell id="78" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="75" target="79">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="260" y="80" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="350" y="60"/>
+                        </Array>
+                    </mxGeometry>
                 </mxCell>
-                <mxCell id="74" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="50" y="120" width="100" height="40" as="geometry"/>
+                <mxCell id="75" value="1)enter exec and init env" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="170" width="110" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="85" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="77" target="84">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="77" value="a)if its only one command" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="80" width="105" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="79" value="b)if its multiple commnads" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="80" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="81" value="if it has a redir" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="250" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="83" value="if its not" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="130" y="250" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="86" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="84" target="89">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="230" y="200" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="360" y="180"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="87" value="if it fails" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="86">
+                    <mxGeometry x="0.063" y="3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="88" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="84" target="81">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="123" y="210" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="80" y="210"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="90" value="if not" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="88">
+                    <mxGeometry x="0.0879" y="-2" relative="1" as="geometry">
+                        <mxPoint x="50" y="13" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="91" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="84" target="83">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="122.5" y="220" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="180" y="210"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="84" value="first do a fork to store id" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="140" width="105" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="89" value="then the execution stops , without free anything, just return to the main with a failed fork" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="200" width="160" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/11 17:36:03 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/11 17:50:24 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,11 @@ void	env_add_last(t_env **env,char *target);
 int		ft_strcmp(char *s1,char *s2);
 int		has_no_equal(char *search);
 void	error_display(int fd, char *cmd, char *right_end,t_exec *shell);
-//utils2
 char	*get_value(char *key,t_env *env);
+//utils2
 char    **list_to_array(t_env *env);
 void    free2d_array(char **arr);
 void    shell_protection();
 int		shell_init(char **env,t_exec *shell);
+void	ruin_everything(t_exec *shell);
 #endif

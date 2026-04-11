@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/02 10:27:47 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/11 09:16:13 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,13 @@
 int	main(int ac, char **av, char **envp)
 {
 	char	*input;
-	t_env	*env;
 	t_exec	shell;
 
-	env = env_init(envp);
-	if (!env)
-		return (1);
-	shell.last_status = 0;
+	if(shell_init(envp,&shell))
+		return(1);
 	while (1)
 	{
-		shell_init(env);
+		interactive_signals();
 		input = readline("minishell> ");
 		if (!input)
 			break ;
@@ -35,7 +32,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(input);
 		shell.cmds = builder(input);
-		execution(&shell, env);
+		execution(&shell);
 		free(input);
 	}
 	return (shell.last_status);

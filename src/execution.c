@@ -6,74 +6,72 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/03/24 18:05:25 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/11 17:23:52 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
-void	output_handle(t_redir *red, t_exec *minishell)
+void	execute_as_is(char *av, char **evar, int fd[2])
 {
-	int	fd;
+	char	**args;
 
-	fd = -1;
-	fd = open(red->filename, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (fd == -1)
+	if (!av[0])
+		error(3, &fd[2]);
+	args = ft_split(av, ' ');
+	if (!args || !args[0])
 	{
-		// close(fds[0]);
-		// close(fds[1]);
-		// perror(red->filename);
-		// exit(EXIT_FAILURE);
+		write(2, "Error : command not found\n", 26);
+		free2d_array(args);
+		exit(127);
 	}
-	red->file_d = fd;
-}
-void	input_handle(t_redir *red, t_exec *minishell)
-{
-	int	fd;
-
-	if (access(red->filename, F_OK) == 0)
-		fd = open(red->filename, O_RDONLY);
-	if (fd == -1)
+	if (ft_strchr(args[0], '/'))
 	{
-		// ruin_everything(cmds_list);
+		execve(args[0], args, evar);
+		perror(args[0]);
+		free2d_array(args);
+		exit(126);
 	}
-	red->file_d = fd;
-}
-void	redir_handle(t_redir *redir, t_exec *minishell)
-{
-	while(redir)
-	{
-		if (redir->type == INPUT)
-		{
-			input_handle(redir, minishell);
-		}
-		if (redir->type == TRUNC)
-		{
-			output_handle(redir,minishell);
-		}
-		redir = redir->next;
-	}
+	free2d_array(args);
 }
 
-void	execute_one_cmd(t_exec *minishell)
+static void	execute(char *av, char **evar, int fd[2])
 {
-	// before executing check if there is a redir
-	minishell->cmds->fork_id = fork();
-	if (minishell->cmds->fork_id == -1)
+	char	**path;
+	char	**args;
+	char	*firstpart;
+	int		i;
+
+	i = -1;
+	execute_as_is(av, evar, fd);
+	args = ft_split(av, ' ');
+	path = findpath(evar);
+	if (!args || !args[0] || !path || !evar)
+		error(1, fd);
+	while (path[++i])
 	{
-		
+		firstpart = ft_strjoin(path[i], "/");
+		free(path[i]);
+		path[i] = ft_strjoin(firstpart, args[0]);
+		free(firstpart);
+		execve(path[i], args, evar);
 	}
-	if (minishell->cmds->redir != NULL)
-	{
-		redir_handle(minishell->cmds->redir, minishell);
-	}
+	firstpart = ft_strjoin(args[0], ": command not found\n");
+	i = ft_strlen(firstpart);
+	write(2, firstpart, i);
+	free(firstpart);
+	free2d_array(path);
+	free2d_array(args);
 }
-void	ruin_everything(t_cmd *cmds_list)
+
+void	ruin_everything(t_exec *shell)
 {
+	//postponed until i know from partner how its malloc'd
 }
-void	multiple_cmds(t_cmd *cmds_list)
+
+int	multiple_cmds(t_exec *minishell, t_cmd *cmds_list)
 {
-	if (pipe(cmds_list->fd) == -1)
+	if (pipe(minishell->fd) == -1)
 		ruin_everything(cmds_list);
 	cmds_list->fork_id = fork();
 	if (cmds_list->fork_id == -1)
@@ -82,17 +80,61 @@ void	multiple_cmds(t_cmd *cmds_list)
 	}
 }
 
-void	execution(t_exec *minishell, char **envp)
+void	p_fork_exec(t_exec *shell, t_cmd *node)
 {
-	t_env	*env;
+	node->fork_id = fork();
+	if (node->fork_id == -1)
+	{
+		shell->last_status = EXIT_FAILURE;
+	}
+}
 
-	env = env_init(envp);
-	minishell->first_env_node = env;
-	// here is the execution tree root
-	if (!minishell->cmds->next)
-		execute_one_cmd(minishell);
-	else
-		multiple_cmds(minishell);
+void	execute_one_cmd(t_exec *shell, t_cmd *node)
+{
+	if (shell->cmds->redir != NULL)
+	{
+		redir_handle(shell->cmds->redir, shell);
+	}
+	node->cmd_type = is_builtin(node);
+	if (node->cmd_type != NONE)
+	{
+		exec_builtin(shell, node, node->cmd_type);
+		return ;
+	}
+	p_fork_exec(shell, node);
+	if (shell->last_status != 0)
+	{
+	}
+}
+
+void	init_vals(t_cmd *cmds)
+{	
+	while (cmds)
+	{
+		cmds->fd_in = 0;
+		cmds->fd_out = 1;
+		cmds = cmds->next;
+	}
+}
+
+void	execution(t_exec *shell)
+{
+	//make fork() and enter one of the if statements , then call signal_ignore function to restore the default signals instead of handling it
+	init_vals(shell->cmds);
+	shell->cmds->fork_id = fork();
+	if(shell->cmds->fork_id == -1)
+	{
+		ruin_everything(shell);
+		return;
+	}
+	if(shell->cmds->fork_id == 0)
+	{
+		default_signals();
+		if (!shell->cmds->next)
+			execute_one_cmd(shell, shell->cmds);
+		else
+			multiple_cmds(shell, shell->cmds);	
+	}
 	// case 1) having only one command
 	// case 2) having one with redir
 	// case 3) having 2 cmds (without redirs)

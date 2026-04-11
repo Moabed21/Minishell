@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 16:23:48 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/08 08:50:34 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/11 17:49:40 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,8 @@ char    **list_to_array(t_env *env)
 	}
 	envp[i] = NULL;
 	return(envp);
+}
+void	ruin_everything(t_exec *shell)
+{
+	//postponed until i know from partner how its malloc'd
 }
