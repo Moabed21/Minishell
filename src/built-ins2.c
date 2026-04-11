@@ -6,13 +6,12 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/05 17:14:16 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/07 16:16:03 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
-// done
 void	e_env(t_cmd *node, t_exec *shell)
 {
 	t_env	*ptr;
@@ -29,7 +28,6 @@ void	e_env(t_cmd *node, t_exec *shell)
 	}
 	shell->last_status = 0;
 }
-// done
 int	not_a_num(t_cmd *node, char *str)
 {
 	int	i;
@@ -49,20 +47,19 @@ int	not_a_num(t_cmd *node, char *str)
 	}
 	return (0);
 }
-// done
+
 void	e_exit(t_cmd *node, t_exec *shell)
 {
 	if (node->args[1] && not_a_num(node, node->args[1]))
 	{
-		write(node->fd_out, "minishell: exit: ", 18);
-		write(node->fd_out, node->args[1], ft_strlen(node->args[1]));
-		write(node->fd_out, ": numeric arguments required\n", 30);
+		error_display(2, node->args[0], ": too many arguments",
+			shell);
 		shell->last_status = 2;
 		return ;
 	}
 	if (node->args[2])
 	{
-		write(node->fd_out, "minishell: exit: too many arguments\n", 37);
+		write(2, "minishell: exit: too many arguments\n", 37);
 		shell->last_status = 2;
 		return ;
 	}
@@ -79,19 +76,19 @@ t_cmd_type	is_builtin(t_cmd *node)
 	t_cmd_type	type;
 
 	type = NONE;
-	if (!ft_strncmp("echo", node->args[0], 4))
+	if (!ft_strcmp("echo", node->args[0]))
 		type = ECHO;
-	if (!ft_strncmp("cd", node->args[0], 4))
+	if (!ft_strcmp("cd", node->args[0]))
 		type = CD;
-	if (!ft_strncmp("pwd", node->args[0], 3))
+	if (!ft_strcmp("pwd", node->args[0]))
 		type = PWD;
-	if (!ft_strncmp("export", node->args[0], 6))
+	if (!ft_strcmp("export", node->args[0]))
 		type = EXPORT;
-	if (!ft_strncmp("unset", node->args[0], 5))
+	if (!ft_strcmp("unset", node->args[0]))
 		type = UNSET;
-	if (!ft_strncmp("env", node->args[0], 3))
+	if (!ft_strcmp("env", node->args[0]))
 		type = ENV;
-	if (!ft_strncmp("exit", node->args[0], 4))
+	if (!ft_strcmp("exit", node->args[0]))
 		type = EXIT;
 	return (type);
 }
@@ -99,17 +96,17 @@ t_cmd_type	is_builtin(t_cmd *node)
 void	exec_builtin(t_exec *shell, t_cmd *node, t_cmd_type type)
 {
 	if (type == ECHO)
-		e_echo(shell, node);
+		e_echo(node, shell);
 	if (type == CD)
-		e_cd(shell, node);
+		e_cd(node, shell);
 	if (type == PWD)
-		e_pwd(shell, node);
+		e_pwd(node, shell);
 	if (type == EXPORT)
-		e_export(shell, node);
+		e_export(node, shell);
 	if (type == UNSET)
-		e_unset(shell, node);
+		e_unset(node, shell);
 	if (type == ENV)
-		e_env(shell, node);
+		e_env(node, shell);
 	if (type == EXIT)
-		e_exit(shell, node);
+		e_exit(node, shell);
 }
