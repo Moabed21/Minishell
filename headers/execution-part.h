@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/11 17:50:24 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/20 12:19:50 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ typedef struct s_exec
 //--------------signals--------------------
 extern sig_atomic_t global_sig; //volatile tells the compiler "don't optimize reads/writes to this variable — it can change at any time (from a signal handler)."
 // sig_atomic_t guarantees atomic read/write on all platforms.
-void	execution(t_exec *shell);
 void	interactive_signals(void);
 void	default_signals();
 //--------------builtins2-------------------
@@ -54,30 +53,33 @@ void    exec_builtin(t_exec *shell, t_cmd *node, t_cmd_type type);
 int		replace(char *target, t_env *env);
 void    e_env(t_cmd *node,t_exec *shell);
 void    e_exit(t_cmd *node,t_exec *shell);
-//builtins
+//--------------builtins--------------------
 void    e_echo(t_cmd *node,t_exec *shell);
 void    e_cd(t_cmd *node,t_exec *shell);
 void    e_pwd(t_cmd *node,t_exec *shell);
 void    e_export(t_cmd *node,t_exec *shell);
 void    e_unset(t_cmd *node,t_exec *shell);
-//io-redir
-void	output_handle(t_redir *red, t_exec *minishell);
-void	input_handle(t_redir *red, t_exec *minishell);
-void	redir_handle(t_redir *redir, t_exec *minishell);
-//env_utils
+//--------------io-redir--------------------
+void	output_handle(t_redir *red, t_exec *minishell,t_cmd **cmd, int option);
+void	input_handle(t_redir *red, t_exec *minishell,t_cmd **current_cmd);
+void	redir_handle(t_redir *redir, t_exec *minishell,t_cmd **cmd);
+//--------------env_utils-------------------
 void	env_ruin(t_env **head);
 t_env	*new_node(char * str);
 t_env	*env_init(char **env);
 void	env_add_last(t_env **env,char *target);
-//utils
+//--------------utils-----------------------
 int		ft_strcmp(char *s1,char *s2);
 int		has_no_equal(char *search);
 void	error_display(int fd, char *cmd, char *right_end,t_exec *shell);
 char	*get_value(char *key,t_env *env);
-//utils2
+int		replace(char *target, t_env *env);
+//-------------utils2----------------------
 char    **list_to_array(t_env *env);
 void    free2d_array(char **arr);
 void    shell_protection();
 int		shell_init(char **env,t_exec *shell);
-void	ruin_everything(t_exec *shell);
+void	ruin_everything(t_cmd *cmds_list);
+//------------execution---------------------
+void	execution(t_exec *shell);
 #endif

@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/11 09:16:13 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/20 11:48:32 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	main(int ac, char **av, char **envp)
 		return(1);
 	while (1)
 	{
-		interactive_signals();
 		input = readline("minishell> ");
 		if (!input)
 			break ;
