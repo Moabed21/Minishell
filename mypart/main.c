@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include "../minishell.h"
+//the output of this code is your input to the execution
 
 t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 {
