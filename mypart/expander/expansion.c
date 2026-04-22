@@ -116,7 +116,7 @@ int expand_tokens(t_token **tokens, char **env, int last_status)
     }
     return (1);
 }
-/* main for testing expansion (after successfully testing the tokenizer)
+/* main for testing expansion and tokenization
 void print_list(t_token *head)
 {
     t_token *current;
