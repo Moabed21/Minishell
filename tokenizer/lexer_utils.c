@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 13:41:05 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/03/15 05:16:15 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/20 17:16:16 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/parsing-part.h"
+#include "../minishell.h"
 
 int	save_op(t_token **token_lst, char *str, int index, int type)
 {
@@ -91,23 +91,24 @@ int	set_status(int status, char *str, int i)
 	return (status);
 }
 
-int	save_word_or_op(int *i, char *str, int start, t_token **token_list)
+int save_word_or_op(int *i, char *str, int start, t_token **token_list)
 {
-	int	type;
+    int type;
 
-	type = is_operator(str, (*i));
-	if (type)
-	{
-		if ((*i) != 0 && is_operator(str, (*i) - 1) == 1)
-			save_word(token_list, str, (*i), start);
-		if (type == APPEND || type == HEREDOC || type == PIPE || type == INPUT
-			|| type == TRUNC || type == END)
-		{
-			save_op(token_list, str, (*i), type);
-			if (type == APPEND || type == HEREDOC)
-				(*i)++;
-		}
-		start = (*i) + 1;
-	}
-	return (start);
+    type = is_operator(str, (*i));
+    if (type)
+    {
+        if (*i > start)
+    		save_word(token_list, str, *i, start);
+        if (type == APPEND || type == HEREDOC
+            || type == PIPE || type == INPUT
+            || type == TRUNC || type == END)
+        {
+            save_op(token_list, str, (*i), type);
+            if (type == APPEND || type == HEREDOC)
+                (*i)++;
+        }
+        start = (*i) + 1;
+    }
+    return start;
 }
