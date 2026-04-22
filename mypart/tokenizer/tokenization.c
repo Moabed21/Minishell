@@ -44,8 +44,8 @@ t_token *tokenization(char *input)
     }
     return token_list;
 }
-/* main for testing tokenization phase
-void print_list(t_token *head)
+//main for testing tokenization phase
+/*void print_list(t_token *head)
 {
     t_token *current;
     current = head;
