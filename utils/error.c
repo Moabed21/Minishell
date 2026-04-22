@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:14:24 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/03/15 05:16:52 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/20 17:16:43 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/parsing-part.h"
+#include "../minishell.h"
 
 void	errmsg(char *errmsg, char *detail, int check)
 {
