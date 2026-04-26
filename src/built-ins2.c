@@ -6,16 +6,75 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/20 11:46:40 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/26 12:21:40 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
+void	cd_2(t_exec *shell, t_cmd *node, char *path, char *old_path)
+{
+	char	*tmp;
+
+	if (!path || chdir(path) == -1)
+	{
+		if (!path)
+			write(2, "minishell: cd: path not set\n", 29);
+		else
+			perror("minishell: cd");
+		shell->last_status = 1;
+		return ;
+	}
+	tmp = ft_strjoin("OLDPWD=", old_path);
+	replace(tmp, shell->first_env_node);
+	free(tmp);
+	getcwd(old_path, BUFFERSIZE);
+	tmp = ft_strjoin("PWD=", old_path);
+	replace(tmp, shell->first_env_node);
+	free(tmp);
+	shell->last_status = 0;
+}
+
+int	not_a_num(t_cmd *node, char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	exec_builtin(t_exec *shell, t_cmd *node)
+{
+	if (!ft_strcmp("echo", node->args[0]))
+		e_echo(node, shell);
+	if (!ft_strcmp("cd", node->args[0]))
+		e_cd(node, shell);
+	if (!ft_strcmp("pwd", node->args[0]))
+		e_pwd(node, shell);
+	if (!ft_strcmp("export", node->args[0]))
+		e_export(node, shell);
+	if (!ft_strcmp("unset", node->args[0]))
+		e_unset(node, shell);
+	if (!ft_strcmp("env", node->args[0]))
+		e_env(node, shell);
+	if (!ft_strcmp("exit", node->args[0]))
+		e_exit(node, shell);
+}
 void	e_env(t_cmd *node, t_exec *shell)
 {
 	t_env	*ptr;
 
+	node->cmd_type = ENV;
 	ptr = shell->first_env_node;
 	while (ptr)
 	{
@@ -28,32 +87,13 @@ void	e_env(t_cmd *node, t_exec *shell)
 	}
 	shell->last_status = 0;
 }
-int	not_a_num(t_cmd *node, char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	while (str[i])
-	{
-		if (ft_isdigit(str[i]))
-		{
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
 
 void	e_exit(t_cmd *node, t_exec *shell)
 {
+	node->cmd_type = EXIT;
 	if (node->args[1] && not_a_num(node, node->args[1]))
 	{
-		error_display(2, node->args[0], ": too many arguments",
-			shell);
+		error_display(2, node->args[0], ": too many arguments", shell);
 		shell->last_status = 2;
 		return ;
 	}
@@ -69,44 +109,4 @@ void	e_exit(t_cmd *node, t_exec *shell)
 		shell->last_status = 0;
 	env_ruin(&shell->first_env_node);
 	exit(shell->last_status);
-}
-
-t_cmd_type	is_builtin(t_cmd *node)
-{
-	t_cmd_type	type;
-
-	type = NONE;
-	if (!ft_strcmp("echo", node->args[0]))
-		type = ECHO;
-	if (!ft_strcmp("cd", node->args[0]))
-		type = CD;
-	if (!ft_strcmp("pwd", node->args[0]))
-		type = PWD;
-	if (!ft_strcmp("export", node->args[0]))
-		type = EXPORT;
-	if (!ft_strcmp("unset", node->args[0]))
-		type = UNSET;
-	if (!ft_strcmp("env", node->args[0]))
-		type = ENV;
-	if (!ft_strcmp("exit", node->args[0]))
-		type = EXIT;
-	return (type);
-}
-
-void	exec_builtin(t_exec *shell, t_cmd *node, t_cmd_type type)
-{
-	if (type == ECHO)
-		e_echo(node, shell);
-	if (type == CD)
-		e_cd(node, shell);
-	if (type == PWD)
-		e_pwd(node, shell);
-	if (type == EXPORT)
-		e_export(node, shell);
-	if (type == UNSET)
-		e_unset(node, shell);
-	if (type == ENV)
-		e_env(node, shell);
-	if (type == EXIT)
-		e_exit(node, shell);
 }

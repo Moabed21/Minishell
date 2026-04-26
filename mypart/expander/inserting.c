@@ -12,19 +12,19 @@
 
 #include "../minishell.h"
 
-t_token *create_tokens_from_words(char **words)
+t_token	*create_tokens_from_words(char **words)
 {
-    t_token *list;
-    int i;
+	t_token	*list;
+	int		i;
 
-    list = NULL;
-    i = 0;
-    while (words[i])
-    {
-        token_addback(&list, token_new(ft_strdup(words[i]), WORD));
-        i++;
-    }
-    return list;
+	list = NULL;
+	i = 0;
+	while (words[i])
+	{
+		token_addback(&list, token_new(ft_strdup(words[i]), WORD));
+		i++;
+	}
+	return (list);
 }
 
 static void	replace_inthemiddle(t_token *to_del, t_token *tmp, t_token *insert)

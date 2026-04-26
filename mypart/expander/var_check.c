@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_check.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:45:49 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/04/20 17:37:25 by shathaamarn      ###   ########.fr       */
+/*   Updated: 2026/04/26 13:49:48 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

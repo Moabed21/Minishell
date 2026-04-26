@@ -103,40 +103,41 @@ int	expand_token(t_token **head, t_token *token, char **env, int last_status)
 	return (1);
 }
 
-int expand_tokens(t_token **tokens, char **env, int last_status)
+int	expand_tokens(t_token **tokens, char **env, int last_status)
 {
-    t_token *tmp;
+	t_token	*tmp;
 
-    tmp = *tokens;
-    while (tmp)
-    {
-        if (!expand_token(tokens, tmp, env, last_status))
-            return (0);
-        tmp = tmp->next;
-    }
-    return (1);
+	tmp = *tokens;
+	while (tmp)
+	{
+		if (!expand_token(tokens, tmp, env, last_status))
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
 }
 /* main for testing expansion and tokenization
-void print_list(t_token *head)
+void	print_list(t_token *head)
 {
-    t_token *current;
-    current = head;
-    while (current)
-    {
-        if (current->next)
-            printf("%s-> ", current->value);
-        else
-            printf("%s", current->value);
-        current = current->next;
-    }
+	t_token	*current;
+
+	current = head;
+	while (current)
+	{
+		if (current->next)
+			printf("%s-> ", current->value);
+		else
+			printf("%s", current->value);
+		current = current->next;
+	}
 }
 
-int main(int ac, char **av, char **env){
-    t_token *head = tokenization("echo $USER and $PATH");
+int	main(int ac, char **av, char **env){
+	t_token *head = tokenization("echo $USER and $PATH");
 	t_token *head1 = tokenization("$?");
-    expand_tokens(&head, env, 0);
-    expand_tokens(&head1, env, 0);
+	expand_tokens(&head, env, 0);
+	expand_tokens(&head1, env, 0);
 	print_list(head);
 	print_list(head1);
-    return (0);
+	return (0);
 } */
