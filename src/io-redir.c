@@ -6,20 +6,20 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 09:30:53 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/20 12:20:25 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/26 06:02:29 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
-void	output_handle(t_redir *red, t_exec *minishell,t_cmd **cmd, int option)
+void	output_handle(t_redir *red, t_exec *minishell, t_cmd **cmd, int option)
 {
 	int	fd;
 
 	fd = -1;
-	if(option == 1)
+	if (option == 1)
 		fd = open(red->filename, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if(option == 2)
+	if (option == 2)
 		fd = open(red->filename, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd == -1)
 	{
@@ -34,7 +34,7 @@ void	output_handle(t_redir *red, t_exec *minishell,t_cmd **cmd, int option)
 	}
 }
 
-void	input_handle(t_redir *red, t_exec *minishell,t_cmd **current_cmd)
+void	input_handle(t_redir *red, t_exec *minishell, t_cmd **current_cmd)
 {
 	int	fd;
 
@@ -53,31 +53,28 @@ void	input_handle(t_redir *red, t_exec *minishell,t_cmd **current_cmd)
 		close(fd);
 	}
 }
-//wait for the expander
+// wait for the expander
 void	heredoc(t_exec *minishell)
 {
-	// char *s;
-	// int delimeter_len;
-	
-	// delimeter_len = ft_strlen(minishell->cmds->args[0]);
-	while(1)
+	int	fd[2];
+
+	if (pipe(fd) == -1)
+	{
+		// ruin_everything(minishell,0);
+	}
+	while (1)
 	{
 		// read(0,s,100000);
-		
-		
-			
-		
 	}
-	
 }
 
-void	redir_handle(t_redir *redir, t_exec *minishell,t_cmd **cmd)
+void	redir_handle(t_redir *redir, t_exec *minishell, t_cmd **cmd)
 {
 	while (redir)
 	{
 		if (redir->type == INPUT)
 		{
-			input_handle(redir, minishell,cmd);
+			input_handle(redir, minishell, cmd);
 		}
 		else if (redir->type == TRUNC)
 		{

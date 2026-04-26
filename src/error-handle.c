@@ -1,40 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   error-handle.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/26 14:08:39 by moabed           ###   ########.fr       */
+/*   Created: 2026/04/25 12:19:58 by moabed            #+#    #+#             */
+/*   Updated: 2026/04/26 07:29:42 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
 
-int	main(int ac, char **av, char **envp)
+void	error_display(int fd, char *cmd, char *right_end, t_exec *shell)
 {
-	char	*input;
-	t_exec	shell;
+	int	cmdlen;
+	int	rightlen;
 
-	if (shell_init(envp, &shell))
-		return (1);
-	while (1)
-	{
-		interactive_signals();
-		input = readline("minishell> ");
-		if (!input)
-			break ;
-		if (global_sig != 0)
-		{
-			shell.last_status = global_sig;
-			global_sig = 0;
-		}
-		add_history(input);
-		shell.cmds = builder(input);
-		execution(&shell);
-		// ruin_everything(shell);
-		free(input);
-	}
-	return (shell.last_status);
+	rightlen = ft_strlen(right_end);
+	cmdlen = ft_strlen(cmd);
+	write(fd, "minishell: ", 12);
+	write(fd, cmd, cmdlen);
+	write(fd, right_end, rightlen);
+	write(fd, "\n", 1);
+	shell->last_status = 2;
+}
+
+void	free_current_cmd(t_cmd **node)
+{
+}
+
+void	ruin_everything(t_exec *shell)
+{
+	// postponed until i know from partner how its malloc'd
 }

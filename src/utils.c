@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/07 18:48:59 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/25 12:20:51 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,29 +62,16 @@ int	has_no_equal(char *search)
 	return (1);
 }
 
-void	error_display(int fd, char *cmd, char *right_end, t_exec *shell)
-{
-	int	cmdlen;
-	int	rightlen;
-
-	rightlen = ft_strlen(right_end);
-	cmdlen = ft_strlen(cmd);
-	write(fd, "minishell: ", 12);
-	write(fd, cmd, cmdlen);
-	write(fd, right_end, rightlen);
-	write(fd, "\n", 1);
-	shell->last_status = 2;
-}
-
 char	*get_value(char *key, t_env *env)
 {
 	char *str;
-	int	keylen;
+	int keylen;
 
 	keylen = ft_strlen(key);
 	while (env)
 	{
-		if (!ft_strncmp(key, env->variable, keylen) && env->variable[keylen] == '=')
+		if (!ft_strncmp(key, env->variable, keylen)
+			&& env->variable[keylen] == '=')
 		{
 			str = env->variable + keylen + 1;
 			break ;

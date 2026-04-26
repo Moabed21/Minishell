@@ -37,24 +37,25 @@ void	interactive_signals(void)
 	struct sigaction	sa_quit;
 
 	sa_int.sa_handler = sigint_interactive;
-	sigemptyset(&sa_int.sa_mask); // this means " dont block other signals during handler"
-	sa_int.sa_flags = 0; // dont set SA_restart (important for readline)
-	sigaction(SIGINT,&sa_int,NULL);
-	
+	sigemptyset(&sa_int.sa_mask);
+	// this means " dont block other signals during handler"
+	sa_int.sa_flags = 0;
+	// dont set SA_restart (important for readline)
+	sigaction(SIGINT, &sa_int, NULL);
 	sa_quit.sa_handler = sigquit_interactive;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
-	sigaction(SIGQUIT,&sa_quit,NULL);
-	rl_catch_signals = 0;  // Tell readline: "I'll handle signals myself"
+	sigaction(SIGQUIT, &sa_quit, NULL);
+	rl_catch_signals = 0; // Tell readline: "I'll handle signals myself"
 }
 
-void	default_signals()
+void	default_signals(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	sa.sa_handler = SIG_DFL;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-	sigaction(SIGQUIT,&sa,NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 	sigaction(SIGINT, &sa, NULL);
 }

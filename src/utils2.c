@@ -6,11 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 16:23:48 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/20 11:48:37 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/26 13:26:34 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/execution-part.h"
+
+volatile sig_atomic_t	global_sig = 0;
 
 void	shell_protection(void)
 {
@@ -20,12 +22,11 @@ void	shell_protection(void)
 		exit(3);
 }
 
-int	shell_init(char **env,t_exec *shell)
+int	shell_init(char **env, t_exec *shell)
 {
-	volatile sig_atomic_t global_sig = 0;
 	shell_protection();
-	interactive_signals();
-	shell->first_env_node =  env_init(env);
+	shell->envp = env;
+	shell->first_env_node = env_init(env);
 	if (!shell->first_env_node)
 		return (1);
 	shell->last_status = 0;
@@ -47,34 +48,53 @@ void	free2d_array(char **arr)
 	free(arr);
 }
 
-char    **list_to_array(t_env *env)
+void	unset_2(t_env **head, char *name)
 {
-	int size;
-	char **envp;
-	t_env   *ptr;
-	int i;
+	t_env	**curr;
+	t_env	*tmp;
+	int		len;
 
-	i = 0;
-	size = 0;
-	ptr = env;
-	while(ptr)
+	len = ft_strlen(name);
+	curr = head;
+	while (*curr)
 	{
-		size++;
-		ptr = ptr->next;
+		if (!ft_strncmp((*curr)->variable, name, len)
+			&& (*curr)->variable[len] == '=')
+		{
+			tmp = *curr;
+			*curr = (*curr)->next;
+			free(tmp->variable);
+			free(tmp);
+			return ;
+		}
+		curr = &((*curr)->next);
 	}
-	envp = malloc(sizeof(char *) * (size+1));
-	if(!envp)
-		return (NULL);
-	while(env)
-	{
-		envp[i] = ft_strdup(env->variable);
-		env = env->next;
-		i++;
-	}
-	envp[i] = NULL;
-	return(envp);
 }
-void	ruin_everything(t_cmd *cmds_list)
-{
-	//postponed until i know from partner how its malloc'd
-}
+
+// char    **list_to_array(t_env *env)
+// {
+// 	int size;
+// 	char **envp;
+// 	t_env   *ptr;
+// 	int i;
+
+// 	i = 0;
+// 	size = 0;
+// 	ptr = env;
+// 	while(ptr)
+// 	{
+// 		size++;
+// 		ptr = ptr->next;
+// 	}
+// 	envp = malloc(sizeof(char *) * (size+1));
+// 	if(!envp)
+// 		return (NULL);
+// 	while(env)
+// 	{
+// 		envp[i] = ft_strdup(env->variable);
+// 		env = env->next;
+// 		i++;
+// 	}
+// 	envp[i] = NULL;
+// 	return(envp);
+// }
