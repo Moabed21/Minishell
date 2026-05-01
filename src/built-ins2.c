@@ -6,16 +6,17 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/26 12:21:40 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/01 13:06:27 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/execution-part.h"
+#include "../headers/executionpart.h"
 
 void	cd_2(t_exec *shell, t_cmd *node, char *path, char *old_path)
 {
 	char	*tmp;
 
+	(void)node;
 	if (!path || chdir(path) == -1)
 	{
 		if (!path)
@@ -35,7 +36,7 @@ void	cd_2(t_exec *shell, t_cmd *node, char *path, char *old_path)
 	shell->last_status = 0;
 }
 
-int	not_a_num(t_cmd *node, char *str)
+int	not_a_num(char *str)
 {
 	int	i;
 
@@ -69,12 +70,12 @@ void	exec_builtin(t_exec *shell, t_cmd *node)
 		e_env(node, shell);
 	if (!ft_strcmp("exit", node->args[0]))
 		e_exit(node, shell);
+	free_current_cmd(&node);
 }
 void	e_env(t_cmd *node, t_exec *shell)
 {
 	t_env	*ptr;
 
-	node->cmd_type = ENV;
 	ptr = shell->first_env_node;
 	while (ptr)
 	{
@@ -90,8 +91,7 @@ void	e_env(t_cmd *node, t_exec *shell)
 
 void	e_exit(t_cmd *node, t_exec *shell)
 {
-	node->cmd_type = EXIT;
-	if (node->args[1] && not_a_num(node, node->args[1]))
+	if (node->args[1] && not_a_num(node->args[1]))
 	{
 		error_display(2, node->args[0], ": too many arguments", shell);
 		shell->last_status = 2;
