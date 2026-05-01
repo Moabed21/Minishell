@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing-part.h                                     :+:      :+:    :+:   */
+/*   parsingpart.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/04/26 13:16:42 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/29 05:52:52 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSING_PART_H
-# define PARSING_PART_H
+#ifndef PARSINGPART_H
+# define PARSINGPART_H
 # include "libs.h"
 
 // token enum
@@ -58,24 +58,22 @@ typedef struct s_token
 // redirection struct
 typedef struct s_redir
 {
-	t_token_type	type;
-	int file_d; // every redir has a file for either input or output ,
-				// to deal with him we need an fd
 	char			*filename;
-	struct s_redir *next; // linked list for multiple redirs
+	t_token_type	type;
+	struct s_redir	*next;
 }					t_redir;
+// linked list for multiple redirs
 
-// command struct
 typedef struct s_cmd
 {
-	int fork_id; // every command will be handled by one child
+	int				fork_id;
 	int				ret_stat;
 	int				fd_in;
 	int				fd_out;
 	char			**args;
-	t_cmd_type cmd_type; // to see if the command is from built-ins
+	t_cmd_type		cmd_type;
 	t_redir			*redir;
-	struct s_cmd *next; // for pipes
+	struct s_cmd	*next;
 }					t_cmd;
 
 // functions
