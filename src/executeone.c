@@ -1,0 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executeone.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
+/*   Updated: 2026/05/01 10:53:26 by moabed           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../headers/executionpart.h"
+
+void	apply_fd(int fd1, int fd)
+{
+	dup2(fd1, fd);
+	close(fd1);
+}
+
+void	execute_as_is(t_exec *shell, t_cmd *node)
+{
+	if (ft_strchr(node->args[0], '/'))
+	{
+		execve(node->args[0], node->args, shell->envp);
+		perror(node->args[0]);
+		free_current_cmd(&node);
+		exit(126);
+	}
+}
+
+void	execute(t_exec *shell, t_cmd *node)
+{
+	int		i;
+	char	**path;
+	char	*first_part;
+
+	i = -1;
+	execute_as_is(shell, node);
+	path = findpath(shell->envp);
+	if (!path)
+	{
+		free_current_cmd(&node);
+		free2d_array(shell->envp);
+		exit(127);
+	}
+	while (path[++i])
+	{
+		first_part = ft_strjoin(path[i], node->args[0]);
+		free(path[i]);
+		path[i] = first_part;
+		execve(path[i], node->args, shell->envp);
+	}
+	error_display(STDERR_FILENO, node->args[0], ": command not found", shell);
+	free_current_cmd(&node);
+	exit(127);
+}
+
+void	execute_non_builtin(t_exec *shell, t_cmd *node)
+{
+	ft_fork_pipe(shell, node, 1);
+	if (node->fork_id == 0)
+	{
+		default_signals();
+		if (node->fd_in != 0)
+		{
+			apply_fd(node->fd_in, 0);
+		}
+		if (node->fd_out != 1)
+		{
+			apply_fd(node->fd_out, 1);
+		}
+		execute(shell, node);
+	}
+	wait_child(shell, node);
+}
+
+void	execute_one_cmd(t_exec *shell, t_cmd *node)
+{
+	if (node->redir)
+		redir_handle(node->redir, &node);
+	if (!node)
+		return ;
+	if (node->cmd_type == NONE)
+		execute_non_builtin(shell, node);
+	else
+		exec_builtin(shell, node);
+}

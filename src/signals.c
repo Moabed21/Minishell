@@ -6,18 +6,18 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 19:23:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/11 17:19:15 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/29 18:49:33 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // this is the signals part
 
-#include "../headers/execution-part.h"
+#include "../headers/executionpart.h"
 
 void	sigint_interactive(int sig)
 {
 	(void)sig;
-	global_sig = 130;
+	g_sig = 130;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -40,13 +40,12 @@ void	interactive_signals(void)
 	sigemptyset(&sa_int.sa_mask);
 	// this means " dont block other signals during handler"
 	sa_int.sa_flags = 0;
-	// dont set SA_restart (important for readline)
 	sigaction(SIGINT, &sa_int, NULL);
 	sa_quit.sa_handler = sigquit_interactive;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
-	rl_catch_signals = 0; // Tell readline: "I'll handle signals myself"
+	rl_catch_signals = 0;
 }
 
 void	default_signals(void)

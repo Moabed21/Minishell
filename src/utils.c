@@ -6,11 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/25 12:20:51 by moabed           ###   ########.fr       */
+/*   Updated: 2026/04/29 05:53:28 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/execution-part.h"
+#include "../headers/executionpart.h"
 
 int	ft_strcmp(char *s1, char *s2)
 {
@@ -67,6 +67,7 @@ char	*get_value(char *key, t_env *env)
 	char *str;
 	int keylen;
 
+	str = NULL;
 	keylen = ft_strlen(key);
 	while (env)
 	{

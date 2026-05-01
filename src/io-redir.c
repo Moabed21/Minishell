@@ -6,13 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 09:30:53 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/26 06:02:29 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/01 11:42:15 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/execution-part.h"
+#include "../headers/executionpart.h"
 
-void	output_handle(t_redir *red, t_exec *minishell, t_cmd **cmd, int option)
+void	output_handle(t_redir *red, t_cmd **current_cmd, int option)
 {
 	int	fd;
 
@@ -23,18 +23,14 @@ void	output_handle(t_redir *red, t_exec *minishell, t_cmd **cmd, int option)
 		fd = open(red->filename, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd == -1)
 	{
-		free_current_cmd(cmd);
+		free_current_cmd(current_cmd);
 		perror(red->filename);
-		exit(EXIT_FAILURE);
 	}
 	else
-	{
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-	}
+	(*current_cmd)->fd_out= fd;
 }
 
-void	input_handle(t_redir *red, t_exec *minishell, t_cmd **current_cmd)
+void	input_handle(t_redir *red, t_cmd **current_cmd)
 {
 	int	fd;
 
@@ -45,48 +41,36 @@ void	input_handle(t_redir *red, t_exec *minishell, t_cmd **current_cmd)
 	{
 		free_current_cmd(current_cmd);
 		perror(red->filename);
-		exit(EXIT_FAILURE);
 	}
 	else
-	{
-		dup2(fd, STDIN_FILENO);
-		close(fd);
-	}
+		(*current_cmd)->fd_in= fd;
 }
 // wait for the expander
-void	heredoc(t_exec *minishell)
-{
-	int	fd[2];
+// void	heredoc(t_exec *shell,t_cmd *node)
+// {
+// 	int fd[2];
 
-	if (pipe(fd) == -1)
-	{
-		// ruin_everything(minishell,0);
-	}
-	while (1)
-	{
-		// read(0,s,100000);
-	}
-}
+// 	if(pipe(fd) == -1)
+// 	{
+// 		ruin_everything(shell,1);
+// 	}
+// 	close(fd[1]);
+	
+// }
 
-void	redir_handle(t_redir *redir, t_exec *minishell, t_cmd **cmd)
+void	redir_handle(t_redir *redir, t_cmd **cmd)
 {
 	while (redir)
 	{
 		if (redir->type == INPUT)
-		{
-			input_handle(redir, minishell, cmd);
-		}
+			input_handle(redir, cmd);
 		else if (redir->type == TRUNC)
-		{
-			output_handle(redir, minishell, cmd, 1);
-		}
+			output_handle(redir, cmd, 1);
 		else if (redir->type == APPEND)
-		{
-			output_handle(redir, minishell, cmd, 2);
-		}
+			output_handle(redir, cmd, 2);
 		else if (redir->type == HEREDOC)
 		{
-			heredoc(minishell);
+			// heredoc(minishell);
 		}
 		redir = redir->next;
 	}
