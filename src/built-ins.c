@@ -34,7 +34,6 @@ void	e_echo(t_cmd *node, t_exec *shell)
 	}
 	if (option == 0)
 		write(node->fd_out, "\n", 1);
-	free_current_cmd(&node);
 	shell->last_status = 0;
 }
 

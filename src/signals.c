@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/07 19:23:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/29 18:49:33 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/03 19:10:56 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,6 @@ void	sigint_interactive(int sig)
 	rl_redisplay();
 }
 
-void	sigquit_interactive(int sig)
-{
-	(void)sig;
-	rl_redisplay();
-	return ;
-}
-
 void	interactive_signals(void)
 {
 	struct sigaction	sa_int;
@@ -38,14 +31,23 @@ void	interactive_signals(void)
 
 	sa_int.sa_handler = sigint_interactive;
 	sigemptyset(&sa_int.sa_mask);
-	// this means " dont block other signals during handler"
 	sa_int.sa_flags = 0;
 	sigaction(SIGINT, &sa_int, NULL);
-	sa_quit.sa_handler = sigquit_interactive;
+	sa_quit.sa_handler = SIG_IGN;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
-	rl_catch_signals = 0;
+}
+
+void	ignore_signals(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = SIG_IGN;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 }
 
 void	default_signals(void)

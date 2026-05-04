@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/30 23:58:39 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/03 21:37:17 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	wait_child(t_exec *shell, t_cmd *node)
 	int	status;
 
 	waitpid(node->fork_id, &status, 0);
-	if (WIFEXITED(status)) // if the chiled died normally
+	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status)) // if shocked by a signal
+	else if (WIFSIGNALED(status))
 		shell->last_status = 128 + WTERMSIG(status);
 }
 
@@ -31,7 +31,7 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 		if (node->fork_id == -1)
 		{
 			shell->last_status = EXIT_FAILURE;
-			ruin_everything(shell, 0);
+			ruin_everything(shell);
 		}
 	}
 	else if (option == 2)
@@ -40,7 +40,7 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 		{
 			node->fork_id = -1;
 			shell->last_status = EXIT_FAILURE;
-			ruin_everything(shell, 0);
+			ruin_everything(shell);
 		}
 	}
 }
@@ -57,13 +57,11 @@ char	**findpath(char **evar)
 		if (ft_strncmp(evar[i], "PATH=", 5) == 0)
 		{
 			ev = ft_split(evar[i] + 5, ':');
-			if (!ev)
-				return (NULL);
 			break ;
 		}
 	}
 	i = 0;
-	if (!ev)           
+	if (!ev)
 		return (NULL);
 	while (ev[i])
 	{
@@ -82,7 +80,6 @@ void	multiple_cmds(t_exec *shell, t_cmd *cmds_list)
 		return ;
 	while (cmds_list)
 	{
-		
 		cmds_list = cmds_list->next;
 	}
 }

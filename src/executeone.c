@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/01 10:53:26 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/03 21:36:16 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,23 @@ void	execute(t_exec *shell, t_cmd *node)
 		execve(path[i], node->args, shell->envp);
 	}
 	error_display(STDERR_FILENO, node->args[0], ": command not found", shell);
+	free2d_array(path);
 	free_current_cmd(&node);
 	exit(127);
+}
+
+void	check_fds(t_cmd *node)
+{
+	if (node->fd_in > 2)
+	{
+		close(node->fd_in);
+		node->fd_in = 0;
+	}
+	if (node->fd_out > 2)
+	{
+		close(node->fd_out);
+		node->fd_out = 1;
+	}
 }
 
 void	execute_non_builtin(t_exec *shell, t_cmd *node)
@@ -63,15 +78,13 @@ void	execute_non_builtin(t_exec *shell, t_cmd *node)
 	{
 		default_signals();
 		if (node->fd_in != 0)
-		{
 			apply_fd(node->fd_in, 0);
-		}
 		if (node->fd_out != 1)
-		{
 			apply_fd(node->fd_out, 1);
-		}
 		execute(shell, node);
 	}
+	ignore_signals();
+	check_fds(node);
 	wait_child(shell, node);
 }
 

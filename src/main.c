@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/29 18:42:21 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/03 17:47:10 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,6 @@ int	main(int ac, char **av, char **envp)
 		execution(&shell);
 		free(input);
 	}
-	env_ruin(&shell.first_env_node);
+	ruin_everything(&shell);
 	return (shell.last_status);
 }

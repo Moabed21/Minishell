@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 12:19:58 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/01 12:46:43 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/03 19:24:23 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,31 +29,38 @@ void	error_display(int fd, char *cmd, char *right_end, t_exec *shell)
 void	free_current_cmd(t_cmd **node)
 {
 	t_cmd	*ptr;
-	t_redir *r;
+	t_redir	*r;
+	t_redir	*tmp;
 
+	if (!node || !*node)
+		return ;
+	check_fds(*node);
 	ptr = *node;
-	(*node) = (*node)->next;
-	free2d_array((*node)->args);
-	while((*node)->redir)
+	*node = NULL;
+	free2d_array(ptr->args);
+	r = ptr->redir;
+	while (r)
 	{
-		r = (*node)->redir;
-		r = r->next;
-		free((*node)->redir);
+		tmp = r->next;
+		free(r->filename);
+		free(r);
+		r = tmp;
 	}
 	free(ptr);
 }
 
-void	ruin_everything(t_exec *shell, int option)
+void	ruin_everything(t_exec *shell)
 {
-	t_cmd *c;
+	t_cmd *tmp;
 
-	(void)option;
-	c = shell->cmds;
-	while (c)
+	env_ruin(&shell->first_env_node);
+	if (!shell->cmds)
+		return ;
+	while (shell->cmds)
 	{
-		c = c->next;
-		free(shell->cmds);
-		shell->cmds = c;
+		tmp = shell->cmds->next;
+		shell->cmds->next = NULL;
+		free_current_cmd(&shell->cmds);
+		shell->cmds = tmp;
 	}
-	free(c);
 }

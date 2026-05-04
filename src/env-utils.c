@@ -20,6 +20,11 @@ t_env	*new_node(char *str)
 	if (!node)
 		return (NULL);
 	node->variable = ft_strdup(str);
+	if (!node->variable)
+	{
+		free(node);
+		return (NULL);
+	}
 	node->next = NULL;
 	return (node);
 }
@@ -49,12 +54,18 @@ t_env	*env_init(char **env)
 	t_env	*ptr;
 
 	size = 0;
+	if (!env || !env[0])
+		return (NULL);
 	ptr = new_node(env[size]);
+	if (!ptr)
+		return (NULL);
 	head = ptr;
 	size++;
 	while (env[size])
 	{
 		ptr->next = new_node(env[size]);
+		if (!ptr->next)
+			return (head);
 		ptr = ptr->next;
 		size++;
 	}
@@ -64,13 +75,17 @@ t_env	*env_init(char **env)
 void	env_add_last(t_env **env, char *target)
 {
 	t_env	*ptr;
+	t_env	*new;
 
 	if (!*env)
+		return ;
+	new = new_node(target);
+	if (!new)
 		return ;
 	ptr = (*env);
 	while (ptr->next)
 	{
 		ptr = ptr->next;
 	}
-	ptr->next = new_node(target);
+	ptr->next = new;
 }

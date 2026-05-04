@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 09:30:53 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/01 11:42:15 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/02 12:48:05 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,11 @@ void	output_handle(t_redir *red, t_cmd **current_cmd, int option)
 		perror(red->filename);
 	}
 	else
-	(*current_cmd)->fd_out= fd;
+	{
+		if ((*current_cmd)->fd_out > 2)
+			close((*current_cmd)->fd_out);
+		(*current_cmd)->fd_out = fd;
+	}
 }
 
 void	input_handle(t_redir *red, t_cmd **current_cmd)
@@ -43,7 +47,11 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 		perror(red->filename);
 	}
 	else
-		(*current_cmd)->fd_in= fd;
+	{
+		if ((*current_cmd)->fd_in > 2)
+			close((*current_cmd)->fd_in);
+		(*current_cmd)->fd_in = fd;
+	}
 }
 // wait for the expander
 // void	heredoc(t_exec *shell,t_cmd *node)
@@ -55,13 +63,15 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 // 		ruin_everything(shell,1);
 // 	}
 // 	close(fd[1]);
-	
+
 // }
 
 void	redir_handle(t_redir *redir, t_cmd **cmd)
 {
 	while (redir)
 	{
+		if (!*cmd)
+			return ;
 		if (redir->type == INPUT)
 			input_handle(redir, cmd);
 		else if (redir->type == TRUNC)

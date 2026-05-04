@@ -12,7 +12,7 @@
 
 #include "../headers/executionpart.h"
 
-int g_sig = 0;
+volatile sig_atomic_t g_sig = 0;
 
 void	shell_protection(void)
 {
@@ -70,31 +70,3 @@ void	unset_2(t_env **head, char *name)
 		curr = &((*curr)->next);
 	}
 }
-
-// char    **list_to_array(t_env *env)
-// {
-// 	int size;
-// 	char **envp;
-// 	t_env   *ptr;
-// 	int i;
-
-// 	i = 0;
-// 	size = 0;
-// 	ptr = env;
-// 	while(ptr)
-// 	{
-// 		size++;
-// 		ptr = ptr->next;
-// 	}
-// 	envp = malloc(sizeof(char *) * (size+1));
-// 	if(!envp)
-// 		return (NULL);
-// 	while(env)
-// 	{
-// 		envp[i] = ft_strdup(env->variable);
-// 		env = env->next;
-// 		i++;
-// 	}
-// 	envp[i] = NULL;
-// 	return(envp);
-// }
