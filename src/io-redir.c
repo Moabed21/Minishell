@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 09:30:53 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/02 12:48:05 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 12:21:14 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	output_handle(t_redir *red, t_cmd **current_cmd, int option)
 		fd = open(red->filename, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd == -1)
 	{
+		check_fds(*current_cmd);
 		free_current_cmd(current_cmd);
 		perror(red->filename);
 	}
@@ -43,6 +44,7 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 		fd = open(red->filename, O_RDONLY);
 	if (fd == -1)
 	{
+		check_fds(*current_cmd);
 		free_current_cmd(current_cmd);
 		perror(red->filename);
 	}

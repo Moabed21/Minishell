@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 07:39:54 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 11:42:19 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,13 @@ int								ft_strcmp(char *s1, char *s2);
 int								has_no_equal(char *search);
 int								replace(char *target, t_env *env);
 char							*get_value(char *key, t_env *env);
+void							init_vals(t_exec *shell, t_cmd *cmds);
 //-------------utils2----------------------
 int								shell_init(char **env, t_exec *shell);
 void							unset_2(t_env **head, char *name);
 void							free2d_array(char **arr);
 void							shell_protection(void);
+void							check_cmds(t_cmd *cmds);
 //------------execution---------------------
 char							**findpath(char **evar);
 void							execution(t_exec *shell);
@@ -81,9 +83,13 @@ void							free_current_cmd(t_cmd **node);
 void							ruin_everything(t_exec *shell);
 void							error_display(int fd, char *cmd,
 									char *right_end, t_exec *shell);
+void							free_cmds_list(t_cmd **cmds);
 //------------executeone--------------------
 void							execute_one_cmd(t_exec *shell, t_cmd *node);
 t_cmd							*builder(char *input);
 void							apply_fd(int fd1, int fd);
 void							check_fds(t_cmd *node);
+//-----------execute-multiple---------------
+void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
+
 #endif

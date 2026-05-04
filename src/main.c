@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/03 17:47:10 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 11:43:22 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,20 @@ int	main(int ac, char **av, char **envp)
 	if (shell_init(envp, &shell))
 		return (1);
 	while (1)
-	{
-		interactive_signals();
-		input = readline("minishell> ");
-		if (!input)
-			break ;
-		if (g_sig != 0)
-		{
-			shell.last_status = g_sig;
-			g_sig = 0;
-		}
-		add_history(input);
-		shell.cmds = builder(input);
-		execution(&shell);
-		free(input);
-	}
+    {
+        interactive_signals();
+        input = readline("minishell> ");
+        if (!input)
+			break;
+        add_history(input);
+        shell.cmds = builder(input);
+        if (shell.cmds)
+        {
+            execution(&shell);
+            free_cmds_list(&shell.cmds); 
+			free(input);
+        }
+    }
 	ruin_everything(&shell);
 	return (shell.last_status);
 }

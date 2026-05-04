@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 12:19:58 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/03 19:24:23 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 11:42:32 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,16 +51,28 @@ void	free_current_cmd(t_cmd **node)
 
 void	ruin_everything(t_exec *shell)
 {
-	t_cmd *tmp;
-
 	env_ruin(&shell->first_env_node);
 	if (!shell->cmds)
 		return ;
-	while (shell->cmds)
+	if (shell->cmds)
 	{
-		tmp = shell->cmds->next;
-		shell->cmds->next = NULL;
-		free_current_cmd(&shell->cmds);
-		shell->cmds = tmp;
+		free_cmds_list(&shell->cmds);
+		shell->cmds = NULL;
 	}
+}
+void	free_cmds_list(t_cmd **cmds)
+{
+	t_cmd	*curr;
+	t_cmd	*next;
+
+	if (!cmds || !*cmds)
+		return ;
+	curr = *cmds;
+	while (curr)
+	{
+		next = curr->next;
+		free_current_cmd(&curr); // دالتك التي تحرر الـ struct الواحد
+		curr = next;
+	}
+	*cmds = NULL; // تصفير المؤشر الأصلي في الـ struct shell
 }

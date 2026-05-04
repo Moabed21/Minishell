@@ -7,14 +7,12 @@ SRC_DIR     = src
 OBJ_DIR     = obj
 HEADERS     = headers
 
-# List the files without the directory prefix here
 FILES       = main.c signals.c utils.c utils2.c io-redir.c \
-              execution.c env-utils.c built-ins.c built-ins2.c error-handle.c executeone.c test_parser.c
+              execution.c env-utils.c built-ins.c built-ins2.c \
+			  error-handle.c executeone.c test_parser.c execute-multiple.c
 
-# Combine the directory and file list
 SRC         = $(FILES:%.c=$(SRC_DIR)/%.c)
 
-# Map the src/path.c directly to obj/path.o
 OBJ         = $(FILES:%.c=$(OBJ_DIR)/%.o)
 
 LIBFT       = $(SRC_DIR)/libft/libft.a
@@ -29,8 +27,6 @@ $(LIBFT):
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
-
-# Pattern rule to bridge the two different directories
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)/*.h
 	$(CC) $(CFLAGS) -c $< -o $@
 

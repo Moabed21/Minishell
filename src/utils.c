@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/29 05:53:28 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 09:56:29 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,17 @@ char	*get_value(char *key, t_env *env)
 	if (!str)
 		return (NULL);
 	return (str);
+}
+
+void	init_vals(t_exec *shell, t_cmd *cmds)
+{
+	shell->cmds_count = 0;
+	while (cmds)
+	{
+		check_cmds(cmds);
+		cmds->fd_in = 0;
+		cmds->fd_out = 1;
+		shell->cmds_count++;
+		cmds = cmds->next;
+	}
 }

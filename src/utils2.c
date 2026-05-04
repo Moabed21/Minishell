@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 16:23:48 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/29 08:12:02 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 09:57:27 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,25 @@ void	unset_2(t_env **head, char *name)
 		}
 		curr = &((*curr)->next);
 	}
+}
+
+void	check_cmds(t_cmd *cmds)
+{
+	cmds->cmd_type = NONE;
+	if (!cmds->args || !cmds->args[0])
+		return ;
+	if (!ft_strcmp("echo", cmds->args[0]))
+		cmds->cmd_type = ECHO;
+	if (!ft_strcmp("cd", cmds->args[0]))
+		cmds->cmd_type = CD;
+	if (!ft_strcmp("pwd", cmds->args[0]))
+		cmds->cmd_type = PWD;
+	if (!ft_strcmp("export", cmds->args[0]))
+		cmds->cmd_type = EXPORT;
+	if (!ft_strcmp("unset", cmds->args[0]))
+		cmds->cmd_type = UNSET;
+	if (!ft_strcmp("env", cmds->args[0]))
+		cmds->cmd_type = ENV;
+	if (!ft_strcmp("exit", cmds->args[0]))
+		cmds->cmd_type = EXIT;
 }

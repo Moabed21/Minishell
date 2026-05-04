@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/03 21:37:17 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 11:34:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,7 @@ void	wait_child(t_exec *shell, t_cmd *node)
 	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-	{
 		shell->last_status = 128 + WTERMSIG(status);
-		if (WTERMSIG(status) == SIGINT)
-			write(1, "\n", 1);
-		else if (WTERMSIG(status) == SIGQUIT)
-			write(2, "Quit (core dumped)\n", 19);
-	}
 }
 
 void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
@@ -37,7 +31,7 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 		if (node->fork_id == -1)
 		{
 			shell->last_status = EXIT_FAILURE;
-			ruin_everything(shell);
+			return ;
 		}
 	}
 	else if (option == 2)
@@ -46,7 +40,7 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 		{
 			node->fork_id = -1;
 			shell->last_status = EXIT_FAILURE;
-			ruin_everything(shell);
+			return ;
 		}
 	}
 }
@@ -79,51 +73,6 @@ char	**findpath(char **evar)
 	return (ev);
 }
 
-void	multiple_cmds(t_exec *shell, t_cmd *cmds_list)
-{
-	ft_fork_pipe(shell, cmds_list, 2);
-	if (!cmds_list)
-		return ;
-	while (cmds_list)
-	{
-		cmds_list = cmds_list->next;
-	}
-}
-
-void	check_cmds(t_cmd *cmds)
-{
-	cmds->cmd_type = NONE;
-	if (!cmds->args || !cmds->args[0])
-		return ;
-	if (!ft_strcmp("echo", cmds->args[0]))
-		cmds->cmd_type = ECHO;
-	if (!ft_strcmp("cd", cmds->args[0]))
-		cmds->cmd_type = CD;
-	if (!ft_strcmp("pwd", cmds->args[0]))
-		cmds->cmd_type = PWD;
-	if (!ft_strcmp("export", cmds->args[0]))
-		cmds->cmd_type = EXPORT;
-	if (!ft_strcmp("unset", cmds->args[0]))
-		cmds->cmd_type = UNSET;
-	if (!ft_strcmp("env", cmds->args[0]))
-		cmds->cmd_type = ENV;
-	if (!ft_strcmp("exit", cmds->args[0]))
-		cmds->cmd_type = EXIT;
-}
-
-void	init_vals(t_exec *shell, t_cmd *cmds)
-{
-	shell->cmds_count = 0;
-	while (cmds)
-	{
-		check_cmds(cmds);
-		cmds->fd_in = 0;
-		cmds->fd_out = 1;
-		shell->cmds_count++;
-		cmds = cmds->next;
-	}
-}
-
 void	execution(t_exec *shell)
 {
 	init_vals(shell, shell->cmds);
@@ -131,5 +80,4 @@ void	execution(t_exec *shell)
 		execute_one_cmd(shell, shell->cmds);
 	else
 		multiple_cmds(shell, shell->cmds);
-	shell->cmds = NULL;
 }

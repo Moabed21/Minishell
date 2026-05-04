@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/03 21:36:16 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 11:35:50 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void	check_fds(t_cmd *node)
 void	execute_non_builtin(t_exec *shell, t_cmd *node)
 {
 	ft_fork_pipe(shell, node, 1);
+	if (node->fork_id == -1)
+		return ;
 	if (node->fork_id == 0)
 	{
 		default_signals();
@@ -95,10 +97,7 @@ void	execute_one_cmd(t_exec *shell, t_cmd *node)
 	if (!node)
 		return ;
 	if (node->cmd_type == NONE)
-	{
 		execute_non_builtin(shell, node);
-		free_current_cmd(&node);
-	}
 	else
 		exec_builtin(shell, node);
 }
