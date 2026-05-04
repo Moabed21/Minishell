@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 09:30:53 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 12:21:14 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 13:00:53 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,6 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 		(*current_cmd)->fd_in = fd;
 	}
 }
-// wait for the expander
-// void	heredoc(t_exec *shell,t_cmd *node)
-// {
-// 	int fd[2];
-
-// 	if(pipe(fd) == -1)
-// 	{
-// 		ruin_everything(shell,1);
-// 	}
-// 	close(fd[1]);
-
-// }
 
 void	redir_handle(t_redir *redir, t_cmd **cmd)
 {

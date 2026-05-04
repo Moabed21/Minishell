@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 09:54:05 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 12:40:17 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 12:52:39 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	multiple_cmds(t_exec *shell, t_cmd *cmds)
 		if (cmds->next)
 			ft_fork_pipe(shell, cmds, 2);
 		if (cmds->fork_id == -1)
-			return ;
+			break ;
 		prev_fd = shell->fd[1];
         close(shell->fd[0]);
 		if (cmds->redir)
@@ -37,7 +37,7 @@ void	multiple_cmds(t_exec *shell, t_cmd *cmds)
             return;
         ft_fork_pipe(shell, cmds, 1);
         if (cmds->fork_id == -1)
-			return ;
+			break ;
         if(cmds->fork_id == 0)
             run_cmd(shell,cmds);
 		cmds = cmds->next;

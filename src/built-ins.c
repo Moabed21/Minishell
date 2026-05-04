@@ -6,13 +6,12 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 13:37:19 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/30 10:33:43 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 12:47:08 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/executionpart.h"
 
-// done
 void	e_echo(t_cmd *node, t_exec *shell)
 {
 	int	i;

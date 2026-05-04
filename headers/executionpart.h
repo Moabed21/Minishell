@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 11:42:19 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/04 13:04:20 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ void							apply_fd(int fd1, int fd);
 void							check_fds(t_cmd *node);
 //-----------execute-multiple---------------
 void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
-
+//-----------heredoc------------------------
+void							heredoc(t_exec *shell,t_cmd *node);
 #endif
