@@ -15,15 +15,15 @@
 
 # define _POSIX_C_SOURCE 200809L
 # define BUFFERSIZE 4096
-// readline
 # include <stdio.h>
+// readline
 # include <readline/history.h>
 # include <readline/readline.h>
 // #define _DEFAULT_SOURCE
 # include "../src/libft/libft.h"
-# include <sys/wait.h>
-# include <stdlib.h>
-# include <signal.h>
-# include <unistd.h>
 # include <fcntl.h>
+# include <signal.h>
+# include <stdlib.h>
+# include <sys/wait.h>
+# include <unistd.h>
 #endif

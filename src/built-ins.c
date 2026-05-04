@@ -54,7 +54,7 @@ void	e_cd(t_cmd *node, t_exec *shell)
 		path = get_value("OLDPWD", shell->first_env_node);
 	else
 		path = node->args[1];
-	cd_2(shell, node, path, old_path);
+	cd_2(shell, path, old_path);
 }
 
 void	e_pwd(t_cmd *node, t_exec *shell)

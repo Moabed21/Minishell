@@ -95,7 +95,10 @@ void	execute_one_cmd(t_exec *shell, t_cmd *node)
 	if (!node)
 		return ;
 	if (node->cmd_type == NONE)
+	{
 		execute_non_builtin(shell, node);
+		free_current_cmd(&node);
+	}
 	else
 		exec_builtin(shell, node);
 }

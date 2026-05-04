@@ -20,7 +20,13 @@ void	wait_child(t_exec *shell, t_cmd *node)
 	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
+	{
 		shell->last_status = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			write(2, "Quit (core dumped)\n", 19);
+	}
 }
 
 void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
@@ -87,6 +93,8 @@ void	multiple_cmds(t_exec *shell, t_cmd *cmds_list)
 void	check_cmds(t_cmd *cmds)
 {
 	cmds->cmd_type = NONE;
+	if (!cmds->args || !cmds->args[0])
+		return ;
 	if (!ft_strcmp("echo", cmds->args[0]))
 		cmds->cmd_type = ECHO;
 	if (!ft_strcmp("cd", cmds->args[0]))
@@ -123,5 +131,5 @@ void	execution(t_exec *shell)
 		execute_one_cmd(shell, shell->cmds);
 	else
 		multiple_cmds(shell, shell->cmds);
-	// ruin_everything
+	shell->cmds = NULL;
 }
