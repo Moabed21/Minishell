@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 12:19:58 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 11:42:32 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 10:19:17 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	ruin_everything(t_exec *shell)
 		shell->cmds = NULL;
 	}
 }
+
 void	free_cmds_list(t_cmd **cmds)
 {
 	t_cmd	*curr;
@@ -71,8 +72,8 @@ void	free_cmds_list(t_cmd **cmds)
 	while (curr)
 	{
 		next = curr->next;
-		free_current_cmd(&curr); // دالتك التي تحرر الـ struct الواحد
+		free_current_cmd(&curr);
 		curr = next;
 	}
-	*cmds = NULL; // تصفير المؤشر الأصلي في الـ struct shell
+	*cmds = NULL;
 }

@@ -6,11 +6,17 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 11:34:38 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 10:23:23 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/executionpart.h"
+
+void	apply_fd(int fd1, int fd)
+{
+	dup2(fd1, fd);
+	close(fd1);
+}
 
 void	wait_child(t_exec *shell, t_cmd *node)
 {
@@ -20,7 +26,13 @@ void	wait_child(t_exec *shell, t_cmd *node)
 	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
+	{
 		shell->last_status = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			write(2, "Quit (core dumped)\n", 19);
+	}
 }
 
 void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
@@ -44,6 +56,7 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 		}
 	}
 }
+
 char	**findpath(char **evar)
 {
 	int		i;

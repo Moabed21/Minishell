@@ -6,17 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 11:35:50 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 08:52:47 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/executionpart.h"
-
-void	apply_fd(int fd1, int fd)
-{
-	dup2(fd1, fd);
-	close(fd1);
-}
 
 void	execute_as_is(t_exec *shell, t_cmd *node)
 {
@@ -92,8 +86,7 @@ void	execute_non_builtin(t_exec *shell, t_cmd *node)
 
 void	execute_one_cmd(t_exec *shell, t_cmd *node)
 {
-	if (node->redir)
-		redir_handle(node->redir, &node);
+	redir_handle(shell, node->redir, &node);
 	if (!node)
 		return ;
 	if (node->cmd_type == NONE)

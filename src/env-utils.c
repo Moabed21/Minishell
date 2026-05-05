@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 09:15:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/29 07:38:12 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 10:19:11 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_env	*new_node(char *str)
 	node->next = NULL;
 	return (node);
 }
+
 void	env_ruin(t_env **head)
 {
 	t_env	*node;

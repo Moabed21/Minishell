@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 09:56:29 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 10:21:40 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ int	has_no_equal(char *search)
 
 char	*get_value(char *key, t_env *env)
 {
-	char *str;
-	int keylen;
+	char	*str;
+	int		keylen;
 
 	str = NULL;
 	keylen = ft_strlen(key);
@@ -92,6 +92,7 @@ void	init_vals(t_exec *shell, t_cmd *cmds)
 		check_cmds(cmds);
 		cmds->fd_in = 0;
 		cmds->fd_out = 1;
+		cmds->fork_id = 0;
 		shell->cmds_count++;
 		cmds = cmds->next;
 	}

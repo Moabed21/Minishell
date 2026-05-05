@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 11:23:53 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 10:18:09 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	exec_builtin(t_exec *shell, t_cmd *node)
 	else if (!ft_strcmp("exit", node->args[0]))
 		e_exit(node, shell);
 }
+
 void	e_env(t_cmd *node, t_exec *shell)
 {
 	t_env	*ptr;

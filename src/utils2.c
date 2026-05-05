@@ -6,13 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 16:23:48 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 09:57:27 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 10:22:58 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/executionpart.h"
 
-volatile sig_atomic_t g_sig = 0;
+volatile sig_atomic_t	g_sig = 0;
 
 void	shell_protection(void)
 {

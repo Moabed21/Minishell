@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 13:04:20 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 08:54:12 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void							e_unset(t_cmd *node, t_exec *shell);
 void							output_handle(t_redir *red, t_cmd **cmd,
 									int option);
 void							input_handle(t_redir *red, t_cmd **current_cmd);
-void							redir_handle(t_redir *redir, t_cmd **cmd);
+void							redir_handle(t_exec *shell, t_redir *red, t_cmd **cmd);
 //--------------env_utils-------------------
 void							env_ruin(t_env **head);
 void							env_add_last(t_env **env, char *target);
@@ -89,8 +89,10 @@ void							execute_one_cmd(t_exec *shell, t_cmd *node);
 t_cmd							*builder(char *input);
 void							apply_fd(int fd1, int fd);
 void							check_fds(t_cmd *node);
+void							execute(t_exec *shell, t_cmd *node);
 //-----------execute-multiple---------------
 void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
 //-----------heredoc------------------------
-void							heredoc(t_exec *shell,t_cmd *node);
+int								heredoc(t_exec *shell, char *delimiter, t_cmd **node);
+
 #endif

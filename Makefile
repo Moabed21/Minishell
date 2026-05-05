@@ -2,15 +2,13 @@ NAME        = minishell
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror -g -I$(HEADERS)
 LDFLAGS     = -L$(SRC_DIR)/libft -lft -lreadline
-
 SRC_DIR     = src
 OBJ_DIR     = obj
 HEADERS     = headers
-
 FILES       = main.c signals.c utils.c utils2.c io-redir.c \
               execution.c env-utils.c built-ins.c built-ins2.c \
-			  error-handle.c executeone.c test_parser.c execute-multiple.c
-
+			  error-handle.c executeone.c test_parser.c execute-multiple.c \
+			  heredoc.c
 SRC         = $(FILES:%.c=$(SRC_DIR)/%.c)
 
 OBJ         = $(FILES:%.c=$(OBJ_DIR)/%.o)
