@@ -6,7 +6,7 @@
 /*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 13:41:05 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/04/20 17:16:16 by shathaamarn      ###   ########.fr       */
+/*   Updated: 2026/05/04 15:30:02 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,27 @@ int	save_op(t_token **token_lst, char *str, int index, int type)
 {
 	int		i;
 	char	*op;
+	t_token	*new;
 
 	i = 0;
 	if (type == APPEND || type == HEREDOC)
-	{
 		op = malloc(sizeof(char) * 3);
-		if (!op)
-			return (0);
-		while (i < 2)
-			op[i++] = str[index++];
-		op[i] = '\0';
-		token_addback(token_lst, token_new(op, type));
-	}
 	else
-	{
 		op = malloc(sizeof(char) * 2);
-		if (!op)
-			return (0);
-		while (i < 1)
-			op[i++] = str[index++];
-		op[i] = '\0';
-		token_addback(token_lst, token_new(op, type));
+	if (!op)
+		return (0);
+	while ((type == APPEND || type == HEREDOC) && i < 2)
+		op[i++] = str[index++];
+	while (!(type == APPEND || type == HEREDOC) && i < 1)
+		op[i++] = str[index++];
+	op[i] = '\0';
+	new = token_new(op, type);
+	if (!new)
+	{
+		free(op);
+		return (0);
 	}
+	token_addback(token_lst, new);
 	return (1);
 }
 
@@ -45,6 +44,7 @@ int	save_word(t_token **token_lst, char *str, int index, int start)
 {
 	int		i;
 	char	*word;
+	t_token	*new;
 
 	i = 0;
 	word = malloc(sizeof(char) * (index - start + 1));
@@ -55,7 +55,14 @@ int	save_word(t_token **token_lst, char *str, int index, int start)
 		word[i++] = str[start++];
 	}
 	word[i] = '\0';
-	token_addback(token_lst, token_new(word, WORD));
+	new = token_new(word, WORD);
+	if (!new)
+	{
+		free(word);
+		return (0);
+	}
+	new->quoted = has_quotes(word);
+	token_addback(token_lst, new);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 18:24:19 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/04/22 18:24:23 by shathaamarn      ###   ########.fr       */
+/*   Updated: 2026/05/04 15:13:31 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	expand_token(t_token **head, t_token *token, char **env, int last_status)
 	if (!expanded)
 		return (0);
 	// check if we need to split
-	if (ft_strchr(expanded, ' '))
+	if (ft_strchr(expanded, ' ') && token->quoted == 0)
 	{
 		words = ft_split(expanded, ' ');
 		new_list = create_tokens_from_words(words);
@@ -103,41 +103,40 @@ int	expand_token(t_token **head, t_token *token, char **env, int last_status)
 	return (1);
 }
 
-int	expand_tokens(t_token **tokens, char **env, int last_status)
+int expand_tokens(t_token **tokens, char **env, int last_status)
 {
-	t_token	*tmp;
+    t_token *tmp;
 
-	tmp = *tokens;
-	while (tmp)
-	{
-		if (!expand_token(tokens, tmp, env, last_status))
-			return (0);
-		tmp = tmp->next;
-	}
-	return (1);
-}
-/* main for testing expansion and tokenization
-void	print_list(t_token *head)
-{
-	t_token	*current;
-
-	current = head;
-	while (current)
-	{
-		if (current->next)
-			printf("%s-> ", current->value);
-		else
-			printf("%s", current->value);
-		current = current->next;
-	}
+    tmp = *tokens;
+    while (tmp)
+    {
+        if (!expand_token(tokens, tmp, env, last_status))
+            return (0);
+        tmp = tmp->next;
+    }
+    return (1);
 }
 
-int	main(int ac, char **av, char **env){
-	t_token *head = tokenization("echo $USER and $PATH");
+void print_list(t_token *head)
+{
+    t_token *current;
+    current = head;
+    while (current)
+    {
+        if (current->next)
+            printf("%s-> ", current->value);
+        else
+            printf("%s", current->value);
+        current = current->next;
+    }
+}
+
+int main(int ac, char **av, char **env){
+    t_token *head = tokenization("echo \"$USER and $PATH\"");
 	t_token *head1 = tokenization("$?");
-	expand_tokens(&head, env, 0);
-	expand_tokens(&head1, env, 0);
+    expand_tokens(&head, env, 0);
+    expand_tokens(&head1, env, 0);
 	print_list(head);
 	print_list(head1);
-	return (0);
-} */
+    return (0);
+}

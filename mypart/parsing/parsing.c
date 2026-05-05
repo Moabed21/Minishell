@@ -1,36 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/20 13:55:39 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/04 15:02:46 by shathaamarn      ###   ########.fr       */
+/*   Created: 2026/04/20 14:19:39 by shathaamarn       #+#    #+#             */
+/*   Updated: 2026/05/04 15:03:44 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include "../minishell.h"
 
-t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
+t_cmd	*parsing(t_token *tokens)
 {
-	t_token	*tokens;
 	t_cmd	*cmds;
+	t_cmd	*new_cmd;
 
-	tokens = tokenization(input);
-	if (!tokens)
-		return (NULL);
-	if (check_if_var(&tokens) == FAILURE)
+	cmds = NULL;
+	while (tokens && tokens->type != END)
 	{
-		tokenlistclear(&tokens);
-		return (NULL);
+		new_cmd = cmd_new();
+		if (!new_cmd)
+			return (free_cmds(cmds), NULL);
+
+		new_cmd->args = fill_args(tokens);
+		if (!new_cmd->args)
+			return (free_cmds(cmds), NULL);
+
+		if (!parse_redirs(new_cmd, tokens))
+			return (free_cmds(cmds), NULL);
+
+		cmd_addback(&cmds, new_cmd);
+		tokens = next_command(tokens);
 	}
-    if (expand_tokens(&tokens, env, last_status) == FAILURE)	
-    {
-		tokenlistclear(&tokens);
-		return (NULL);
-	}
-	cmds = parsing(tokens);
-	tokenlistclear(&tokens);
 	return (cmds);
 }

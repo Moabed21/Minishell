@@ -6,24 +6,25 @@
 /*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 14:57:34 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/04/20 17:16:12 by shathaamarn      ###   ########.fr       */
+/*   Updated: 2026/05/04 15:12:05 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token *token_new(char *value, t_token_type type)
+t_token	*token_new(char *value, t_token_type type)
 {
-    t_token *node;
+	t_token	*new;
 
-    node = malloc(sizeof(t_token));
-    if (!node)
-        return (NULL);
-    node->value = value;
-    node->type = type;
-    node->prev = NULL;
-    node->next = NULL;
-    return (node);
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->value = value;
+	new->type = type;
+	new->quoted = 0;
+	new->prev = NULL;
+	new->next = NULL;
+	return (new);
 }
 
 void token_addback(t_token **list, t_token *new_node)

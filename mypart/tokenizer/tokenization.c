@@ -6,11 +6,27 @@
 /*   By: shathaamarnah <shathaamarnah@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 13:06:11 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/04/22 18:23:53 by shathaamarn      ###   ########.fr       */
+/*   Updated: 2026/05/04 15:12:32 by shathaamarn      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	has_quotes(char *str)
+{
+	int	i;
+
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' || str[i] == '"')
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 t_token *tokenization(char *input)
 {
