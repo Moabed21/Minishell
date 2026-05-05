@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:17:10 by moabed            #+#    #+#             */
-/*   Updated: 2026/04/29 06:26:05 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 16:50:39 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # define _POSIX_C_SOURCE 200809L
 # define BUFFERSIZE 4096
+# define SUCCESS 0
+# define FAILURE 1
 # include <stdio.h>
 // readline
 # include <readline/history.h>
