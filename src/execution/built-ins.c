@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 13:37:19 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:52:37 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:50:30 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	e_pwd(t_cmd *node, t_exec *shell)
 
 t_env	*export_sorted(t_env *env)
 {
-	
+	return (env);
 }
 
 void	e_export(t_cmd *node, t_exec *shell)

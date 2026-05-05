@@ -6,11 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 18:24:19 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 17:17:30 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:53:08 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 char	*expand_value(char *value, char **env, int last_status)
 {
@@ -95,6 +95,7 @@ int	expand_token(t_token **head, t_token *token, char **env, int last_status)
 		words = ft_split(expanded, ' ');
 		new_list = create_tokens_from_words(words);
 		insert_list(head, token, new_list);
+		free(words);
 		free(expanded);
 		return (1);
 	}
@@ -106,42 +107,44 @@ int	expand_token(t_token **head, t_token *token, char **env, int last_status)
 int	expand_tokens(t_token **tokens, char **env, int last_status)
 {
 	t_token	*tmp;
+	t_token *next;
 
 	tmp = *tokens;
 	while (tmp)
 	{
+		next = tmp->next;
 		if (!expand_token(tokens, tmp, env, last_status))
 			return (0);
-		tmp = tmp->next;
+		tmp = next;
 	}
 	return (1);
 }
 
-void	print_list(t_token *head)
-{
-	t_token	*current;
+// void	print_list(t_token *head)
+// {
+// 	t_token	*current;
 
-	current = head;
-	while (current)
-	{
-		if (current->next)
-			printf("%s-> ", current->value);
-		else
-			printf("%s", current->value);
-		current = current->next;
-	}
-}
+// 	current = head;
+// 	while (current)
+// 	{
+// 		if (current->next)
+// 			printf("%s-> ", current->value);
+// 		else
+// 			printf("%s", current->value);
+// 		current = current->next;
+// 	}
+// }
 
-int	main(int ac, char **av, char **env)
-{
-	t_token	*head;
-	t_token	*head1;
+// int	main(int ac, char **av, char **env)
+// {
+// 	t_token	*head;
+// 	t_token	*head1;
 
-	head = tokenization("echo \"$USER and $PATH\"");
-	head1 = tokenization("$?");
-	expand_tokens(&head, env, 0);
-	expand_tokens(&head1, env, 0);
-	print_list(head);
-	print_list(head1);
-	return (0);
-}
+// 	head = tokenization("echo \"$USER and $PATH\"");
+// 	head1 = tokenization("$?");
+// 	expand_tokens(&head, env, 0);
+// 	expand_tokens(&head1, env, 0);
+// 	print_list(head);
+// 	print_list(head1);
+// 	return (0);
+// }

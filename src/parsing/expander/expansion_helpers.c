@@ -6,11 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 13:13:53 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 17:07:28 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 21:03:24 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 int	is_var_char(char c)
 {

@@ -6,11 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 14:21:56 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 16:44:44 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:54:06 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 t_cmd	*cmd_new(void)
 {

@@ -6,11 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 14:57:34 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 16:45:04 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 21:04:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 t_token	*token_new(char *value, t_token_type type)
 {

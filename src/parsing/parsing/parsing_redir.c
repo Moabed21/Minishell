@@ -6,11 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 14:22:27 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 16:44:47 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:54:02 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 t_redir	*redir_new(t_token_type type, char *filename, int quoted)
 {
