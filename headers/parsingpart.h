@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 16:50:35 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:51:40 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void 		del_one(t_token *node);
 void        free_ptr(void **ptr);
 int			save_op(t_token **token_lst, char *str, int index, int type);
 int			save_word(t_token **token_lst, char *str, int index, int start);
-int			is_operator(char *str, int i);
+// int			is_operator(char *str, int i);
 int			set_status(int status, char *str, int i);
 int			save_word_or_op(int *i, char *str, int start, t_token **token_list);
 int			has_quotes(char *str);

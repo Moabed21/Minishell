@@ -25,7 +25,7 @@ t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 		tokenlistclear(&tokens);
 		return (NULL);
 	}
-    if (expand_tokens(&tokens, env, last_status) == FAILURE)	
+    if (!expand_tokens(&tokens, env, last_status))	
     {
 		tokenlistclear(&tokens);
 		return (NULL);

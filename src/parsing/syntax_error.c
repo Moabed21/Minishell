@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 15:51:39 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 17:13:55 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:51:55 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,22 @@ static int	is_op_type(t_token_type type)
 		|| type == APPEND || type == HEREDOC);
 }
 
-
+// static int	consecutive_ops(t_token *token_node)
+// {
+// 	if (token_node->prev)
+// 	{
+// 	    // two pipes in a row
+// 		if (token_node->type == PIPE && token_node->prev->type == PIPE) 
+// 			return (FAILURE);
+// 		// two redir in a row
+// 		if (is_redir(token_node->type) && is_redir(token_node->prev->type))
+// 			return (FAILURE);
+// 		// when the command ends with a pipe or redirection
+// 		if (token_node->type == END && token_node->prev->type >= PIPE)
+// 			return (FAILURE);
+// 	}
+// 	return (SUCCESS);
+// }
 
 int	check_consecutives(t_token **token_lst)
 {

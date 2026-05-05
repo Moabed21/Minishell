@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 13:06:11 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 16:45:10 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 20:57:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,23 +60,3 @@ t_token *tokenization(char *input)
     }
     return token_list;
 }
-//main for testing tokenization phase
-/*void print_list(t_token *head)
-{
-    t_token *current;
-    current = head;
-    while (current)
-    {
-        if (current->next)
-            printf("%s-> ", current->value);
-        else
-            printf("%s", current->value);
-        current = current->next;
-    }
-}
-
-int main(){
-    t_token *head = tokenization("\"ls -la | cat out\"");
-    print_list(head);
-    return (0);
-}*/
