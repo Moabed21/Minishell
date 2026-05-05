@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 10:18:09 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 14:19:55 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ void	e_exit(t_cmd *node, t_exec *shell)
 	{
 		error_display(2, node->args[0], ": numeric arguments required", shell);
 		shell->last_status = 2;
-		return ;
+		ruin_everything(shell);
+		exit(shell->last_status);
 	}
 	if (node->args[2])
 	{

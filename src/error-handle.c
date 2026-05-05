@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 12:19:58 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 10:19:17 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 14:43:02 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,8 @@ void	free_current_cmd(t_cmd **node)
 
 void	ruin_everything(t_exec *shell)
 {
-	env_ruin(&shell->first_env_node);
-	if (!shell->cmds)
-		return ;
+	if(shell->first_env_node)
+		env_ruin(&shell->first_env_node);
 	if (shell->cmds)
 	{
 		free_cmds_list(&shell->cmds);

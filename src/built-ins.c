@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 13:37:19 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/04 12:47:08 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 15:11:03 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,28 @@ void	e_pwd(t_cmd *node, t_exec *shell)
 	shell->last_status = 0;
 }
 
+t_env	*export_sorted(t_env *env)
+{
+	
+}
+
 void	e_export(t_cmd *node, t_exec *shell)
 {
 	int	i;
+	t_env	*export;
 
 	i = 1;
 	if (!node->args[1])
-		e_env(node, shell);
+	{
+		export = export_sorted(shell->first_env_node);
+		while (export)
+		{
+			ft_putstr_fd("declare -x ", 0);
+			write(node->fd_out, export->variable, ft_strlen(export->variable));
+			write(node->fd_out, "\n", 1);
+			export = export->next;
+		}
+	}
 	else
 	{
 		while (node->args[i])

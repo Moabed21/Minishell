@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 09:30:53 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 09:36:21 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/05 13:02:46 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 
 void	redir_handle(t_exec *shell, t_redir *redir, t_cmd **cmd)
 {
+	(void)shell;
 	while (redir)
 	{
 		if (redir->type == INPUT)
@@ -68,8 +69,8 @@ void	redir_handle(t_exec *shell, t_redir *redir, t_cmd **cmd)
 			output_handle(redir, cmd, 2);
 		else if (redir->type == HEREDOC)
 		{
-			if (heredoc(shell, redir->filename, cmd) == -1)
-				return ;
+			// if (heredoc(shell, redir->filename, cmd) == -1)
+			// 	return ;
 		}
 		if (!*cmd)
 			return ;
