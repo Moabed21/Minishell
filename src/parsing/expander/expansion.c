@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 char	*expand_value(char *value, char **env, int last_status)
 {
@@ -117,31 +117,3 @@ int	expand_tokens(t_token **tokens, char **env, int last_status)
 	return (1);
 }
 
-void	print_list(t_token *head)
-{
-	t_token	*current;
-
-	current = head;
-	while (current)
-	{
-		if (current->next)
-			printf("%s-> ", current->value);
-		else
-			printf("%s", current->value);
-		current = current->next;
-	}
-}
-
-int	main(int ac, char **av, char **env)
-{
-	t_token	*head;
-	t_token	*head1;
-
-	head = tokenization("echo \"$USER and $PATH\"");
-	head1 = tokenization("$?");
-	expand_tokens(&head, env, 0);
-	expand_tokens(&head1, env, 0);
-	print_list(head);
-	print_list(head1);
-	return (0);
-}

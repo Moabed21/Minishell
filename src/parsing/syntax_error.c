@@ -12,28 +12,13 @@
 
 #include "../../headers/parsingpart.h"
 
-static int	is_operator(t_token_type type)
+static int	is_op_type(t_token_type type)
 {
 	return (type == PIPE || type == INPUT || type == TRUNC
 		|| type == APPEND || type == HEREDOC);
 }
 
-static int	consecutive_ops(t_token *token_node)
-{
-	if (token_node->prev)
-	{
-	    // two pipes in a row
-		if (token_node->type == PIPE && token_node->prev->type == PIPE) 
-			return (FAILURE);
-		// two redir in a row
-		if (is_redir(token_node->type) && is_redir(token_node->prev->type))
-			return (FAILURE);
-		// when the command ends with a pipe or redirection
-		if (token_node->type == END && token_node->prev->type >= PIPE)
-			return (FAILURE);
-	}
-	return (SUCCESS);
-}
+
 
 int	check_consecutives(t_token **token_lst)
 {
@@ -64,7 +49,7 @@ int	check_consecutives(t_token **token_lst)
 				errmsg("syntax error near unexpected token", "newline", 1);
 				return (FAILURE);
 			}
-			if (is_operator(tmp->next->type))
+			if (is_op_type(tmp->next->type))
 			{
 				errmsg("syntax error near unexpected token", tmp->next->value, 1);
 				return (FAILURE);

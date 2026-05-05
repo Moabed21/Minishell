@@ -83,7 +83,7 @@ void	e_pwd(t_cmd *node, t_exec *shell)
 
 t_env	*export_sorted(t_env *env)
 {
-	
+	return (env);
 }
 
 void	e_export(t_cmd *node, t_exec *shell)

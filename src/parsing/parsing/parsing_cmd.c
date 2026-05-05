@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 t_cmd	*cmd_new(void)
 {

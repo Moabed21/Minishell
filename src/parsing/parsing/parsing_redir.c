@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 t_redir	*redir_new(t_token_type type, char *filename, int quoted)
 {

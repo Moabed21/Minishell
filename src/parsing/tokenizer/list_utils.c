@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/parsingpart.h"
+#include "../../../headers/parsingpart.h"
 
 t_token	*token_new(char *value, t_token_type type)
 {

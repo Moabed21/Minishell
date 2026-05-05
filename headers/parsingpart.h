@@ -92,11 +92,6 @@ int			save_word_or_op(int *i, char *str, int start, t_token **token_list);
 int			has_quotes(char *str);
 t_token 	*tokenization(char *input);
 //utils
-char		*ft_strjoin(char const *s1, char const *s2);
-char		*ft_strdup(const char *s);
-void		ft_putendl_fd(char *s, int fd);
-int			ft_strncmp(const char *s1, const char *s2, size_t n);
-size_t		ft_strlen(const char *s);
 void		errmsg(char *errmsg, char *detail, int check);
 //expansion
 t_token		*insert_list(t_token **head, t_token *to_del, t_token *insert);

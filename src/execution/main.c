@@ -28,7 +28,7 @@ int	main(int ac, char **av, char **envp)
 		if (!input)
 			break ;
 		add_history(input);
-		shell.cmds = prepare_for_execution(input,envp, shell.last_status);
+		shell.cmds = prepare_for_execution(input, envp, shell.last_status);
 		if(g_sig != 0)
 		{
 			shell.last_status = g_sig;

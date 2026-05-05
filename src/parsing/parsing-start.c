@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/parsingpart.h"
+#include "../../headers/parsingpart.h"
 
 t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 {
