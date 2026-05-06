@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 14:15:26 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/06 17:40:41 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void							error_display(int fd, char *cmd,
 void							free_cmds_list(t_cmd **cmds);
 //------------executeone--------------------
 void							execute_one_cmd(t_exec *shell, t_cmd *node);
-t_cmd							*builder(char *input);
 void							apply_fd(int fd1, int fd);
 void							check_fds(t_cmd *node);
 void							execute(t_exec *shell, t_cmd *node);
