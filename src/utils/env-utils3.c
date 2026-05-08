@@ -1,32 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env-utils.c                                        :+:      :+:    :+:   */
+/*   env-utils3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/22 09:15:25 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:52:53 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/08 20:36:03 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-t_env	*new_node(char *str)
+void	new_node2(t_env *node, char *str)
+{
+	char	*equal_ptr;
+	
+	equal_ptr = ft_strchr(str,'=');
+	if(equal_ptr)
+	{
+		node->key = ft_substr(str, 0, equal_ptr - str);
+		node->value = ft_strdup(equal_ptr + 1);
+	}
+	else
+	{
+		node->key = ft_strdup(str);
+		node->value = NULL;
+	}
+}
+
+t_env   *new_node(char *str)
 {
 	t_env	*node;
+	char	*equal;
 
 	node = malloc(sizeof(t_env));
-	if (!node)
+	if(!node)
 		return (NULL);
-	node->variable = ft_strdup(str);
-	if (!node->variable)
-	{
-		free(node);
-		return (NULL);
-	}
-	node->next = NULL;
-	return (node);
+    new_node2(node,str);
+	equal = ft_strchr(str, '=');
+	if (!node->key ||  (equal && !node->value))
+    {
+        free(node->key);
+        free(node->value);
+        free(node);
+        return (NULL);
+    }
+    node->next = NULL;
+    return (node);
 }
 
 void	env_ruin(t_env **head)
@@ -39,11 +60,13 @@ void	env_ruin(t_env **head)
 	while ((*head)->next != NULL)
 	{
 		node = node->next;
-		free((*head)->variable);
+		free((*head)->key);
+		free((*head)->value);
 		free((*head));
 		(*head) = node;
 	}
-	free((*head)->variable);
+	free((*head)->key);
+	free((*head)->value);
 	free((*head));
 	*head = NULL;
 }
@@ -61,7 +84,6 @@ t_env	*env_init(char **env)
 	if (!ptr)
 		return (NULL);
 	head = ptr;
-	size++;
 	while (env[size])
 	{
 		ptr->next = new_node(env[size]);

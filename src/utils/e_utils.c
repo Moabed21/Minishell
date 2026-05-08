@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   e_utils.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:54:25 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/08 21:33:52 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,64 +24,6 @@ int	ft_strcmp(char *s1, char *s2)
 		i++;
 	}
 	return (0);
-}
-
-int	replace(char *target, t_env *env)
-{
-	int	i;
-
-	i = 0;
-	while (target[i] != '=' && target[i])
-	{
-		i++;
-	}
-	while (env)
-	{
-		if (!ft_strncmp(target, env->variable, i) && env->variable[i] == '=')
-		{
-			free(env->variable);
-			env->variable = ft_strdup(target);
-			return (1);
-		}
-		env = env->next;
-	}
-	return (0);
-}
-
-int	has_no_equal(char *search)
-{
-	int	i;
-
-	i = 0;
-	while (search[i])
-	{
-		if (search[i] == '=')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-char	*get_value(char *key, t_env *env)
-{
-	char	*str;
-	int		keylen;
-
-	str = NULL;
-	keylen = ft_strlen(key);
-	while (env)
-	{
-		if (!ft_strncmp(key, env->variable, keylen)
-			&& env->variable[keylen] == '=')
-		{
-			str = env->variable + keylen + 1;
-			break ;
-		}
-		env = env->next;
-	}
-	if (!str)
-		return (NULL);
-	return (str);
 }
 
 void	init_vals(t_exec *shell, t_cmd *cmds)

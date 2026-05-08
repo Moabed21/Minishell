@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils2.c                                           :+:      :+:    :+:   */
+/*   e_utils2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 16:23:48 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:54:28 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/08 19:55:23 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,27 +48,22 @@ void	free2d_array(char **arr)
 	free(arr);
 }
 
-void	unset_2(t_env **head, char *name)
+int	not_a_num(char *str)
 {
-	t_env	**curr;
-	t_env	*tmp;
-	int		len;
+	int	i;
 
-	len = ft_strlen(name);
-	curr = head;
-	while (*curr)
+	i = 0;
+	if (!str)
+		return (0);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
 	{
-		if (!ft_strncmp((*curr)->variable, name, len)
-			&& (*curr)->variable[len] == '=')
-		{
-			tmp = *curr;
-			*curr = (*curr)->next;
-			free(tmp->variable);
-			free(tmp);
-			return ;
-		}
-		curr = &((*curr)->next);
+		if (!ft_isdigit(str[i]))
+			return (1);
+		i++;
 	}
+	return (0);
 }
 
 void	check_cmds(t_cmd *cmds)
