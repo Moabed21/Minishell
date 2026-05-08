@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/06 17:40:41 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/08 21:16:44 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 typedef struct s_env
 {
-	char						*variable;
+	char						*value;
+	char						*key;
 	struct s_env				*next;
 }								t_env;
 typedef struct s_exec
@@ -27,6 +28,7 @@ typedef struct s_exec
 	int							fd[2];
 	int							last_status;
 	t_env						*first_env_node;
+	t_env						*sorted_env;
 	t_cmd						*cmds;
 }								t_exec;
 
@@ -39,7 +41,6 @@ void							interactive_signals(void);
 void							ignore_signals(void);
 void							default_signals(void);
 //--------------builtins2-------------------
-int								replace(char *target, t_env *env);
 void							exec_builtin(t_exec *shell, t_cmd *node);
 void							cd_2(t_exec *shell, char *path, char *old_path);
 void							e_env(t_cmd *node, t_exec *shell);
@@ -62,8 +63,7 @@ t_env							*new_node(char *str);
 t_env							*env_init(char **env);
 //--------------utils-----------------------
 int								ft_strcmp(char *s1, char *s2);
-int								has_no_equal(char *search);
-int								replace(char *target, t_env *env);
+int								replace(char *key,char *value, t_env *env);
 char							*get_value(char *key, t_env *env);
 void							init_vals(t_exec *shell, t_cmd *cmds);
 //-------------utils2----------------------
@@ -72,6 +72,7 @@ void							unset_2(t_env **head, char *name);
 void							free2d_array(char **arr);
 void							shell_protection(void);
 void							check_cmds(t_cmd *cmds);
+int								not_a_num(char *str);
 //------------execution---------------------
 char							**findpath(char **evar);
 void							execution(t_exec *shell);
