@@ -9,7 +9,7 @@ HEADERS     = headers
 EXEC_FILES  = main.c signals.c io-redir.c \
               execution.c built-ins.c built-ins2.c \
               error-handle.c executeone.c execute-multiple.c \
-              heredoc.c
+              heredoc.c built-ins3.c built-ins4.c
 
 UTILS_FILES = e_utils.c e_utils2.c env-utils3.c \
               expansion_utils.c lexer_utils.c \

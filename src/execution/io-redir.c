@@ -69,8 +69,8 @@ void	redir_handle(t_exec *shell, t_redir *redir, t_cmd **cmd)
 			output_handle(redir, cmd, 2);
 		else if (redir->type == HEREDOC)
 		{
-			// if (heredoc(shell, redir->filename, cmd) == -1)
-			// 	return ;
+			if (heredoc(shell, redir->filename, cmd) == -1)
+				return ;
 		}
 		if (!*cmd)
 			return ;

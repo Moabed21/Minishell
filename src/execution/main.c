@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/06 20:30:24 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/08 19:59:34 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,37 +34,39 @@ t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 	tokenlistclear(&tokens);
 	return (cmds);
 }
-
-int	main(int ac, char **av, char **envp)
+void	main2(t_exec *shell,char **envp)
 {
 	char	*input;
+	while (1)
+	{
+		interactive_signals();
+		if(g_sig != 0)
+		{
+			shell->last_status = g_sig;
+			g_sig = 0;
+		}
+		input = readline("minishell> ");
+		if (!input)
+			break ;
+		add_history(input);
+		shell->cmds = prepare_for_execution(input, envp, shell->last_status);
+		if (shell->cmds)
+		{
+			execution(shell);
+			free_cmds_list(&shell->cmds);
+		}
+		free(input);
+	}
+}
+int	main(int ac, char **av, char **envp)
+{
 	t_exec	shell;
 
 	(void)ac;
 	(void)av;
 	if (shell_init(envp, &shell))
 		return (1);
-	while (1)
-	{
-		interactive_signals();
-		input = readline("minishell> ");
-		if (!input)
-			break ;
-		add_history(input);
-		shell.cmds = prepare_for_execution(input, envp, shell.last_status);
-		if(g_sig != 0)
-		{
-			shell.last_status = g_sig;
-			g_sig = 0;
-		}
-		if (shell.cmds)
-		{
-			execution(&shell);
-			free_cmds_list(&shell.cmds);
-		}
-		free(input);
-	}
-	//ctrl c + ctrl d causes segfault , ruin everything is a reason
+	main2(&shell, envp);
 	ruin_everything(&shell);
 	return (shell.last_status);
 }
@@ -79,20 +81,13 @@ int	main(int ac, char **av, char **envp)
 // 8) the error message must be checked , last status is true
 
 // Signals cases :
-// 1) last status must be 130 instead of 0
+// 1) last status must be 130 instead of 0, behavior true
+// 2) 
 // there is issues with << end the heredoc doesnt work
 // signals last status must be checked
 
 // Env cases :
-// 1) succeed 100%
-// 2) succeed but check the real $SHELL value
-// 3) must be revised , last status true
-// 4) same as above (3)
-// 5) succedd 100%
-// 6) must print the current pwd , it print $OLDPWD , last status correct
-// 7) doesnt behave as expected at all 
-// 8) same issue as 7
-// 9) same
+// its only required as "env" only without options or args so , succeed 100%
 
 // Echo cases
 // 1) succeed 100%
@@ -121,14 +116,14 @@ int	main(int ac, char **av, char **envp)
 
 // Exit cases
 // 1) succeed 100%
-// 2) succeed 95% (make a quick check)
+// 2) succeed 95% (make a quick check on message)
 // 3) succeed 100%
-// 4) last status must be 2 instead of 0
-// 5) last status must be 1 instead of 2
+// 4) last status must be 2 instead of 0 
+// 5) succeed 100%
 // 6) succeed 100%
-// 7) last status must be 1 instead of 2
+// 7) succeed 100%
 // 8) succeed 100%
-// 9) last status must be 1 instead of 2
+// 9) succeed 100%
 
 // Extra cases
 // 1) succeed 100%
