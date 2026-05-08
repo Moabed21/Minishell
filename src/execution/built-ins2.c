@@ -6,52 +6,11 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:52:50 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/08 21:06:58 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
-
-void	cd_2(t_exec *shell, char *path, char *old_path)
-{
-	char	*tmp;
-
-	if (!path || chdir(path) == -1)
-	{
-		if (!path)
-			write(2, "minishell: cd: path not set\n", 29);
-		else
-			perror("minishell: cd");
-		shell->last_status = 1;
-		return ;
-	}
-	tmp = ft_strjoin("OLDPWD=", old_path);
-	replace(tmp, shell->first_env_node);
-	free(tmp);
-	getcwd(old_path, BUFFERSIZE);
-	tmp = ft_strjoin("PWD=", old_path);
-	replace(tmp, shell->first_env_node);
-	free(tmp);
-	shell->last_status = 0;
-}
-
-int	not_a_num(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 void	exec_builtin(t_exec *shell, t_cmd *node)
 {
@@ -78,9 +37,11 @@ void	e_env(t_cmd *node, t_exec *shell)
 	ptr = shell->first_env_node;
 	while (ptr)
 	{
-		if (ft_strchr(ptr->variable, '='))
+		if (ptr->value)
 		{
-			write(node->fd_out, ptr->variable, ft_strlen(ptr->variable));
+			write(node->fd_out, ptr->key, ft_strlen(ptr->key));
+			write(node->fd_out, "=", 1);
+			write(node->fd_out, ptr->value, ft_strlen(ptr->value));
 			write(node->fd_out, "\n", 1);
 		}
 		ptr = ptr->next;
@@ -88,20 +49,12 @@ void	e_env(t_cmd *node, t_exec *shell)
 	shell->last_status = 0;
 }
 
-void	e_exit(t_cmd *node, t_exec *shell)
+void	e_exit2(t_cmd *node, t_exec *shell)
 {
-	write(2, "exit\n", 5);
-	if (node->args[1] && not_a_num(node->args[1]))
-	{
-		error_display(2, node->args[0], ": numeric arguments required", shell);
-		shell->last_status = 2;
-		ruin_everything(shell);
-		exit(shell->last_status);
-	}
 	if (node->args[2])
 	{
 		error_display(2, node->args[0], ": too many arguments", shell);
-		shell->last_status = 2;
+		shell->last_status = 1;
 		return ;
 	}
 	if (node->args[1])
@@ -113,4 +66,22 @@ void	e_exit(t_cmd *node, t_exec *shell)
 	else
 		free_current_cmd(&node);
 	exit(shell->last_status);
+}
+
+void	e_exit(t_cmd *node, t_exec *shell)
+{
+	if(!node->next)
+		write(2, "exit\n", 5);
+	if (!node->args[1])
+    {
+        ruin_everything(shell);
+        exit(0);
+    }
+	if (node->args[1] && not_a_num(node->args[1]))
+	{
+		error_display(2, node->args[1], ": numeric arguments required", shell);
+		ruin_everything(shell);
+		exit(2);
+	}
+	e_exit2(node, shell);
 }
