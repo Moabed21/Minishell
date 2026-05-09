@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:53:47 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/09 11:17:55 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,7 @@ void	wait_child(t_exec *shell, t_cmd *node)
 	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-	{
 		shell->last_status = 128 + WTERMSIG(status);
-		// if (WTERMSIG(status) == SIGINT)
-		// 	write(1, "\n", 1);
-		// else if (WTERMSIG(status) == SIGQUIT)
-		// 	write(2, "Quit (core dumped)\n", 19);
-	}
 }
 
 void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)

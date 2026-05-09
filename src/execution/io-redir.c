@@ -23,9 +23,9 @@ void	output_handle(t_redir *red, t_cmd **current_cmd, int option)
 		fd = open(red->filename, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd == -1)
 	{
+		perror(red->filename);
 		check_fds(*current_cmd);
 		free_current_cmd(current_cmd);
-		perror(red->filename);
 	}
 	else
 	{
@@ -44,9 +44,9 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 		fd = open(red->filename, O_RDONLY);
 	if (fd == -1)
 	{
+		perror(red->filename);
 		check_fds(*current_cmd);
 		free_current_cmd(current_cmd);
-		perror(red->filename);
 	}
 	else
 	{
@@ -58,7 +58,6 @@ void	input_handle(t_redir *red, t_cmd **current_cmd)
 
 void	redir_handle(t_exec *shell, t_redir *redir, t_cmd **cmd)
 {
-	(void)shell;
 	while (redir)
 	{
 		if (redir->type == INPUT)
@@ -69,7 +68,7 @@ void	redir_handle(t_exec *shell, t_redir *redir, t_cmd **cmd)
 			output_handle(redir, cmd, 2);
 		else if (redir->type == HEREDOC)
 		{
-			if (heredoc(shell, redir->filename, cmd) == -1)
+			if (heredoc(shell, redir->filename, cmd, redir->quoted) == -1)
 				return ;
 		}
 		if (!*cmd)

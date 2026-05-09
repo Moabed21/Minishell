@@ -14,22 +14,21 @@
 
 t_env	*export_sorted(t_env *env)
 {
-	
 	return (env);
 }
 
 void	e_export(t_cmd *node, t_exec *shell)
 {
-	int	i;
+	int		i;
 	t_env	*export;
 
-	i = 1;
+	(void)i;
 	if (!node->args[1])
 	{
 		export = export_sorted(shell->first_env_node);
 		while (export)
 		{
-			write(node->fd_out,"declare -x ",12);
+			write(node->fd_out, "declare -x ", 12);
 			write(node->fd_out, export->value, ft_strlen(export->value));
 			write(node->fd_out, "\n", 1);
 			export = export->next;
@@ -37,7 +36,6 @@ void	e_export(t_cmd *node, t_exec *shell)
 	}
 	else
 	{
-		
 	}
 	shell->last_status = 0;
 }

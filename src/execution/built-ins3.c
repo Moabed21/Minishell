@@ -6,29 +6,55 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/08 12:40:54 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/08 21:59:11 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/09 22:24:15 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-void	unset_2(t_env **head, char *name)
+void	unset_2(t_env **head)
 {
-    (void)head;
-    (void)name;
+    free((*head)->key);
+    free((*head)->value);
 }
 
 void	e_unset(t_cmd *node, t_exec *shell)
 {
 	int	i;
+    t_env   *prev;
+    t_env   *curr;
 
 	i = 0;
 	while (node->args[++i])
 	{
-		 
+        ptr = shell->first_env_node;
+        while (ptr)
+        {
+            if(!ft_strcmp(node->args[i],ptr->key))
+                unset_2(&ptr);
+            ptr = ptr->next;
+        }
         
+        node->args[i];
 	}
 	shell->last_status = 0;
+}
+
+// to be checked
+static int	is_all_n(char *s)
+{
+	int	i;
+
+	i = 1;
+	if (!s || s[0] != '-' || !s[1])
+		return (0);
+	while (s[i])
+	{
+		if (s[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 void	e_echo(t_cmd *node, t_exec *shell)
@@ -38,7 +64,7 @@ void	e_echo(t_cmd *node, t_exec *shell)
 
 	i = 1;
 	option = 0;
-	while (node->args[i] && !ft_strcmp(node->args[i], "-n"))
+	while (node->args[i] && is_all_n(node->args[i]))
 	{
 		i++;
 		option = 1;

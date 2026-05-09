@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 12:19:58 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/06 17:41:46 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/09 20:19:45 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ void	free_current_cmd(t_cmd **node)
 	while (r)
 	{
 		tmp = r->next;
-		free(r->filename);
+		//to be checked
+		// free(r->filename);
 		free(r);
 		r = tmp;
 	}
@@ -51,7 +52,7 @@ void	free_current_cmd(t_cmd **node)
 
 void	ruin_everything(t_exec *shell)
 {
-	if(shell->first_env_node)
+	if (shell->first_env_node)
 		env_ruin(&shell->first_env_node);
 	if (shell->cmds)
 	{
@@ -81,7 +82,7 @@ void	errmsg(char *errmsg, char *detail, int check)
 {
 	char	*msg;
 	char	*tmp;
-	
+
 	msg = ft_strdup("minishell: ");
 	tmp = msg;
 	msg = ft_strjoin(msg, errmsg);

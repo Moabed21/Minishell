@@ -32,6 +32,8 @@ void	run_pipeline(t_exec *shell, t_cmd *node)
 		apply_fd(node->fd_in, 0);
 	if (node->fd_out != 1)
 		apply_fd(node->fd_out, 1);
+	node->fd_in = 0;
+	node->fd_out = 1;
 	if (node->next)
 		close(shell->fd[0]);
 	if (node->cmd_type == NONE)

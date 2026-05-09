@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built-ins2.c                                       :+:      :+:    :+:   */
+/*   env-exit.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/08 21:06:58 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/09 20:34:19 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	e_env(t_cmd *node, t_exec *shell)
 	shell->last_status = 0;
 }
 
-void	e_exit2(t_cmd *node, t_exec *shell)
+static void	e_exit2(t_cmd *node, t_exec *shell)
 {
 	if (node->args[2])
 	{
@@ -70,13 +70,13 @@ void	e_exit2(t_cmd *node, t_exec *shell)
 
 void	e_exit(t_cmd *node, t_exec *shell)
 {
-	if(!node->next)
+	if (!node->next)
 		write(2, "exit\n", 5);
 	if (!node->args[1])
-    {
-        ruin_everything(shell);
-        exit(0);
-    }
+	{
+		ruin_everything(shell);
+		exit(0);
+	}
 	if (node->args[1] && not_a_num(node->args[1]))
 	{
 		error_display(2, node->args[1], ": numeric arguments required", shell);

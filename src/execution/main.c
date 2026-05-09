@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/08 19:59:34 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/09 11:16:59 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 		tokenlistclear(&tokens);
 		return (NULL);
 	}
-    if (!expand_tokens(&tokens, env, last_status))	
-    {
+	if (!expand_tokens(&tokens, env, last_status))
+	{
 		tokenlistclear(&tokens);
 		return (NULL);
 	}
@@ -34,18 +34,20 @@ t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 	tokenlistclear(&tokens);
 	return (cmds);
 }
-void	main2(t_exec *shell,char **envp)
+
+void	main2(t_exec *shell, char **envp)
 {
 	char	*input;
+
 	while (1)
 	{
 		interactive_signals();
-		if(g_sig != 0)
+		input = readline("minishell> ");
+		if (g_sig != 0)
 		{
 			shell->last_status = g_sig;
 			g_sig = 0;
 		}
-		input = readline("minishell> ");
 		if (!input)
 			break ;
 		add_history(input);
@@ -58,6 +60,7 @@ void	main2(t_exec *shell,char **envp)
 		free(input);
 	}
 }
+
 int	main(int ac, char **av, char **envp)
 {
 	t_exec	shell;
@@ -74,15 +77,17 @@ int	main(int ac, char **av, char **envp)
 // 1) succeed except the echo $? must be 2 instead of 0
 // 2) same number 1 issue , the last status must be 2
 // 3) same issue
-// 4) same issue ,also the error message must be minishell: .: filename argument required instead of minishell: .: command not found
+// 4) same issue ,also the error message must be minishell: .:
+// filename argument required instead of minishell: .: command not found
 // 5) succeed 100%
-// 6) the error message must be checked , also the last status must be 127 instead of 126
+// 6) the error message must be checked ,
+//	also the last status must be 127 instead of 126
 // 7) the error message must be checked , last status is true
 // 8) the error message must be checked , last status is true
 
 // Signals cases :
 // 1) last status must be 130 instead of 0, behavior true
-// 2) 
+// 2)
 // there is issues with << end the heredoc doesnt work
 // signals last status must be checked
 
@@ -99,7 +104,8 @@ int	main(int ac, char **av, char **envp)
 // 7) succeed 100%
 
 // Cd cases
-// 1) must be fixed , it displays : minishell: cd: too many arguments , instead it must print / , last status 2 must be 0
+// 1) must be fixed , it displays : minishell: cd: too many arguments ,
+//	instead it must print / , last status 2 must be 0
 // 2) succeed 100%
 // 3) failure 100%
 // 4) failure 100%
@@ -118,7 +124,7 @@ int	main(int ac, char **av, char **envp)
 // 1) succeed 100%
 // 2) succeed 95% (make a quick check on message)
 // 3) succeed 100%
-// 4) last status must be 2 instead of 0 
+// 4) last status must be 2 instead of 0
 // 5) succeed 100%
 // 6) succeed 100%
 // 7) succeed 100%
@@ -152,7 +158,8 @@ int	main(int ac, char **av, char **envp)
 
 // Expander cases
 // 1) failure 90% (last status true)
-// 2) recheck the error message we display minishell: “ls: command not found , the real one minishell: ls -l: Command not found
+// 2) recheck the error message we display minishell: “ls: command not found ,
+//	the real one minishell: ls -l: Command not found
 // 3) recheck (last status false)
 // 4) recheck (last status false)
 // 5) failure 100%

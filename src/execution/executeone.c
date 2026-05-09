@@ -88,7 +88,11 @@ void	execute_one_cmd(t_exec *shell, t_cmd *node)
 {
 	redir_handle(shell, node->redir, &node);
 	if (!node)
+	{
+		shell->cmds = NULL;
+		shell->last_status = 1;
 		return ;
+	}
 	if (node->cmd_type == NONE)
 		execute_non_builtin(shell, node);
 	else

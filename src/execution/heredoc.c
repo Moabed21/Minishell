@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 12:57:18 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:53:57 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/09 16:16:15 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	her_int(int sig)
 	ft_putchar_fd('\n', 1);
 	close(STDIN_FILENO);
 }
+
 void	heredoc_signals(void)
 {
 	struct sigaction	sa;
@@ -34,17 +35,11 @@ void	heredoc_signals(void)
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }
 
-int	heredoc(t_exec *shell, char *delimiter, t_cmd **node)
+void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 {
 	char	*line;
 	char	*expanded_line;
-	int		fd[2];
-	int		stdin_backup;
 
-	if (pipe(fd) == -1)
-		return (-1);
-	stdin_backup = dup(STDIN_FILENO);
-	heredoc_signals();
 	while (1)
 	{
 		line = readline("> ");
@@ -53,15 +48,30 @@ int	heredoc(t_exec *shell, char *delimiter, t_cmd **node)
 			free(line);
 			break ;
 		}
-		expanded_line = expand_value(line, shell->envp, shell->last_status);
+		if (!quoted)
+			expanded_line = expand_value(line, shell->envp, shell->last_status);
+		else
+			expanded_line = ft_strdup(line);
 		ft_putstr_fd(expanded_line, fd[1]);
 		ft_putchar_fd('\n', fd[1]);
 		free(line);
 		free(expanded_line);
 	}
+}
+
+int	heredoc(t_exec *shell, char *delimiter, t_cmd **node, int quoted)
+{
+	int	fd[2];
+	int	stdin_restore;
+
+	if (pipe(fd) == -1)
+		return (-1);
+	stdin_restore = dup(STDIN_FILENO);
+	heredoc_signals();
+	heredoc_loop(shell, fd, quoted, delimiter);
 	close(fd[1]);
-	apply_fd(stdin_backup, STDIN_FILENO);
 	interactive_signals();
+	apply_fd(stdin_restore, STDIN_FILENO);
 	if (g_sig == 130)
 	{
 		close(fd[0]);
