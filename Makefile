@@ -7,7 +7,7 @@ OBJ_DIR     = obj
 HEADERS     = headers
 
 EXEC_FILES  = main.c signals.c io-redir.c \
-              execution.c built-ins.c built-ins2.c \
+              execution.c export.c env-exit.c \
               error-handle.c executeone.c execute-multiple.c \
               heredoc.c built-ins3.c built-ins4.c
 

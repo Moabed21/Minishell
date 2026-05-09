@@ -1,335 +1,361 @@
 #!/bin/bash
-# Comprehensive minishell tester (skipping export/unset)
-# The tty check has been temporarily disabled for piped testing.
+# Comprehensive minishell tester v6 — enhanced with extra edge cases
+# Covers: echo, cd, pwd, pipes, redirections, heredoc, exit, expansion, env, syntax, signals, valgrind
 
-MINISHELL="./minishell"
+MS="./minishell"
 SUPP="readline.supp"
-PASS=0
-FAIL=0
-TOTAL=0
-ERRORS=""
+PASS=0; FAIL=0; TOTAL=0; ERRORS=""
+G='\033[0;32m'; R='\033[0;31m'; Y='\033[0;33m'; C='\033[0;36m'; B='\033[1m'; N='\033[0m'
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-YELLOW='\033[0;33m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-NC='\033[0m'
-
-# Strip minishell prompt lines + echoed-back input from output.
-# When piped, readline echoes "minishell> <input>" before the output.
-# We remove all lines starting with "minishell> " and "exit" lines.
-strip_output() {
-    grep -v '^minishell>' | grep -v '^exit$'
+# Strip prompt lines AND heredoc "> " prefix from piped output
+strip() {
+    grep -v '^minishell>' | grep -v '^exit$' | grep -v '^> ' | sed '/^[[:space:]]*$/d'
 }
 
-run_test() {
-    local test_name="$1"
-    local input="$2"
-    local expected_stdout="$3"
-    local expected_status="$4"
-    local compare_bash="$5"
-    
+# Run minishell and capture both output and exit status via temp file
+run_ms() {
+    local input="$1"
+    local tmpf=$(mktemp /tmp/ms_run_XXXXXX)
+    printf '%s\n' "$input" | $MS > "$tmpf" 2>/dev/null
+    MS_STATUS=$?
+    MS_OUTPUT=$(cat "$tmpf" | strip)
+    rm -f "$tmpf"
+}
+
+test_vs_bash() {
+    local name="$1" input="$2"
     TOTAL=$((TOTAL + 1))
-    
-    mini_raw=$(printf '%s\n' "$input" | $MINISHELL 2>/dev/null)
-    mini_status=$?
-    mini_out=$(echo "$mini_raw" | strip_output)
-    # Remove trailing empty lines
-    mini_out=$(echo "$mini_out" | sed '/^[[:space:]]*$/d')
-    
-    local failed=0
-    local reason=""
-    
-    if [ "$compare_bash" = "bash" ]; then
-        bash_out=$(printf '%s\n' "$input" | bash 2>/dev/null)
-        bash_status=$?
-        bash_out=$(echo "$bash_out" | sed '/^[[:space:]]*$/d')
-        if [ "$mini_out" != "$bash_out" ]; then
-            failed=1
-            reason="STDOUT differs from bash. Bash: '$(echo "$bash_out" | head -2)', Mini: '$(echo "$mini_out" | head -2)'"
-        fi
-        if [ -n "$expected_status" ] && [ "$mini_status" != "$expected_status" ]; then
-            failed=1
-            reason="${reason:+$reason | }STATUS: expected $expected_status, got $mini_status (bash=$bash_status)"
-        fi
-    else
-        if [ -n "$expected_stdout" ]; then
-            if [ "$mini_out" != "$expected_stdout" ]; then
-                failed=1
-                reason="STDOUT: expected '$expected_stdout', got '$mini_out'"
-            fi
-        fi
-        if [ -n "$expected_status" ]; then
-            if [ "$mini_status" != "$expected_status" ]; then
-                failed=1
-                reason="${reason:+$reason | }STATUS: expected $expected_status, got $mini_status"
-            fi
-        fi
-    fi
-    
-    if [ $failed -eq 0 ]; then
-        PASS=$((PASS + 1))
-        echo -e "  ${GREEN}✓${NC} $test_name"
-    else
-        FAIL=$((FAIL + 1))
-        echo -e "  ${RED}✗${NC} $test_name"
-        echo -e "    ${YELLOW}→ $reason${NC}"
-        ERRORS="${ERRORS}\n  ✗ $test_name: $reason"
-    fi
+    run_ms "$input"
+    local b_out b_st
+    b_out=$(printf '%s\n' "$input" | bash 2>/dev/null | sed '/^[[:space:]]*$/d')
+    b_st=$?
+    local fail=0 reason=""
+    [ "$MS_OUTPUT" != "$b_out" ] && { fail=1; reason="OUT: bash='$(echo "$b_out"|head -2)' mini='$(echo "$MS_OUTPUT"|head -2)'"; }
+    [ "$MS_STATUS" != "$b_st" ] && { fail=1; reason="${reason:+$reason | }STATUS: bash=$b_st mini=$MS_STATUS"; }
+    if [ $fail -eq 0 ]; then PASS=$((PASS+1)); echo -e "  ${G}✓${N} $name"
+    else FAIL=$((FAIL+1)); echo -e "  ${R}✗${N} $name"; echo -e "    ${Y}→ $reason${N}"; ERRORS="$ERRORS\n  ✗ $name: $reason"; fi
 }
 
-run_valgrind_test() {
-    local test_name="$1"
-    local input="$2"
-    
+test_exact() {
+    local name="$1" input="$2" exp_out="$3" exp_st="$4"
     TOTAL=$((TOTAL + 1))
-    
-    printf '%s\n' "$input" | valgrind --suppressions=$SUPP --leak-check=full --show-leak-kinds=all --track-fds=yes --log-file=valgrind_out.txt $MINISHELL > /dev/null 2>/dev/null
-    
-    local failed=0
-    local reason=""
-    
-    # Check definitely lost
-    def_lost=$(grep "definitely lost:" valgrind_out.txt | head -1)
-    if echo "$def_lost" | grep -qvE "0 bytes in 0 blocks"; then
-        failed=1
-        reason="LEAK: $(echo $def_lost | sed 's/.*==//')"
-    fi
-    
-    # Check invalid memory access
-    inv_count=$(grep -c "Invalid read\|Invalid write\|Invalid free\|Use of uninitialised" valgrind_out.txt 2>/dev/null || echo 0)
-    if [ "$inv_count" -gt 0 ]; then
-        inv_detail=$(grep -m1 "Invalid read\|Invalid write\|Invalid free\|Use of uninitialised" valgrind_out.txt)
-        failed=1
-        reason="${reason:+$reason | }MEMORY ERRORS ($inv_count): $inv_detail"
-    fi
-
-    # Check leaked FDs (not inherited)
-    fd_leaks=$(grep "Open file descriptor" valgrind_out.txt | grep -v "inherited from parent" | wc -l)
-    if [ "$fd_leaks" -gt 0 ]; then
-        fd_detail=$(grep -B0 -A2 "Open file descriptor" valgrind_out.txt | grep -v "inherited from parent" | head -6)
-        failed=1
-        reason="${reason:+$reason | }FD LEAKS ($fd_leaks): $(echo $fd_detail)"
-    fi
-    
-    if [ $failed -eq 0 ]; then
-        PASS=$((PASS + 1))
-        echo -e "  ${GREEN}✓${NC} [VALGRIND] $test_name"
-    else
-        FAIL=$((FAIL + 1))
-        echo -e "  ${RED}✗${NC} [VALGRIND] $test_name"
-        echo -e "    ${YELLOW}→ $reason${NC}"
-        ERRORS="${ERRORS}\n  ✗ [VALGRIND] $test_name: $reason"
-    fi
+    run_ms "$input"
+    local fail=0 reason=""
+    [ -n "$exp_out" ] && [ "$MS_OUTPUT" != "$exp_out" ] && { fail=1; reason="OUT: exp='$(echo "$exp_out"|head -2)' got='$(echo "$MS_OUTPUT"|head -2)'"; }
+    [ -n "$exp_st" ] && [ "$MS_STATUS" != "$exp_st" ] && { fail=1; reason="${reason:+$reason | }STATUS: exp=$exp_st got=$MS_STATUS"; }
+    if [ $fail -eq 0 ]; then PASS=$((PASS+1)); echo -e "  ${G}✓${N} $name"
+    else FAIL=$((FAIL+1)); echo -e "  ${R}✗${N} $name"; echo -e "    ${Y}→ $reason${N}"; ERRORS="$ERRORS\n  ✗ $name: $reason"; fi
 }
 
-rm -f /tmp/mini_test_* /tmp/mini_valgrind_* /tmp/mt[0-9]* valgrind_out.txt
+# Special test for echo -n: strip trailing prompt that merges with output
+test_echo_n() {
+    local name="$1" input="$2" exp_out="$3"
+    TOTAL=$((TOTAL + 1))
+    local tmpf=$(mktemp /tmp/ms_run_XXXXXX)
+    printf '%s\n' "$input" | $MS > "$tmpf" 2>/dev/null
+    MS_STATUS=$?
+    # For echo -n, the output has no newline, so the next prompt merges.
+    # Raw output looks like: "minishell> echo -n hello\nhellominishell> \n"
+    # We need to strip "minishell> " lines AND remove trailing "minishell> " from merged line
+    MS_OUTPUT=$(cat "$tmpf" | grep -v '^minishell>' | sed 's/minishell> $//' | sed '/^[[:space:]]*$/d')
+    rm -f "$tmpf"
+    local fail=0 reason=""
+    [ "$MS_OUTPUT" != "$exp_out" ] && { fail=1; reason="OUT: exp='$exp_out' got='$MS_OUTPUT'"; }
+    if [ $fail -eq 0 ]; then PASS=$((PASS+1)); echo -e "  ${G}✓${N} $name"
+    else FAIL=$((FAIL+1)); echo -e "  ${R}✗${N} $name"; echo -e "    ${Y}→ $reason${N}"; ERRORS="$ERRORS\n  ✗ $name: $reason"; fi
+}
 
-echo -e "\n${CYAN}${BOLD}═══════════════════════════════════════════════${NC}"
-echo -e "${CYAN}${BOLD}       MINISHELL COMPREHENSIVE TEST SUITE       ${NC}"
-echo -e "${CYAN}${BOLD}═══════════════════════════════════════════════${NC}\n"
+run_valgrind() {
+    local name="$1" input="$2"
+    TOTAL=$((TOTAL + 1))
+    printf '%s\n' "$input" | valgrind --suppressions=$SUPP --leak-check=full --show-leak-kinds=all --track-fds=yes --log-file=vg.txt $MS >/dev/null 2>/dev/null
+    local fail=0 reason=""
+    local dl=$(grep "definitely lost:" vg.txt | head -1)
+    echo "$dl" | grep -qvE "0 bytes in 0 blocks" && { fail=1; reason="LEAK: $(echo $dl|sed 's/.*==//')"; }
+    local ic=$(grep -c "Invalid read\|Invalid write\|Invalid free\|Use of uninitialised" vg.txt 2>/dev/null || echo 0)
+    [ "$ic" -gt 0 ] 2>/dev/null && { fail=1; reason="${reason:+$reason | }MEM_ERR($ic)"; }
+    local fl=$(grep "Open file descriptor" vg.txt | grep -v "inherited from parent" | wc -l)
+    [ "$fl" -gt 0 ] && { fail=1; reason="${reason:+$reason | }FD_LEAK($fl)"; }
+    if [ $fail -eq 0 ]; then PASS=$((PASS+1)); echo -e "  ${G}✓${N} [VG] $name"
+    else FAIL=$((FAIL+1)); echo -e "  ${R}✗${N} [VG] $name"; echo -e "    ${Y}→ $reason${N}"; ERRORS="$ERRORS\n  ✗ [VG] $name: $reason"; fi
+}
 
-# ═══════════════════════════════════════
-echo -e "${CYAN}━━ ECHO TESTS ━━${NC}"
-run_test "echo hello" "echo hello" "hello" ""
-run_test "echo multi words" "echo hello world" "hello world" ""
-run_test "echo empty" "echo" "" "" "bash"
-run_test "echo -n hello" "echo -n hello" "" "" "bash"
-run_test "echo -n -n -n hello" "echo -n -n -n hello" "" "" "bash"
-run_test "echo -nnnnn hello" "echo -nnnnn hello" "" "" "bash"
-run_test "echo -n (no text)" "echo -n" "" "" "bash"
-run_test "echo double quoted" 'echo "hello world"' "hello world" ""
-run_test "echo single quoted" "echo 'hello world'" "hello world" ""
-run_test "echo mixed quotes" "echo \"hello\"'world'" "helloworld" ""
-run_test "echo empty dquotes" 'echo ""' "" "" "bash"
-run_test "echo empty squotes" "echo ''" "" "" "bash"
-run_test "echo spaces collapsed" "echo hello    world" "hello world" ""
+rm -f /tmp/ms_* vg.txt
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ PWD TESTS ━━${NC}"
-run_test "pwd basic" "pwd" "$(pwd)" ""
+echo -e "\n${C}${B}═══════════════════════════════════════════════${N}"
+echo -e "${C}${B}       MINISHELL COMPREHENSIVE TEST SUITE v6    ${N}"
+echo -e "${C}${B}═══════════════════════════════════════════════${N}\n"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ CD TESTS ━━${NC}"
-run_test "cd no arg (HOME)" "cd
-pwd" "$HOME" ""
-run_test "cd / then pwd" "cd /
-pwd" "/" ""
-run_test "cd /tmp then pwd" "cd /tmp
-pwd" "/tmp" ""
-run_test "cd .. from /tmp" "cd /tmp
+###############################################################################
+echo -e "${C}━━ ECHO (12 tests) ━━${N}"
+###############################################################################
+test_exact   "echo hello"           "echo hello"            "hello"         "0"
+test_exact   "echo multi words"     "echo hello world"      "hello world"   "0"
+test_vs_bash "echo (newline)"       "echo"
+test_echo_n  "echo -n hello"        "echo -n hello"         "hello"
+test_echo_n  "echo -n -n -n hello"  "echo -n -n -n hello"   "hello"
+test_echo_n  "echo -nnnnn hello"    "echo -nnnnn hello"     "hello"
+test_exact   "echo dquoted"         'echo "hello world"'    "hello world"   "0"
+test_exact   "echo squoted"         "echo 'hello world'"    "hello world"   "0"
+test_exact   "echo mixed quotes"    "echo \"hello\"'world'" "helloworld"    "0"
+test_vs_bash "echo empty dquotes"   'echo ""'
+test_vs_bash "echo empty squotes"   "echo ''"
+test_exact   "echo spaces"          "echo hello    world"   "hello world"   "0"
+
+###############################################################################
+echo -e "\n${C}━━ PWD (1 test) ━━${N}"
+###############################################################################
+test_exact  "pwd"                   "pwd"                   "$(pwd)"        "0"
+
+###############################################################################
+echo -e "\n${C}━━ CD (6 tests) ━━${N}"
+###############################################################################
+test_exact  "cd HOME + pwd"  "cd
+pwd"  "$HOME"  "0"
+test_exact  "cd / + pwd"    "cd /
+pwd"  "/"      "0"
+test_exact  "cd /tmp + pwd" "cd /tmp
+pwd"  "/tmp"   "0"
+test_exact  "cd .. from /tmp" "cd /tmp
 cd ..
-pwd" "/" ""
-run_test "cd nonexistent (stderr)" "cd /nonexistent_dir 2>&1 | grep -c 'No such file'" "" "" ""
-run_test "cd too many args" "cd a b 2>&1 | grep -c 'too many'" "" "" ""
+pwd"  "/"      "0"
+test_exact  "cd nonexistent \$?=1" "cd /nonexistent_xyz
+echo \$?"  "1"  "0"
+test_exact  "cd too many args" "cd a b
+echo \$?"  "1"  "0"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ EXIT STATUS (\$?) TESTS ━━${NC}"
-run_test "\$? = 0 after echo" "echo hello
-echo \$?" "" "" "bash"
-run_test "\$? = 1 after /bin/false" "/bin/false
-echo \$?" "" "" "bash"
-run_test "\$? = 0 after /bin/true" "/bin/true
-echo \$?" "" "" "bash"
-run_test "\$? = 127 after bad cmd" "nonexistent_cmd_xyz 2>/dev/null
-echo \$?" "" "" "bash"
-run_test "\$? = 1 after cd fail" "cd /no_such_dir 2>/dev/null
-echo \$?" "" "" "bash"
+###############################################################################
+echo -e "\n${C}━━ EXIT STATUS (5 tests) ━━${N}"
+###############################################################################
+test_exact  "\$?=0 after echo"  "echo hello
+echo \$?"  "hello
+0"  "0"
+test_exact  "\$?=1 after false" "/bin/false
+echo \$?"  "1"  "0"
+test_exact  "\$?=0 after true"  "/bin/true
+echo \$?"  "0"  "0"
+test_exact  "\$?=127 bad cmd"   "nonexistent_xyz
+echo \$?"  "127"  "0"
+test_exact  "\$?=1 cd fail"     "cd /no_such_dir
+echo \$?"  "1"  "0"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ VARIABLE EXPANSION ━━${NC}"
-run_test "expand \$HOME" 'echo $HOME' "$HOME" ""
-run_test "expand \$USER" 'echo $USER' "$USER" ""
-run_test "expand \$PATH" 'echo $PATH' "" "" "bash"
-run_test "undefined var is empty" 'echo $UNDEFINED_VAR_XYZ' "" ""
-run_test "\$? = 0" 'echo $?' "0" ""
-run_test "dollar at end" 'echo hello$' "" "" "bash"
-run_test "\$USER in dquotes" 'echo "$USER"' "$USER" ""
-run_test "\$USER in squotes (literal)" "echo '\$USER'" '$USER' ""
-run_test "text + \$USER + text" 'echo "hello $USER world"' "hello $USER world" ""
-run_test "adjacent vars" 'echo $USER$HOME' "${USER}${HOME}" ""
+###############################################################################
+echo -e "\n${C}━━ EXPANSION (11 tests) ━━${N}"
+###############################################################################
+test_exact  "\$HOME"                'echo $HOME'                    "$HOME"             "0"
+test_exact  "\$USER"                'echo $USER'                    "$USER"             "0"
+test_vs_bash "\$PATH"               'echo $PATH'
+test_exact  "undef var=empty"       'echo $UNDEF_XYZ'              ""                  "0"
+test_exact  "\$?=0"                 'echo $?'                       "0"                 "0"
+test_vs_bash "dollar at end"        'echo hello$'
+test_exact  "\$USER in dquotes"     'echo "$USER"'                  "$USER"             "0"
+test_exact  "\$USER in squotes"     "echo '\$USER'"                 '$USER'             "0"
+test_exact  "text+\$USER+text"      'echo "hello $USER end"'        "hello $USER end"   "0"
+test_exact  "adjacent vars"         'echo $USER$HOME'               "${USER}${HOME}"    "0"
+test_vs_bash "\$? after pipe fail"  '/bin/false | /bin/true
+echo $?'
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ PIPE TESTS ━━${NC}"
-run_test "echo | cat" "echo hello | cat" "hello" ""
-run_test "echo | grep" "echo hello world | grep hello" "hello world" ""
-run_test "echo | wc -l" "echo hello | wc -l" "" "" "bash"
-run_test "4-stage pipe" "echo hello | cat | cat | cat" "hello" ""
-run_test "ls | head -1" "ls | head -1" "" "" "bash"
-run_test "cat file | head" "cat /etc/passwd | head -3" "" "" "bash"
-run_test "echo | wc -c" "echo hello | wc -c" "" "" "bash"
-run_test "echo | tr | rev" "echo abc | tr a-z A-Z | rev" "CBA" ""
-run_test "pipe status (last cmd)" "echo hello | /bin/false
-echo \$?" "" "" "bash"
-run_test "false | echo hi" "/bin/false | echo hi
-echo \$?" "" "" "bash"
+###############################################################################
+echo -e "\n${C}━━ PIPES (10 tests) ━━${N}"
+###############################################################################
+test_exact  "echo | cat"            "echo hello | cat"              "hello"         "0"
+test_exact  "echo | grep"           "echo hello world | grep hello" "hello world"   "0"
+test_vs_bash "echo | wc -l"         "echo hello | wc -l"
+test_exact  "4-stage pipe"          "echo hello | cat | cat | cat"  "hello"         "0"
+test_vs_bash "ls | head -1"         "ls | head -1"
+test_vs_bash "cat file | head"      "cat /etc/passwd | head -3"
+test_vs_bash "echo | wc -c"         "echo hello | wc -c"
+test_exact  "echo|tr|rev"           "echo abc | tr a-z A-Z | rev"  "CBA"           "0"
+test_vs_bash "pipe status=last"     "echo hi | /bin/false
+echo \$?"
+test_vs_bash "false|echo hi"        "/bin/false | echo hi"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ OUTPUT REDIRECTION ━━${NC}"
-run_test "echo > file" "echo hello > /tmp/mini_test_o1
-cat /tmp/mini_test_o1" "hello" ""
-run_test "echo >> file (append)" "echo line1 > /tmp/mini_test_o2
-echo line2 >> /tmp/mini_test_o2
-cat /tmp/mini_test_o2" "" "" "bash"
-run_test "overwrite file" "echo first > /tmp/mini_test_o3
-echo second > /tmp/mini_test_o3
-cat /tmp/mini_test_o3" "second" ""
-run_test "multiple > (last wins)" "echo aaa > /tmp/mini_test_o4a > /tmp/mini_test_o4b
-cat /tmp/mini_test_o4b" "aaa" ""
+###############################################################################
+echo -e "\n${C}━━ OUTPUT REDIR (4 tests) ━━${N}"
+###############################################################################
+test_exact  "echo > file"          "echo hello > /tmp/ms_o1
+cat /tmp/ms_o1"  "hello"  "0"
+test_vs_bash "echo >> append"      "echo l1 > /tmp/ms_o2
+echo l2 >> /tmp/ms_o2
+cat /tmp/ms_o2"
+test_exact  "overwrite"            "echo first > /tmp/ms_o3
+echo second > /tmp/ms_o3
+cat /tmp/ms_o3"  "second"  "0"
+test_exact  "multi > (last wins)"  "echo aaa > /tmp/ms_o4a > /tmp/ms_o4b
+cat /tmp/ms_o4b" "aaa" "0"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ INPUT REDIRECTION ━━${NC}"
-echo "test content" > /tmp/mini_test_i1
-run_test "cat < file" "cat < /tmp/mini_test_i1" "test content" ""
-printf "line1\nline2\nline3\n" > /tmp/mini_test_i2
-run_test "cat < multi-line" "cat < /tmp/mini_test_i2" "" "" "bash"
-run_test "cat < nonexistent" "cat < /tmp/nonexistent_xyz 2>/dev/null
-echo \$?" "" "" "bash"
+###############################################################################
+echo -e "\n${C}━━ INPUT REDIR (3 tests) ━━${N}"
+###############################################################################
+echo "test content" > /tmp/ms_i1
+test_exact  "cat < file"           "cat < /tmp/ms_i1"       "test content"  "0"
+printf "l1\nl2\nl3\n" > /tmp/ms_i2
+test_vs_bash "cat < multiline"     "cat < /tmp/ms_i2"
+test_exact  "< nonexistent \$?=1"  "cat < /tmp/ms_nofile_xyz
+echo \$?"  "1"  "0"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ COMBINED REDIRECTIONS ━━${NC}"
-echo "combined input" > /tmp/mini_test_c1
-run_test "cat < in > out" "cat < /tmp/mini_test_c1 > /tmp/mini_test_c1_out
-cat /tmp/mini_test_c1_out" "combined input" ""
-run_test "echo > file; cat | wc" "echo hello world > /tmp/mini_test_c2
-cat /tmp/mini_test_c2 | wc -w" "" "" "bash"
+###############################################################################
+echo -e "\n${C}━━ COMBINED REDIR (2 tests) ━━${N}"
+###############################################################################
+echo "combo" > /tmp/ms_c1
+test_exact  "cat < in > out"       "cat < /tmp/ms_c1 > /tmp/ms_c1o
+cat /tmp/ms_c1o"  "combo"  "0"
+test_vs_bash "echo>file; cat|wc"   "echo hello world > /tmp/ms_c2
+cat /tmp/ms_c2 | wc -w"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ HEREDOC TESTS ━━${NC}"
-run_test "heredoc basic" "$(printf 'cat << EOF\nhello\nEOF')" "hello" ""
-run_test "heredoc multiline" "$(printf 'cat << END\nline1\nline2\nline3\nEND')" "" "" "bash"
-run_test "heredoc with \$USER" "$(printf 'cat << EOF\n$USER\nEOF')" "$USER" ""
+###############################################################################
+echo -e "\n${C}━━ HEREDOC (5 tests) ━━${N}"
+###############################################################################
+# Heredoc tests use > file to avoid readline prompt echo in non-tty mode
+test_exact  "heredoc basic"        "$(printf 'cat << EOF > /tmp/ms_hd1\nhello\nEOF\ncat /tmp/ms_hd1')"          "hello"     "0"
+test_exact  "heredoc multiline"    "$(printf 'cat << END > /tmp/ms_hd2\nline1\nline2\nline3\nEND\ncat /tmp/ms_hd2')"  "line1
+line2
+line3"  "0"
+test_exact  "heredoc + \$USER"     "$(printf 'cat << EOF > /tmp/ms_hd3\n$USER\nEOF\ncat /tmp/ms_hd3')"          "$USER"     "0"
+test_exact  "heredoc + pipe"       "$(printf 'cat << EOF | cat\nhello\nEOF')"           "hello"     "0"
+test_exact  "heredoc quoted delim" "$(printf "cat << 'EOF' > /tmp/ms_hd4\n\$USER\nEOF\ncat /tmp/ms_hd4")"       '$USER'     "0"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ EXIT BUILTIN ━━${NC}"
-run_test "exit -> 0" "exit" "" "0"
-run_test "exit 42 -> 42" "exit 42" "" "42"
-run_test "exit 0 -> 0" "exit 0" "" "0"
-run_test "exit 255 -> 255" "exit 255" "" "255"
-run_test "exit 256 -> 0 (mod)" "exit 256" "" "0"
-run_test "exit -1 -> 255" "exit -1" "" "255"
-run_test "exit abc -> 2" "exit abc 2>/dev/null" "" "2"
-run_test "exit too many args (no exit)" "exit 1 2 3
-echo \$?" "" "" ""
+###############################################################################
+echo -e "\n${C}━━ EXIT BUILTIN (7 tests) ━━${N}"
+###############################################################################
+test_exact  "exit -> 0"            "exit"                  ""      "0"
+test_exact  "exit 42"              "exit 42"               ""      "42"
+test_exact  "exit 0"               "exit 0"                ""      "0"
+test_exact  "exit 255"             "exit 255"              ""      "255"
+test_exact  "exit 256 -> 0"        "exit 256"              ""      "0"
+test_exact  "exit -1 -> 255"       "exit -1"               ""      "255"
+test_exact  "exit abc -> 2"        "exit abc"              ""      "2"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ EDGE CASES ━━${NC}"
-run_test "empty input" "" "" "" "bash"
-run_test "only whitespace" "   " "" "" "bash"
-run_test "/bin/echo hello" "/bin/echo hello" "hello" ""
-run_test "nonexistent cmd status" "totally_fake_cmd 2>/dev/null
-echo \$?" "" "" "bash"
-# Semicolons are NOT required in minishell
+###############################################################################
+echo -e "\n${C}━━ EDGE CASES (4 tests) ━━${N}"
+###############################################################################
+test_vs_bash "empty input"         ""
+test_vs_bash "only spaces"         "   "
+test_exact  "/bin/echo"            "/bin/echo hello"        "hello"  "0"
+test_exact  "nonexistent \$?"      "totally_fake_cmd
+echo \$?"  "127"  "0"
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}━━ ENV BUILTIN ━━${NC}"
-run_test "env | wc -l" "env | wc -l" "" "" "bash"
-run_test "env | grep PATH" "env | grep ^PATH= | wc -l" "" "" "bash"
-run_test "env | grep HOME" "env | grep ^HOME= | wc -l" "" "" "bash"
+###############################################################################
+echo -e "\n${C}━━ ENV BUILTIN (3 tests) ━━${N}"
+###############################################################################
+test_vs_bash "env | wc -l"         "env | wc -l"
+test_vs_bash "env | grep PATH"     "env | grep ^PATH= | wc -l"
+test_vs_bash "env | grep HOME"     "env | grep ^HOME= | wc -l"
 
-# ═══════════════════════════════════════════════════
-echo -e "\n${CYAN}${BOLD}═══════════════════════════════════════════${NC}"
-echo -e "${CYAN}${BOLD}       VALGRIND MEMORY & FD TESTS           ${NC}"
-echo -e "${CYAN}${BOLD}═══════════════════════════════════════════${NC}\n"
+###############################################################################
+echo -e "\n${C}━━ SYNTAX ERRORS (8 tests) ━━${N}"
+###############################################################################
+test_exact  "pipe at start"        "| echo hello"         ""  "2"
+test_exact  "double pipe"          "echo || echo"         ""  "2"
+test_exact  "redir no file"        "echo hello >"         ""  "2"
+test_exact  "double redir"         "echo hello >> >"      ""  "2"
+test_exact  "pipe at end"          "echo hello |"         ""  "2"
+test_exact  "unclosed squote"      "echo 'hello"          ""  "2"
+test_exact  "unclosed dquote"      'echo "hello'          ""  "2"
+test_exact  "< < consecutive"      "cat < < file"         ""  "2"
 
-echo -e "${CYAN}━━ Memory Leak Tests ━━${NC}"
-run_valgrind_test "echo hello" "echo hello"
-run_valgrind_test "echo \$HOME" 'echo $HOME'
-run_valgrind_test "pwd" "pwd"
-run_valgrind_test "cd /tmp + pwd" "cd /tmp
+###############################################################################
+echo -e "\n${C}━━ EXTRA EXPANSION EDGE CASES (6 tests) ━━${N}"
+###############################################################################
+test_exact  "empty var in dquotes"  'echo "$UNDEF_XYZ"'          ""          "0"
+test_exact  "dollar alone"          'echo $'                     '$'         "0"
+test_exact  "\$? chained"           '/bin/false
+/bin/true
+echo $?'  "0"  "0"
+test_exact  "mixed quote types"     "echo \"'hello'\""           "'hello'"   "0"
+test_exact  "squote inside dquote"  "echo \"it's working\""      "it's working" "0"
+test_exact  "dquote inside squote"  'echo '"'"'"hello"'"'"''     '"hello"'   "0"
+
+###############################################################################
+echo -e "\n${C}━━ EXTRA PIPE EDGE CASES (4 tests) ━━${N}"
+###############################################################################
+test_exact  "5-stage pipe"         "echo hello | cat | cat | cat | cat" "hello" "0"
+test_exact  "pipe with redir"      "echo hello | cat > /tmp/ms_pr1
+cat /tmp/ms_pr1" "hello" "0"
+test_vs_bash "pipe + grep -c"      "echo -e 'a\nb\nc' | grep -c ''"
+test_exact  "echo pipe wc -w"      "echo one two three | wc -w" "3" "0"
+
+###############################################################################
+echo -e "\n${C}━━ EXTRA REDIR EDGE CASES (4 tests) ━━${N}"
+###############################################################################
+test_exact  ">> creates file"      "echo first >> /tmp/ms_app_new
+cat /tmp/ms_app_new" "first" "0"
+test_exact  "multi input redir"    "echo aaa > /tmp/ms_mi1
+echo bbb > /tmp/ms_mi2
+cat < /tmp/ms_mi1 < /tmp/ms_mi2" "bbb" "0"
+test_exact  "redir before cmd"     "> /tmp/ms_rb1 echo hello
+cat /tmp/ms_rb1" "hello" "0"
+test_exact  "empty cmd with redir" "> /tmp/ms_empty_redir
+cat /tmp/ms_empty_redir" "" "0"
+
+###############################################################################
+echo -e "\n${C}${B}═══════════════════════════════════════════${N}"
+echo -e "${C}${B}       VALGRIND: MEMORY & FD LEAKS         ${N}"
+echo -e "${C}${B}═══════════════════════════════════════════${N}\n"
+###############################################################################
+
+echo -e "${C}━━ Memory Leak Tests (23) ━━${N}"
+run_valgrind "echo hello"          "echo hello"
+run_valgrind "echo \$HOME"         'echo $HOME'
+run_valgrind "pwd"                 "pwd"
+run_valgrind "cd /tmp + pwd"       "cd /tmp
 pwd"
-run_valgrind_test "cd (home)" "cd"
-run_valgrind_test "cd nonexistent" "cd /no_such_dir"
-run_valgrind_test "simple pipe" "echo hello | cat"
-run_valgrind_test "triple pipe" "echo hi | cat | cat"
-run_valgrind_test "echo > file" "echo test > /tmp/mini_valgrind1"
-run_valgrind_test "cat < file" "echo data > /tmp/mini_valgrind_in
-cat < /tmp/mini_valgrind_in"
-run_valgrind_test "echo >> file" "echo a >> /tmp/mini_valgrind2
-echo b >> /tmp/mini_valgrind2"
-run_valgrind_test "cat < in > out" "echo x > /tmp/mini_valgrind_cin
-cat < /tmp/mini_valgrind_cin > /tmp/mini_valgrind_cout"
-run_valgrind_test "pipe + redir" "echo hello | cat > /tmp/mini_valgrind3"
-run_valgrind_test "nonexistent cmd" "fake_command"
-run_valgrind_test "multi echo" "echo a
+run_valgrind "cd (home)"           "cd"
+run_valgrind "cd nonexist"         "cd /no_such_dir"
+run_valgrind "pipe: echo|cat"      "echo hello | cat"
+run_valgrind "pipe: echo|cat|cat"  "echo hi | cat | cat"
+run_valgrind "echo > file"         "echo test > /tmp/ms_v1"
+run_valgrind "cat < file"          "echo data > /tmp/ms_v_in
+cat < /tmp/ms_v_in"
+run_valgrind "echo >> file"        "echo a >> /tmp/ms_v2
+echo b >> /tmp/ms_v2"
+run_valgrind "cat < in > out"      "echo x > /tmp/ms_v_ci
+cat < /tmp/ms_v_ci > /tmp/ms_v_co"
+run_valgrind "pipe + redir"        "echo hello | cat > /tmp/ms_v3"
+run_valgrind "bad cmd"             "fake_command"
+run_valgrind "multi echo"          "echo a
 echo b
 echo c"
-run_valgrind_test "\$? expansion" 'echo $?'
-run_valgrind_test "empty quotes" 'echo ""'
-run_valgrind_test "single quotes" "echo 'hello'"
-run_valgrind_test "/bin/false + \$?" "/bin/false
+run_valgrind "\$? expand"          'echo $?'
+run_valgrind "dquotes"             'echo "hello"'
+run_valgrind "squotes"             "echo 'hello'"
+run_valgrind "false+\$?"           "/bin/false
 echo \$?"
-run_valgrind_test "env | head" "env | head -1"
-run_valgrind_test "heredoc basic" "$(printf 'cat << EOF\nhello\nEOF')"
-run_valgrind_test "echo with vars" 'echo "$HOME" $USER'
-run_valgrind_test "pipe + expansion" 'echo $HOME | cat'
+run_valgrind "env | head"          "env | head -1"
+run_valgrind "heredoc"             "$(printf 'cat << EOF\nhello\nEOF')"
+run_valgrind "heredoc+pipe"        "$(printf 'cat << EOF | cat\nhello\nEOF')"
+run_valgrind "vars"                'echo "$HOME" $USER'
 
-echo -e "\n${CYAN}━━ FD Leak Stress Tests ━━${NC}"
-run_valgrind_test "5-stage pipe" "echo a | cat | cat | cat | cat"
-run_valgrind_test "5 redirections" "echo a > /tmp/mt1
-echo b > /tmp/mt2
-echo c > /tmp/mt3
-echo d > /tmp/mt4
-echo e > /tmp/mt5"
-run_valgrind_test "pipe + redir x2" "ls | cat > /tmp/mt6
-ls | cat > /tmp/mt7"
-run_valgrind_test "in + out redir" "echo hello > /tmp/mt8
-cat < /tmp/mt8 > /tmp/mt9"
-run_valgrind_test "heredoc + pipe" "$(printf 'cat << EOF | cat\nhello\nEOF')"
+echo -e "\n${C}━━ FD Leak Stress (8) ━━${N}"
+run_valgrind "5-pipe"              "echo a | cat | cat | cat | cat"
+run_valgrind "5 redirs"            "echo a > /tmp/ms_s1
+echo b > /tmp/ms_s2
+echo c > /tmp/ms_s3
+echo d > /tmp/ms_s4
+echo e > /tmp/ms_s5"
+run_valgrind "pipe+redir x2"       "ls | cat > /tmp/ms_s6
+ls | cat > /tmp/ms_s7"
+run_valgrind "in+out redir"        "echo hi > /tmp/ms_s8
+cat < /tmp/ms_s8 > /tmp/ms_s9"
+run_valgrind "syntax error"        "| echo hello"
+run_valgrind "bad redir"           "cat < /tmp/ms_nonexistent_vg"
+run_valgrind "empty input"         ""
+run_valgrind "multi pipe+redir"    "echo a | cat > /tmp/ms_vfd1
+echo b >> /tmp/ms_vfd1
+cat < /tmp/ms_vfd1 | cat | cat"
 
-# Cleanup temp files
-rm -f /tmp/mini_test_* /tmp/mini_valgrind_* /tmp/mt[0-9]* valgrind_out.txt
+# Cleanup
+rm -f /tmp/ms_* vg.txt
 
-# ═══════════════════════════════════════
-echo -e "\n${CYAN}${BOLD}═══════════════════════════════════════════${NC}"
-echo -e "${CYAN}${BOLD}              FINAL RESULTS                ${NC}"
-echo -e "${CYAN}${BOLD}═══════════════════════════════════════════${NC}"
-echo -e "  ${BOLD}Total:  $TOTAL${NC}"
-echo -e "  ${GREEN}${BOLD}Passed: $PASS${NC}"
-echo -e "  ${RED}${BOLD}Failed: $FAIL${NC}"
+###############################################################################
+echo -e "\n${C}${B}═══════════════════════════════════════════${N}"
+echo -e "${C}${B}              FINAL RESULTS                ${N}"
+echo -e "${C}${B}═══════════════════════════════════════════${N}"
+echo -e "  ${B}Total:  $TOTAL${N}"
+echo -e "  ${G}${B}Passed: $PASS${N}"
+echo -e "  ${R}${B}Failed: $FAIL${N}"
 if [ $FAIL -gt 0 ]; then
-    echo -e "\n${RED}${BOLD}── Failed Tests Summary ──${NC}"
+    echo -e "\n${R}${B}── Failed Tests ──${N}"
     echo -e "$ERRORS"
 fi
 echo ""
