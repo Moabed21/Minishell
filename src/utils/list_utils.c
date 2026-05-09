@@ -27,59 +27,59 @@ t_token	*token_new(char *value, t_token_type type)
 	return (new);
 }
 
-void token_addback(t_token **list, t_token *new_node)
+void	token_addback(t_token **list, t_token *new_node)
 {
-    t_token *tmp;
+	t_token	*tmp;
 
-    if (!list || !new_node)
-        return;
-    if (*list == NULL)
-    {
-        *list = new_node;
-        return;
-    }
-    tmp = *list;
-    while (tmp->next)
-        tmp = tmp->next;
-    tmp->next = new_node;
-    new_node->prev = tmp;
+	if (!list || !new_node)
+		return ;
+	if (*list == NULL)
+	{
+		*list = new_node;
+		return ;
+	}
+	tmp = *list;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new_node;
+	new_node->prev = tmp;
 }
 
-void tokenlistclear(t_token **list)
+void	tokenlistclear(t_token **list)
 {
-    t_token *tmp;
-    t_token *next;
+	t_token	*tmp;
+	t_token	*next;
 
-    if (!list || !*list)
-        return;
-    tmp = *list;
-    while (tmp)
-    {
-        next = tmp->next;
-        free(tmp->value);
-        free(tmp);
-        tmp = next;
-    }
-    *list = NULL;
+	if (!list || !*list)
+		return ;
+	tmp = *list;
+	while (tmp)
+	{
+		next = tmp->next;
+		free(tmp->value);
+		free(tmp);
+		tmp = next;
+	}
+	*list = NULL;
 }
 
-void del_one(t_token *node)
+void	del_one(t_token *node)
 {
-    if (!node)
-        return;
-    if (node->prev)
-        node->prev->next = node->next;
-    if (node->next)
-        node->next->prev = node->prev;
-    free(node->value);
-    free(node);
+	if (!node)
+		return ;
+	if (node->prev)
+		node->prev->next = node->next;
+	if (node->next)
+		node->next->prev = node->prev;
+	free(node->value);
+	free(node);
 }
 
-void free_ptr(void **ptr)
+void	free_ptr(void **ptr)
 {
-    if (ptr && *ptr)
-    {
-        free(*ptr);
-        *ptr = NULL;
-    }
+	if (ptr && *ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
 }

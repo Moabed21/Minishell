@@ -15,9 +15,9 @@
 void	new_node2(t_env *node, char *str)
 {
 	char	*equal_ptr;
-	
-	equal_ptr = ft_strchr(str,'=');
-	if(equal_ptr)
+
+	equal_ptr = ft_strchr(str, '=');
+	if (equal_ptr)
 	{
 		node->key = ft_substr(str, 0, equal_ptr - str);
 		node->value = ft_strdup(equal_ptr + 1);
@@ -29,25 +29,25 @@ void	new_node2(t_env *node, char *str)
 	}
 }
 
-t_env   *new_node(char *str)
+t_env	*new_node(char *str)
 {
 	t_env	*node;
 	char	*equal;
 
 	node = malloc(sizeof(t_env));
-	if(!node)
+	if (!node)
 		return (NULL);
-    new_node2(node,str);
+	new_node2(node, str);
 	equal = ft_strchr(str, '=');
-	if (!node->key ||  (equal && !node->value))
-    {
-        free(node->key);
-        free(node->value);
-        free(node);
-        return (NULL);
-    }
-    node->next = NULL;
-    return (node);
+	if (!node->key || (equal && !node->value))
+	{
+		free(node->key);
+		free(node->value);
+		free(node);
+		return (NULL);
+	}
+	node->next = NULL;
+	return (node);
 }
 
 void	env_ruin(t_env **head)
@@ -77,10 +77,10 @@ t_env	*env_init(char **env)
 	t_env	*head;
 	t_env	*ptr;
 
-	size = 0;
+	size = 1;
 	if (!env || !env[0])
 		return (NULL);
-	ptr = new_node(env[size]);
+	ptr = new_node(env[0]);
 	if (!ptr)
 		return (NULL);
 	head = ptr;

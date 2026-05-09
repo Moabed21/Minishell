@@ -14,16 +14,16 @@
 
 static int	is_op_type(t_token_type type)
 {
-	return (type == PIPE || type == INPUT || type == TRUNC
-		|| type == APPEND || type == HEREDOC);
+	return (type == PIPE || type == INPUT || type == TRUNC || type == APPEND
+		|| type == HEREDOC);
 }
 
 // static int	consecutive_ops(t_token *token_node)
 // {
 // 	if (token_node->prev)
 // 	{
-// 	    // two pipes in a row
-// 		if (token_node->type == PIPE && token_node->prev->type == PIPE) 
+// 		 // two pipes in a row
+// 		if (token_node->type == PIPE && token_node->prev->type == PIPE)
 // 			return (FAILURE);
 // 		// two redir in a row
 // 		if (is_redir(token_node->type) && is_redir(token_node->prev->type))
@@ -66,7 +66,8 @@ int	check_consecutives(t_token **token_lst)
 			}
 			if (is_op_type(tmp->next->type))
 			{
-				errmsg("syntax error near unexpected token", tmp->next->value, 1);
+				errmsg("syntax error near unexpected token", tmp->next->value,
+					1);
 				return (FAILURE);
 			}
 		}
