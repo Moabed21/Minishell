@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 18:24:19 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 20:53:08 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 19:53:40 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/parsingpart.h"
+#include "../../headers/executionpart.h"
 
-char	*expand_value(char *value, char **env, int last_status)
+
+char	*expand_value(char *value, t_env *env, int last_status)
 {
 	char	*result;
 	char	*name;
@@ -59,6 +61,11 @@ char	*expand_value(char *value, char **env, int last_status)
 				else
 				{
 					name = ft_substr(value, i + 1, len);
+					if (!name) 
+					{
+						free(result);
+						return (NULL);
+					}
 					env_value = get_env_value(name, env);
 					if (env_value)
 						result = append_str(result, env_value);
@@ -76,7 +83,7 @@ char	*expand_value(char *value, char **env, int last_status)
 	return (result);
 }
 
-int	expand_token(t_token **head, t_token *token, char **env, int last_status)
+int	expand_token(t_token **head, t_token *token, t_env *env, int last_status)
 {
 	char	*expanded;
 	char	**words;
@@ -104,7 +111,7 @@ int	expand_token(t_token **head, t_token *token, char **env, int last_status)
 	return (1);
 }
 
-int	expand_tokens(t_token **tokens, char **env, int last_status)
+int	expand_tokens(t_token **tokens, t_env *env, int last_status)
 {
 	t_token	*tmp;
 	t_token *next;

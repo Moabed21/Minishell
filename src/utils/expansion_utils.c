@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion_helpers.c                                :+:      :+:    :+:   */
+/*   expansion_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 13:13:53 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 21:03:24 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 19:49:07 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/parsingpart.h"
+#include "../../headers/executionpart.h"
+
 
 int	is_var_char(char c)
 {
@@ -28,20 +30,13 @@ int	get_var_name_len(char *str)
 	return (i);
 }
 
-char	*get_env_value(char *name, char **env)
+char	*get_env_value(char *key, t_env *env)
 {
-	int	i;
-	int	len;
-
-	if (!name || !env)
-		return (NULL);
-	len = ft_strlen(name);
-	i = 0;
-	while (env[i])
+	while (env)
 	{
-		if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
-			return (env[i] + len + 1);
-		i++;
+		if (ft_strcmp(env->key, key) == 0)
+			return (env->value);
+		env = env->next;
 	}
 	return (NULL);
 }

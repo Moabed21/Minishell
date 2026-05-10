@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 18:02:01 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 20:01:01 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
+t_cmd	*prepare_for_execution(char *input, t_env *env, int last_status)
 {
 	t_token	*tokens;
 	t_cmd	*cmds;
@@ -35,7 +35,7 @@ t_cmd	*prepare_for_execution(char *input, char **env, int last_status)
 	return (cmds);
 }
 
-void	main2(t_exec *shell, char **envp)
+void	main2(t_exec *shell)
 {
 	char	*input;
 
@@ -69,7 +69,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (shell_init(envp, &shell))
 		return (1);
-	main2(&shell, envp);
+	main2(&shell);
 	ruin_everything(&shell);
 	return (shell.last_status);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executionpart.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 16:02:01 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 20:09:32 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include "parsingpart.h"
 
+typedef struct s_cmd	t_cmd;
+typedef struct s_redir	t_redir;
 typedef struct s_env
 {
 	char						*value;

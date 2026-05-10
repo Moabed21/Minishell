@@ -3,16 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   parsingpart.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 20:51:40 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 20:02:00 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSINGPART_H
 # define PARSINGPART_H
+
 # include "libs.h"
+# include "executionpart.h"
+
+typedef struct s_env	t_env;
 
 // token enum
 typedef enum e_token_type
@@ -77,7 +81,7 @@ typedef struct s_cmd
 	t_redir			*redir;
 	struct s_cmd	*next;
 }					t_cmd;
-t_cmd		*prepare_for_execution(char *input, char **env, int last_status);
+t_cmd		*prepare_for_execution(char *input, t_env *env, int last_status);
 //tokenization
 t_token 	*token_new(char *value, t_token_type type);
 void 		token_addback(t_token **list, t_token *new_node);
@@ -97,12 +101,12 @@ void		errmsg(char *errmsg, char *detail, int check);
 t_token		*insert_list(t_token **head, t_token *to_del, t_token *insert);
 int			is_var_char(char c);
 int			get_var_name_len(char *str);
-char		*get_env_value(char *name, char **env);
 char		*append_char(char *s, char c);
 char		*append_str(char *s, char *to_add);
-char		*expand_value(char *value, char **env, int last_status);
-int			expand_token(t_token **head, t_token *token, char **env, int last_status);
-int 		expand_tokens(t_token **tokens, char **env, int last_status);
+char		*expand_value(char *value, t_env *env, int last_status);
+int			expand_token(t_token **head, t_token *token, t_env *env, int last_status);
+int			expand_tokens(t_token **tokens, t_env *env, int last_status);
+char		*get_env_value(char *key, t_env *env);
 t_token 	*create_tokens_from_words(char **words);
 //parsing
 t_cmd		*parsing(t_token *tokens);
