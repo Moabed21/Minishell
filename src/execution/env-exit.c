@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/02 07:52:31 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/09 20:34:19 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 13:18:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	e_exit2(t_cmd *node, t_exec *shell)
 {
 	if (node->args[2])
 	{
-		error_display(2, node->args[0], ": too many arguments", shell);
+		error_display(STDERR_FILENO, node->args[0], ": too many arguments", shell);
 		shell->last_status = 1;
 		return ;
 	}
@@ -79,7 +79,7 @@ void	e_exit(t_cmd *node, t_exec *shell)
 	}
 	if (node->args[1] && not_a_num(node->args[1]))
 	{
-		error_display(2, node->args[1], ": numeric arguments required", shell);
+		error_display(STDERR_FILENO, node->args[1], ": numeric arguments required", shell);
 		ruin_everything(shell);
 		exit(2);
 	}

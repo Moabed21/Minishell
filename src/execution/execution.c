@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/09 11:17:55 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 16:25:01 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 	}
 }
 
-char	**findpath(char **evar)
+
+char	**findpath(t_env *env)
 {
 	int		i;
 	char	**ev;
@@ -59,23 +60,23 @@ char	**findpath(char **evar)
 
 	i = -1;
 	ev = NULL;
-	while (evar[++i])
+	while (env)
 	{
-		if (ft_strncmp(evar[i], "PATH=", 5) == 0)
+		if (!ft_strncmp(env->key, "PATH", 4))
 		{
-			ev = ft_split(evar[i] + 5, ':');
+			ev = ft_split(env->value, ':');
 			break ;
 		}
+		env = env->next;
 	}
-	i = 0;
+	i = -1;
 	if (!ev)
 		return (NULL);
-	while (ev[i])
+	while (ev[++i])
 	{
 		firstpart = ft_strjoin(ev[i], "/");
 		free(ev[i]);
 		ev[i] = firstpart;
-		i++;
 	}
 	return (ev);
 }

@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 08:31:28 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 16:02:01 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void							shell_protection(void);
 void							check_cmds(t_cmd *cmds);
 int								not_a_num(char *str);
 //------------execution---------------------
-char							**findpath(char **evar);
+char							**findpath(t_env *env);
 void							execution(t_exec *shell);
 void							ft_fork_pipe(t_exec *shell, t_cmd *node,
 									int option);

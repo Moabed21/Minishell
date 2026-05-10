@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 09:54:05 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:53:32 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 15:05:27 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	wait_all(t_exec *shell)
 			wait_child(shell, cmd);
 		cmd = cmd->next;
 	}
+	if(WTERMSIG(shell->last_status) == SIGQUIT)
+		write(2, "Quit (core dumped)\n", 19);
 }
 
 void	run_pipeline(t_exec *shell, t_cmd *node)

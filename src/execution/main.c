@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/09 11:16:59 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 18:02:01 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	main2(t_exec *shell, char **envp)
 		if (!input)
 			break ;
 		add_history(input);
-		shell->cmds = prepare_for_execution(input, envp, shell->last_status);
+		shell->cmds = prepare_for_execution(input, shell->first_env_node, shell->last_status);
 		if (shell->cmds)
 		{
 			execution(shell);
@@ -73,6 +73,10 @@ int	main(int ac, char **av, char **envp)
 	ruin_everything(&shell);
 	return (shell.last_status);
 }
+
+// 1) display the quit (core du)cat for ctrl \"
+// 2) fix the zombie for sleep 100 | sleep 10 |sleep 100
+// 3) echo $0asd$0 must display the first $0 value which is minishell
 // Syntax cases :
 // 1) succeed except the echo $? must be 2 instead of 0
 // 2) same number 1 issue , the last status must be 2

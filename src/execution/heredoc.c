@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 12:57:18 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/09 16:16:15 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 14:13:06 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,13 @@ void	heredoc_signals(void)
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }
-
+void	message_display(char *delimiter)
+{
+	ft_putstr_fd("minishell: warning: here-document ", 2);
+	ft_putstr_fd("delimited by end-of-file (wanted '",2);
+	ft_putstr_fd(delimiter, 2);
+	ft_putstr_fd("')\n", 2);
+}
 void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 {
 	char	*line;
@@ -45,6 +51,8 @@ void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 		line = readline("> ");
 		if (!line || !ft_strcmp(line, delimiter))
 		{
+			if (!line)
+				message_display(delimiter);
 			free(line);
 			break ;
 		}

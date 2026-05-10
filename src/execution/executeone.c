@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/05 16:53:41 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 16:23:43 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	execute(t_exec *shell, t_cmd *node)
 
 	i = -1;
 	execute_as_is(shell, node);
-	path = findpath(shell->envp);
+	path = findpath(shell->first_env_node);
 	if (!path)
 	{
 		free_current_cmd(&node);
