@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/08 21:16:44 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 08:31:28 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ char							*get_value(char *key, t_env *env);
 void							init_vals(t_exec *shell, t_cmd *cmds);
 //-------------utils2----------------------
 int								shell_init(char **env, t_exec *shell);
-void							unset_2(t_env **head, char *name);
 void							free2d_array(char **arr);
 void							shell_protection(void);
 void							check_cmds(t_cmd *cmds);
@@ -93,6 +92,7 @@ void							execute(t_exec *shell, t_cmd *node);
 //-----------execute-multiple---------------
 void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
 //-----------heredoc------------------------
-int								heredoc(t_exec *shell, char *delimiter, t_cmd **node);
-
+int								heredoc(t_exec *shell, char *delimiter, t_cmd **node, int quoted);
+//-----------export-------------------------
+t_env							*export_sorted(t_env *env);
 #endif
