@@ -6,41 +6,48 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/08 12:40:54 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/09 22:24:15 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/10 07:12:11 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-void	unset_2(t_env **head)
+static void	unset_2(t_env **head, t_env *target, t_env *prev)
 {
-    free((*head)->key);
-    free((*head)->value);
+	if(!prev)
+		*head = (*head)->next;
+	else
+		prev->next = target->next;
+	free(target->key);
+	free(target->value);
+	free(target);
 }
 
 void	e_unset(t_cmd *node, t_exec *shell)
 {
-	int	i;
-    t_env   *prev;
-    t_env   *curr;
+	int i;
+	t_env *curr;
+	t_env *prev;
 
 	i = 0;
 	while (node->args[++i])
 	{
-        ptr = shell->first_env_node;
-        while (ptr)
-        {
-            if(!ft_strcmp(node->args[i],ptr->key))
-                unset_2(&ptr);
-            ptr = ptr->next;
-        }
-        
-        node->args[i];
+		curr = shell->first_env_node;
+		prev = NULL;
+		while (curr)
+		{
+			if(!ft_strcmp(curr->key, node->args[i]))
+			{
+				unset_2(&shell->first_env_node, curr,prev);
+				break ;
+			}
+			prev = curr;
+			curr = curr->next;
+		}
 	}
 	shell->last_status = 0;
 }
 
-// to be checked
 static int	is_all_n(char *s)
 {
 	int	i;
