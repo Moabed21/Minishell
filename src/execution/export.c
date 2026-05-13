@@ -6,7 +6,7 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 13:37:19 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 19:03:55 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 19:36:08 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,16 @@ t_env	*export_sorted(t_env *env)
 	while (i < size)
 	{
 		j = i + 1;
-		while (j < size - j)
+		/* while (j < size - j)
 		{
 			if ()
 			{
 			}
 			j++;
-		}
+		} */
 		i++;
 	}
+	return (NULL);
 }
 
 t_env	*sort_workspace(t_env *env)

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/13 19:01:09 by samarnah         ###   ########.fr       */
+/*   Created: 2026/05/13 19:40:42 by samarnah          #+#    #+#             */
+/*   Updated: 2026/05/13 19:40:44 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,9 @@ int			is_var_char(char c);
 int			get_var_name_len(char *str);
 char		*append_char(char *s, char c);
 char		*append_str(char *s, char *to_add);
-char		*expand_value(char *value, t_env *env, int last_status);
+int			handle_quotes(char c, char *quote);
+int			handle_exit_status(char **result, int last_status);
+char		*expand_value(char *value, t_env *env, int last_status, int i);
 int			expand_token(t_token **head, t_token *token, t_env *env, int last_status);
 int			expand_tokens(t_token **tokens, t_env *env, int last_status);
 char		*get_env_value(char *key, t_env *env);

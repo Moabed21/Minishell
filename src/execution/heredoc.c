@@ -6,11 +6,12 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 12:57:18 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 18:39:35 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 19:42:27 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
+#include "../../headers/parsingpart.h"
 
 static void	her_int(int sig)
 {
@@ -60,7 +61,7 @@ static void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 			// expanded_line = expand_value(line, shell->envp,
 					//shell->last_status;
 			expanded_line = expand_value(line, shell->first_env_node,
-					shell->last_status);
+					shell->last_status, 0);
 		else
 			expanded_line = ft_strdup(line);
 		ft_putstr_fd(expanded_line, fd[1]);

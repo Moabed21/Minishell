@@ -13,11 +13,11 @@ EXEC_FILES  = main.c signals.c io-redir.c \
 
 UTILS_FILES = e_utils.c e_utils2.c env-utils3.c \
               expansion_utils.c lexer_utils.c \
-              list_utils.c syntax_error.c
+              list_utils.c syntax_error.c syntax_error2.c
 
 TOK_FILES   = tokenization.c
 PARSE_FILES = parsing.c parsing_args.c parsing_cmd.c parsing_redir.c
-EXP_FILES   = expansion.c inserting.c
+EXP_FILES   = expansion.c expansion2.c inserting.c
 
 EXEC_SRC    = $(EXEC_FILES:%.c=$(SRC_DIR)/execution/%.c)
 UTILS_SRC   = $(UTILS_FILES:%.c=$(SRC_DIR)/utils/%.c)

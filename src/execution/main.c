@@ -6,11 +6,12 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 20:01:01 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 19:38:16 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
+#include "../../headers/parsingpart.h"
 
 t_cmd	*prepare_for_execution(char *input, t_env *env, int last_status)
 {
