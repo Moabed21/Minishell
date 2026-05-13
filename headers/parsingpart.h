@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsingpart.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/10 20:02:00 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:27:08 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int			save_word_or_op(int *i, char *str, int start, t_token **token_list);
 int			has_quotes(char *str);
 t_token 	*tokenization(char *input);
 //utils
-void		errmsg(char *errmsg, char *detail, int check);
 //expansion
 t_token		*insert_list(t_token **head, t_token *to_del, t_token *insert);
 int			is_var_char(char c);

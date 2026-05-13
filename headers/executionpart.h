@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executionpart.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 20:09:32 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:35:33 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,15 @@ extern volatile sig_atomic_t	g_sig;
 void							interactive_signals(void);
 void							ignore_signals(void);
 void							default_signals(void);
-//--------------builtins2-------------------
+
+//--------------builtins-------------------
 void							exec_builtin(t_exec *shell, t_cmd *node);
-void							cd_2(t_exec *shell, char *path, char *old_path);
 void							e_env(t_cmd *node, t_exec *shell);
 void							e_exit(t_cmd *node, t_exec *shell);
+//-----------------cd-----------------------
+void							e_cd(t_cmd *node, t_exec *shell);
 //--------------builtins--------------------
 void							e_echo(t_cmd *node, t_exec *shell);
-void							e_cd(t_cmd *node, t_exec *shell);
 void							e_pwd(t_cmd *node, t_exec *shell);
 void							e_export(t_cmd *node, t_exec *shell);
 void							e_unset(t_cmd *node, t_exec *shell);
@@ -80,15 +81,16 @@ void							execution(t_exec *shell);
 void							ft_fork_pipe(t_exec *shell, t_cmd *node,
 									int option);
 void							wait_child(t_exec *shell, t_cmd *node);
+void							apply_fd(int fd1, int fd);
 //------------error-handle------------------
 void							free_current_cmd(t_cmd **node);
 void							ruin_everything(t_exec *shell);
 void							error_display(int fd, char *cmd,
 									char *right_end, t_exec *shell);
 void							free_cmds_list(t_cmd **cmds);
+void							errmsg(char *errmsg, char *detail, int check);
 //------------executeone--------------------
 void							execute_one_cmd(t_exec *shell, t_cmd *node);
-void							apply_fd(int fd1, int fd);
 void							check_fds(t_cmd *node);
 void							execute(t_exec *shell, t_cmd *node);
 //-----------execute-multiple---------------
@@ -96,5 +98,6 @@ void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
 //-----------heredoc------------------------
 int								heredoc(t_exec *shell, char *delimiter, t_cmd **node, int quoted);
 //-----------export-------------------------
-t_env							*export_sorted(t_env *env);
+
+
 #endif
