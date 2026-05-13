@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executionpart.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 11:35:33 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 19:03:10 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ t_env							*new_node(char *str);
 t_env							*env_init(char **env);
 //--------------utils-----------------------
 int								ft_strcmp(char *s1, char *s2);
-int								replace(char *key,char *value, t_env *env);
+int								replace(char *key, char *value, t_env *env);
 char							*get_value(char *key, t_env *env);
 void							init_vals(t_exec *shell, t_cmd *cmds);
 //-------------utils2----------------------
@@ -98,6 +98,5 @@ void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
 //-----------heredoc------------------------
 int								heredoc(t_exec *shell, char *delimiter, t_cmd **node, int quoted);
 //-----------export-------------------------
-
 
 #endif

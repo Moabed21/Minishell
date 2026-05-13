@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsingpart.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 06:41:01 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/13 11:27:08 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 19:01:09 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,19 +83,18 @@ typedef struct s_cmd
 }					t_cmd;
 t_cmd		*prepare_for_execution(char *input, t_env *env, int last_status);
 //tokenization
-t_token 	*token_new(char *value, t_token_type type);
-void 		token_addback(t_token **list, t_token *new_node);
-void 		tokenlistclear(t_token **list);
-void 		del_one(t_token *node);
-void        free_ptr(void **ptr);
+t_token		*token_new(char *value, t_token_type type);
+void		token_addback(t_token **list, t_token *new_node);
+void		tokenlistclear(t_token **list);
+void		del_one(t_token *node);
+void		free_ptr(void **ptr);
 int			save_op(t_token **token_lst, char *str, int index, int type);
 int			save_word(t_token **token_lst, char *str, int index, int start);
-// int			is_operator(char *str, int i);
+int			is_operator(char *str, int i);
 int			set_status(int status, char *str, int i);
 int			save_word_or_op(int *i, char *str, int start, t_token **token_list);
 int			has_quotes(char *str);
-t_token 	*tokenization(char *input);
-//utils
+t_token		*tokenization(char *input);
 //expansion
 t_token		*insert_list(t_token **head, t_token *to_del, t_token *insert);
 int			is_var_char(char c);
@@ -106,7 +105,7 @@ char		*expand_value(char *value, t_env *env, int last_status);
 int			expand_token(t_token **head, t_token *token, t_env *env, int last_status);
 int			expand_tokens(t_token **tokens, t_env *env, int last_status);
 char		*get_env_value(char *key, t_env *env);
-t_token 	*create_tokens_from_words(char **words);
+t_token		*create_tokens_from_words(char **words);
 //parsing
 t_cmd		*parsing(t_token *tokens);
 int			arg_count(char **args);

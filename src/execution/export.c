@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 13:37:19 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 10:48:14 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 19:03:55 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ t_env	*sort_workspace(t_env *env)
 {
 	t_env	*cloned_env;
 	t_env	*ptr;
-	int		size;
 
 	cloned_env = env_clone(env);
 	if (!cloned_env)

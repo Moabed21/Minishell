@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_redir.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 14:22:27 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 20:54:02 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 18:52:28 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ int	parse_redirs(t_cmd *cmd, t_token *tokens)
 		{
 			if (!tokens->next || !tokens->next->value)
 				return (0);
-			redir = redir_new(tokens->type, tokens->next->value, tokens->next->quoted);
+			redir = redir_new(tokens->type, tokens->next->value,
+					tokens->next->quoted);
 			if (!redir)
 				return (0);
 			redir_addback(&cmd->redir, redir);

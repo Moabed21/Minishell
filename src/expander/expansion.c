@@ -6,23 +6,77 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 18:24:19 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/10 19:53:40 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 18:50:56 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/parsingpart.h"
 #include "../../headers/executionpart.h"
 
+static int	handle_quotes(char c, char *quote)
+{
+	if ((c == '\'' || c == '"') && *quote == 0)
+	{
+		*quote = c;
+		return (1);
+	}
+	if (c == *quote)
+	{
+		*quote = 0;
+		return (1);
+	}
+	return (0);
+}
+
+static int	handle_exit_status(char **result, int last_status)
+{
+	char	*status;
+
+	status = ft_itoa(last_status);
+	*result = append_str(*result, status);
+	free(status);
+	return (2);
+}
+
+static int	handle_env_var(char *value, int i, char **result, t_env *env)
+{
+	char	*name;
+	char	*env_value;
+	int		len;
+
+	len = get_var_name_len(&value[i + 1]);
+	if (len == 0)
+	{
+		*result = append_char(*result, value[i]);
+		return (1);
+	}
+	name = ft_substr(value, i + 1, len);
+	if (!name)
+		return (-1);
+	env_value = get_env_value(name, env);
+	if (env_value)
+		*result = append_str(*result, env_value);
+	free(name);
+	return (len + 1);
+}
+
+static int	handle_dollar(char *value, int i, char **result,
+		t_env *env, int last_status)
+{
+	int	step;
+
+	if (value[i + 1] == '?')
+		return (handle_exit_status(result, last_status));
+	step = handle_env_var(value, i, result, env);
+	return (step);
+}
 
 char	*expand_value(char *value, t_env *env, int last_status)
 {
 	char	*result;
-	char	*name;
-	char	*env_value;
-	char	*status;
 	char	quote;
 	int		i;
-	int		len;
+	int		step;
 
 	result = ft_strdup("");
 	if (!result || !value)
@@ -31,54 +85,17 @@ char	*expand_value(char *value, t_env *env, int last_status)
 	quote = 0;
 	while (value[i])
 	{
-		if ((value[i] == '\'' || value[i] == '"') && quote == 0)
-		{
-			quote = value[i];
+		if (handle_quotes(value[i], &quote))
 			i++;
-		}
-		else if (value[i] == quote)
-		{
-			quote = 0;
-			i++;
-		}
 		else if (value[i] == '$' && quote != '\'')
 		{
-			if (value[i + 1] == '?')
-			{
-				status = ft_itoa(last_status);
-				result = append_str(result, status);
-				free(status);
-				i += 2;
-			}
-			else
-			{
-				len = get_var_name_len(&value[i + 1]);
-				if (len == 0)
-				{
-					result = append_char(result, value[i]);
-					i++;
-				}
-				else
-				{
-					name = ft_substr(value, i + 1, len);
-					if (!name) 
-					{
-						free(result);
-						return (NULL);
-					}
-					env_value = get_env_value(name, env);
-					if (env_value)
-						result = append_str(result, env_value);
-					free(name);
-					i += len + 1;
-				}
-			}
+			step = handle_dollar(value, i, &result, env, last_status);
+			if (step == -1)
+				return (free(result), NULL);
+			i += step;
 		}
 		else
-		{
-			result = append_char(result, value[i]);
-			i++;
-		}
+			result = append_char(result, value[i++]);
 	}
 	return (result);
 }
@@ -96,7 +113,6 @@ int	expand_token(t_token **head, t_token *token, t_env *env, int last_status)
 	expanded = expand_value(token->value, env, last_status);
 	if (!expanded)
 		return (0);
-	// check if we need to split
 	if (ft_strchr(expanded, ' ') && token->quoted == 0)
 	{
 		words = ft_split(expanded, ' ');
@@ -114,7 +130,7 @@ int	expand_token(t_token **head, t_token *token, t_env *env, int last_status)
 int	expand_tokens(t_token **tokens, t_env *env, int last_status)
 {
 	t_token	*tmp;
-	t_token *next;
+	t_token	*next;
 
 	tmp = *tokens;
 	while (tmp)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 14:21:56 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 20:54:06 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 18:47:12 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 t_cmd	*cmd_new(void)
 {
-    t_cmd   *new_cmd;
-    
-    new_cmd = malloc(sizeof(t_cmd));
-    if (!new_cmd)
-        return NULL;
-    new_cmd->args = NULL;
-    new_cmd->redir = NULL;
-    new_cmd->next = NULL;
-    return (new_cmd);
+	t_cmd	*new_cmd;
+
+	new_cmd = malloc(sizeof(t_cmd));
+	if (!new_cmd)
+		return (NULL);
+	new_cmd->args = NULL;
+	new_cmd->redir = NULL;
+	new_cmd->next = NULL;
+	return (new_cmd);
 }
 
 void	cmd_addback(t_cmd **list, t_cmd *new_node)
@@ -65,17 +65,14 @@ void	free_cmds(t_cmd *cmds)
 	}
 }
 
-void	free_args(char **args)
+int	arg_count(char **args)
 {
 	int	i;
 
-	if (!args)
-		return ;
 	i = 0;
+	if (!args)
+		return (0);
 	while (args[i])
-	{
-		free(args[i]);
 		i++;
-	}
-	free(args);
+	return (i);
 }

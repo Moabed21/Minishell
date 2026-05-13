@@ -3,14 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   inserting.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 13:02:27 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 20:52:49 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 18:53:59 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/parsingpart.h"
+
+char	*append_char(char *s, char c)
+{
+	char	*new;
+	int		len;
+	int		i;
+
+	len = 0;
+	if (s)
+		len = ft_strlen(s);
+	new = malloc(sizeof(char) * (len + 2));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		new[i] = s[i];
+		i++;
+	}
+	new[i] = c;
+	new[i + 1] = '\0';
+	free(s);
+	return (new);
+}
 
 t_token	*create_tokens_from_words(char **words)
 {
@@ -29,7 +53,7 @@ t_token	*create_tokens_from_words(char **words)
 
 static void	replace_inthemiddle(t_token *to_del, t_token *tmp, t_token *insert)
 {
-	t_token *last;
+	t_token	*last;
 
 	while (tmp != to_del)
 		tmp = tmp->next;
@@ -46,7 +70,7 @@ static void	replace_inthemiddle(t_token *to_del, t_token *tmp, t_token *insert)
 t_token	*insert_list(t_token **head, t_token *to_del, t_token *insert)
 {
 	t_token	*tmp;
-	t_token *last;
+	t_token	*last;
 
 	tmp = *head;
 	if (tmp == NULL)

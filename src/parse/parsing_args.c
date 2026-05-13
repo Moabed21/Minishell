@@ -3,26 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_args.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 14:26:15 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/05 20:54:09 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 18:42:40 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/parsingpart.h"
-
-int	arg_count(char **args)
-{
-	int	i;
-
-	i = 0;
-	if (!args)
-		return (0);
-	while (args[i])
-		i++;
-	return (i);
-}
 
 int	add_arg(t_cmd *cmd, char *value)
 {
@@ -78,6 +66,13 @@ static char	**free_args_return(char **args)
 	return (NULL);
 }
 
+static t_token	*skip_redirection(t_token *tokens)
+{
+	if (tokens->next)
+		return (tokens->next->next);
+	return (NULL);
+}
+
 char	**fill_args(t_token *tokens)
 {
 	char	**args;
@@ -92,17 +87,12 @@ char	**fill_args(t_token *tokens)
 	while (tokens && tokens->type != PIPE && tokens->type != END)
 	{
 		if (is_redir(tokens->type))
-		{
-			if (tokens->next)
-				tokens = tokens->next->next;
-			else
-				tokens = NULL;
-		}
+			tokens = skip_redirection(tokens);
 		else
 		{
 			args[i] = ft_strdup(tokens->value);
 			if (!args[i])
-	            return (free_args_return(args));
+				return (free_args_return(args));
 			i++;
 			tokens = tokens->next;
 		}
@@ -110,4 +100,3 @@ char	**fill_args(t_token *tokens)
 	args[i] = NULL;
 	return (args);
 }
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
+/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 12:57:18 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 11:20:27 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 18:39:35 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 		}
 		if (!quoted)
 			// expanded_line = expand_value(line, shell->envp,
-					shell->last_status);
+					//shell->last_status;
 			expanded_line = expand_value(line, shell->first_env_node,
 					shell->last_status);
 		else

@@ -6,13 +6,12 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/20 13:13:53 by shathaamarn       #+#    #+#             */
-/*   Updated: 2026/05/10 19:49:07 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 18:53:50 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/parsingpart.h"
 #include "../../headers/executionpart.h"
-
 
 int	is_var_char(char c)
 {
@@ -41,28 +40,17 @@ char	*get_env_value(char *key, t_env *env)
 	return (NULL);
 }
 
-char	*append_char(char *s, char c)
+static int	copy_str(char *dst, char *src, int start)
 {
-	char	*new;
-	int		len;
-	int		i;
+	int	i;
 
-	len = 0;
-	if (s)
-		len = ft_strlen(s);
-	new = malloc(sizeof(char) * (len + 2));
-	if (!new)
-		return (NULL);
 	i = 0;
-	while (i < len)
+	while (src && src[i])
 	{
-		new[i] = s[i];
+		dst[start + i] = src[i];
 		i++;
 	}
-	new[i] = c;
-	new[i + 1] = '\0';
-	free(s);
-	return (new);
+	return (start + i);
 }
 
 char	*append_str(char *s, char *to_add)
@@ -71,7 +59,6 @@ char	*append_str(char *s, char *to_add)
 	int		len1;
 	int		len2;
 	int		i;
-	int		j;
 
 	len1 = 0;
 	len2 = 0;
@@ -82,19 +69,8 @@ char	*append_str(char *s, char *to_add)
 	new = malloc(sizeof(char) * (len1 + len2 + 1));
 	if (!new)
 		return (NULL);
-	i = 0;
-	while (i < len1)
-	{
-		new[i] = s[i];
-		i++;
-	}
-	j = 0;
-	while (j < len2)
-	{
-		new[i] = to_add[j];
-		i++;
-		j++;
-	}
+	i = copy_str(new, s, 0);
+	i = copy_str(new, to_add, i);
 	new[i] = '\0';
 	free(s);
 	return (new);
