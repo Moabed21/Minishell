@@ -51,7 +51,6 @@ void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)
 	}
 }
 
-
 char	**findpath(t_env *env)
 {
 	int		i;

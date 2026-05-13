@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 12:57:18 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 20:08:48 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 11:20:27 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-void	her_int(int sig)
+static void	her_int(int sig)
 {
 	(void)sig;
 	g_sig = 130;
@@ -20,7 +20,7 @@ void	her_int(int sig)
 	close(STDIN_FILENO);
 }
 
-void	heredoc_signals(void)
+static void	heredoc_signals(void)
 {
 	struct sigaction	sa;
 	struct sigaction	sa_quit;
@@ -34,14 +34,14 @@ void	heredoc_signals(void)
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }
-void	message_display(char *delimiter)
+static void	message_display(char *delimiter)
 {
 	ft_putstr_fd("minishell: warning: here-document ", 2);
-	ft_putstr_fd("delimited by end-of-file (wanted '",2);
+	ft_putstr_fd("delimited by end-of-file (wanted '", 2);
 	ft_putstr_fd(delimiter, 2);
 	ft_putstr_fd("')\n", 2);
 }
-void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
+static void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 {
 	char	*line;
 	char	*expanded_line;
@@ -57,8 +57,10 @@ void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 			break ;
 		}
 		if (!quoted)
-			//expanded_line = expand_value(line, shell->envp, shell->last_status);
-			expanded_line = expand_value(line, shell->first_env_node, shell->last_status);
+			// expanded_line = expand_value(line, shell->envp,
+					shell->last_status);
+			expanded_line = expand_value(line, shell->first_env_node,
+					shell->last_status);
 		else
 			expanded_line = ft_strdup(line);
 		ft_putstr_fd(expanded_line, fd[1]);

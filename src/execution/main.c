@@ -51,7 +51,8 @@ void	main2(t_exec *shell)
 		if (!input)
 			break ;
 		add_history(input);
-		shell->cmds = prepare_for_execution(input, shell->first_env_node, shell->last_status);
+		shell->cmds = prepare_for_execution(input, shell->first_env_node,
+				shell->last_status);
 		if (shell->cmds)
 		{
 			execution(shell);

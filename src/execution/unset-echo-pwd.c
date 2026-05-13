@@ -14,7 +14,7 @@
 
 static void	unset_2(t_env **head, t_env *target, t_env *prev)
 {
-	if(!prev)
+	if (!prev)
 		*head = (*head)->next;
 	else
 		prev->next = target->next;
@@ -25,9 +25,9 @@ static void	unset_2(t_env **head, t_env *target, t_env *prev)
 
 void	e_unset(t_cmd *node, t_exec *shell)
 {
-	int i;
-	t_env *curr;
-	t_env *prev;
+	int		i;
+	t_env	*curr;
+	t_env	*prev;
 
 	i = 0;
 	while (node->args[++i])
@@ -36,9 +36,9 @@ void	e_unset(t_cmd *node, t_exec *shell)
 		prev = NULL;
 		while (curr)
 		{
-			if(!ft_strcmp(curr->key, node->args[i]))
+			if (!ft_strcmp(curr->key, node->args[i]))
 			{
-				unset_2(&shell->first_env_node, curr,prev);
+				unset_2(&shell->first_env_node, curr, prev);
 				break ;
 			}
 			prev = curr;

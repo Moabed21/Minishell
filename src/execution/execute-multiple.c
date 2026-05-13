@@ -6,13 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 09:54:05 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 15:05:27 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 11:26:18 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-void	wait_all(t_exec *shell)
+static void	wait_all(t_exec *shell)
 {
 	t_cmd	*cmd;
 
@@ -23,11 +23,18 @@ void	wait_all(t_exec *shell)
 			wait_child(shell, cmd);
 		cmd = cmd->next;
 	}
-	if(WTERMSIG(shell->last_status) == SIGQUIT)
+	if (WTERMSIG(shell->last_status) == SIGQUIT)
+	{
 		write(2, "Quit (core dumped)\n", 19);
+		while (1)
+		{
+			if (wait(NULL) == -1)
+				break ;
+		}
+	}
 }
 
-void	run_pipeline(t_exec *shell, t_cmd *node)
+static void	run_pipeline(t_exec *shell, t_cmd *node)
 {
 	default_signals();
 	if (node->fd_in != 0)
@@ -47,7 +54,7 @@ void	run_pipeline(t_exec *shell, t_cmd *node)
 	}
 }
 
-void	mcc(t_exec *shell, t_cmd **cmds, int prev_fd)
+static void	mcc(t_exec *shell, t_cmd **cmds, int prev_fd)
 {
 	if ((*cmds)->next)
 		ft_fork_pipe(shell, *cmds, 2);

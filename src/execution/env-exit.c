@@ -53,7 +53,8 @@ static void	e_exit2(t_cmd *node, t_exec *shell)
 {
 	if (node->args[2])
 	{
-		error_display(STDERR_FILENO, node->args[0], ": too many arguments", shell);
+		error_display(STDERR_FILENO, node->args[0], ": too many arguments",
+			shell);
 		shell->last_status = 1;
 		return ;
 	}
@@ -79,7 +80,8 @@ void	e_exit(t_cmd *node, t_exec *shell)
 	}
 	if (node->args[1] && not_a_num(node->args[1]))
 	{
-		error_display(STDERR_FILENO, node->args[1], ": numeric arguments required", shell);
+		error_display(STDERR_FILENO, node->args[1],
+			": numeric arguments required", shell);
 		ruin_everything(shell);
 		exit(2);
 	}

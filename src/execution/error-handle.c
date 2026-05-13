@@ -42,7 +42,7 @@ void	free_current_cmd(t_cmd **node)
 	while (r)
 	{
 		tmp = r->next;
-		//to be checked
+		// to be checked
 		// free(r->filename);
 		free(r);
 		r = tmp;

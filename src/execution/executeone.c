@@ -6,13 +6,13 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/10 16:23:43 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/13 11:24:46 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/executionpart.h"
 
-void	execute_as_is(t_exec *shell, t_cmd *node)
+static void	execute_as_is(t_exec *shell, t_cmd *node)
 {
 	if (ft_strchr(node->args[0], '/'))
 	{
@@ -65,7 +65,7 @@ void	check_fds(t_cmd *node)
 	}
 }
 
-void	execute_non_builtin(t_exec *shell, t_cmd *node)
+static void	execute_non_builtin(t_exec *shell, t_cmd *node)
 {
 	ft_fork_pipe(shell, node, 1);
 	if (node->fork_id == -1)
