@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/08 21:33:52 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/11 18:39:19 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,3 +39,4 @@ void	init_vals(t_exec *shell, t_cmd *cmds)
 		cmds = cmds->next;
 	}
 }
+
