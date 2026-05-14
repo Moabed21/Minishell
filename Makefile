@@ -7,7 +7,7 @@ OBJ_DIR     = obj
 HEADERS     = headers
 
 EXEC_FILES  = main.c signals.c io-redir.c \
-              execution.c export.c env-exit.c \
+              execution.c export.c export2.c env-exit.c \
               error-handle.c executeone.c execute-multiple.c \
               heredoc.c unset-echo-pwd.c cd.c
 

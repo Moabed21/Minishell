@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:40:15 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/13 19:40:17 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 21:40:22 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	free_cmds(t_cmd *cmds)
 	{
 		tmp = cmds->next;
 		free_args(cmds->args);
+		free(cmds->redir->filename);
 		free_redirs(cmds->redir);
 		free(cmds);
 		cmds = tmp;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 13:37:19 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 19:36:08 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/14 07:54:00 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,18 @@ t_env	*new_clone_node(t_env *env)
 	if (!node)
 		return (NULL);
 	node->key = ft_strdup(env->key);
-	node->value = ft_strdup(env->value);
+	if (env->value)
+		node->value = ft_strdup(env->value);
+	else
+		node->value = NULL;
 	node->next = NULL;
-	if (!node->key && node->value)
-	{
-		free(node->value);
-		free(node);
-	}
-	if (node->key && !node->value)
+	if (!node->key || (env->value && !node->value))
 	{
 		free(node->key);
+		free(node->value);
 		free(node);
-	}
-	if (!node->key && !node->value)
-		free(node);
-	if (!node)
 		return (NULL);
+	}
 	return (node);
 }
 
@@ -53,122 +49,56 @@ t_env	*env_clone(t_env *env)
 	env_recover = env_recover->next;
 	while (env_recover)
 	{
-		clone_head->next = new_clone_node(env_recover);
-		clone_head = clone_head->next;
+		ptr->next = new_clone_node(env_recover);
+		if (!ptr->next)
+			break ;
+		ptr = ptr->next;
 		env_recover = env_recover->next;
 	}
-	return (ptr);
+	return (clone_head);
 }
-int	list_size(t_env *env)
-{
-	t_env	*ptr;
-	int		i;
 
-	i = 0;
-	ptr = env;
-	while (ptr)
-	{
-		i++;
-		ptr = ptr->next;
-	}
-	return (i);
-}
-t_env	*export_sorted(t_env *env)
+static void	swap_data(t_env *a, t_env *b)
 {
-	int		size;
-	int		i;
-	int		j;
+	char	*tmp;
+
+	tmp = a->key;
+	a->key = b->key;
+	b->key = tmp;
+	tmp = a->value;
+	a->value = b->value;
+	b->value = tmp;
+}
+
+void	export_sorted(t_env *env)
+{
+	int		swapped;
 	t_env	*ptr;
 
-	i = 0;
-	ptr = env;
-	size = list_size(env);
-	while (i < size)
+	swapped = 1;
+	while (swapped)
 	{
-		j = i + 1;
-		/* while (j < size - j)
+		swapped = 0;
+		ptr = env;
+		while (ptr && ptr->next)
 		{
-			if ()
+			if (ft_strcmp(ptr->key, ptr->next->key) > 0)
 			{
+				swap_data(ptr, ptr->next);
+				swapped = 1;
 			}
-			j++;
-		} */
-		i++;
+			ptr = ptr->next;
+		}
 	}
-	return (NULL);
 }
 
 t_env	*sort_workspace(t_env *env)
 {
 	t_env	*cloned_env;
-	t_env	*ptr;
 
 	cloned_env = env_clone(env);
 	if (!cloned_env)
 		return (NULL);
-	ptr = export_sorted(cloned_env);
-	return (ptr);
-}
-void	no_args(t_exec *shell, t_cmd *node)
-{
-	t_env	*ptr;
-	t_env	*ptr2;
-
-	ptr2 = shell->first_env_node;
-	shell->sorted_env = sort_workspace(ptr2);
-	if (!shell->sorted_env)
-		return ;
-	ptr = shell->sorted_env;
-	while (ptr)
-	{
-		write(node->fd_out, "declare -x ", 11);
-		write(node->fd_out, ptr->key, ft_strlen(ptr->key));
-		if (ptr->value)
-		{
-			write(node->fd_out, "=\"", 2);
-			write(node->fd_out, ptr->value, ft_strlen(ptr->value));
-			write(node->fd_out, "\"", 1);
-		}
-		write(node->fd_out, "\n", 1);
-		ptr = ptr->next;
-	}
-	env_ruin(&shell->sorted_env);
-}
-
-int	has_args(t_exec *shell, t_cmd *node)
-{
-	int	has_error;
-	int	i;
-
-	i = 1;
-	has_error = 0;
-	while (node->args[i])
-	{
-		if (ft_isalpha(node->args[i][0]) || node->args[i][0] == '_')
-			env_add_last(&shell->first_env_node, node->args[i]);
-		else
-		{
-			write(2, "minishell: export: `", 21);
-			write(2, node->args[i], ft_strlen(node->args[i]));
-			write(2, ": not a valid identifier\n", 26);
-			has_error++;
-		}
-		i++;
-	}
-	return (has_error);
-}
-
-void	e_export(t_cmd *node, t_exec *shell)
-{
-	int	has_error;
-
-	has_error = 0;
-	if (!node->args[1])
-		no_args(shell, node);
-	else
-		has_error = has_args(shell, node);
-	if (has_error)
-		shell->last_status = 1;
-	else
-		shell->last_status = 0;
+	export_sorted(cloned_env);
+	return (cloned_env);
 }

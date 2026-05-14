@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executionpart.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 19:03:10 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/13 20:37:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void							e_cd(t_cmd *node, t_exec *shell);
 //--------------builtins--------------------
 void							e_echo(t_cmd *node, t_exec *shell);
 void							e_pwd(t_cmd *node, t_exec *shell);
-void							e_export(t_cmd *node, t_exec *shell);
 void							e_unset(t_cmd *node, t_exec *shell);
 //--------------io-redir--------------------
 void							output_handle(t_redir *red, t_cmd **cmd,
@@ -98,5 +97,8 @@ void							multiple_cmds(t_exec *shell, t_cmd *cmds_list);
 //-----------heredoc------------------------
 int								heredoc(t_exec *shell, char *delimiter, t_cmd **node, int quoted);
 //-----------export-------------------------
+void							e_export(t_cmd *node, t_exec *shell);
+t_env							*sort_workspace(t_env *env);
+void							no_args(t_exec *shell, t_cmd *node);
 
 #endif
