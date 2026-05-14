@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 12:57:18 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/13 22:37:11 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/14 08:47:34 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ static void	heredoc_signals(void)
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }
+
 static void	message_display(char *delimiter)
 {
 	ft_putstr_fd("minishell: warning: here-document ", 2);
@@ -42,6 +43,7 @@ static void	message_display(char *delimiter)
 	ft_putstr_fd(delimiter, 2);
 	ft_putstr_fd("')\n", 2);
 }
+
 static void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 {
 	char	*line;
@@ -58,8 +60,6 @@ static void	heredoc_loop(t_exec *shell, int fd[2], int quoted, char *delimiter)
 			break ;
 		}
 		if (!quoted)
-			// expanded_line = expand_value(line, shell->envp,
-					//shell->last_status;
 			expanded_line = expand_value(line, shell->first_env_node,
 					shell->last_status, 0);
 		else
