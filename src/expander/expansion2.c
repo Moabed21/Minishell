@@ -6,7 +6,7 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:29:33 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/13 19:32:57 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/16 16:24:38 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,21 @@ char	*expand_value(char *value, t_env *env, int last_status, int i)
 {
 	char	*result;
 	char	quote;
+	void	*data[2];
 
 	result = ft_strdup("");
 	if (!result || !value)
 		return (result);
+	data[0] = env;
+	data[1] = &last_status;
 	quote = 0;
 	while (value[i])
 	{
 		if (handle_quotes(value[i], &quote))
 			i++;
-		else if (value[i] == '$' && quote != '\'' && value[i + 1] == '?')
-		{
-			if (expand_status(&i, &result, last_status) == -1)
-				return (free(result), NULL);
-		}
 		else if (value[i] == '$' && quote != '\'')
 		{
-			if (expand_env(value, &i, &result, env) == -1)
+			if (handle_dollar(value, &i, &result, data) == -1)
 				return (free(result), NULL);
 		}
 		else

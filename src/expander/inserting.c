@@ -6,7 +6,7 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:39:45 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/13 19:39:48 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/16 16:29:49 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,20 @@ t_token	*insert_list(t_token **head, t_token *to_del, t_token *insert)
 	free_ptr((void **)&to_del->value);
 	free_ptr((void **)&to_del);
 	return (insert);
+}
+
+int	handle_dollar(char *value, int *i, char **result, void **data)
+{
+	int		return_value;
+	if (value[*i + 1] == '?')
+	{
+		return_value = expand_status(i, result, *(int *)data[1]);
+		return (return_value);
+	}
+	if (value[*i + 1] == '0')
+	{
+		 return_value = expand_shell_name(result, i);
+		 return (return_value);
+	}
+	return (expand_env(value, i, result, (t_env *)data[0]));
 }

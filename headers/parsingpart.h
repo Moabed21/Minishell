@@ -6,7 +6,7 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:40:42 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/13 19:40:44 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/16 16:24:16 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ int			expand_token(t_token **head, t_token *token, t_env *env, int last_status);
 int			expand_tokens(t_token **tokens, t_env *env, int last_status);
 char		*get_env_value(char *key, t_env *env);
 t_token		*create_tokens_from_words(char **words);
+int			expand_shell_name(char **result, int *i);
+int			handle_dollar(char *value, int *i, char **result, void **data);
 //parsing
 t_cmd		*parsing(t_token *tokens);
 int			arg_count(char **args);
