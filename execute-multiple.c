@@ -53,9 +53,15 @@ static void run_pipeline(t_exec *shell, t_cmd *node)
 	if (node->fd_in == -1 || node->fd_out == -1)
 		exit(1);
 	if (node->fd_in > 2)
+	{
 		apply_fd(node->fd_in, 0);
+		node->fd_in = 0;
+	}
 	if (node->fd_out > 2)
+	{
 		apply_fd(node->fd_out, 1);
+		node->fd_out = 1;
+	}
 	if (node->next)
 		close(shell->fd[0]);
 	close_all_saved_fds(shell->cmds);
@@ -106,14 +112,18 @@ void	multiple_cmds(t_exec *shell, t_cmd *cmds)
 			break ;
 		if (cmds->fork_id == 0)
 			run_pipeline(shell, cmds);
-		check_fds(cmds);
 		if (cmds->next)
 		{
-			prev_fd = shell->fd[0];
 			close(shell->fd[1]);
+			if (cmds->fd_out == shell->fd[1])
+				cmds->fd_out = 1;
+			prev_fd = shell->fd[0];
+			if (cmds->fd_in == prev_fd)
+				cmds->fd_in = 0;
 		}
 		else
 			prev_fd = -1;
+		check_fds(cmds);
 		cmds = cmds->next;
 	}
 	if (prev_fd != -1)
