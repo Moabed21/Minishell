@@ -71,31 +71,31 @@ void	env_ruin(t_env **head)
 	*head = NULL;
 }
 
-t_env   *env_init(char **env)
+t_env	*env_init(char **env)
 {
-    int     size;
-    t_env   *head;
-    t_env   *ptr;
+	int		size;
+	t_env	*head;
+	t_env	*ptr;
 
-    size = 1;
-    if (!env || !env[0])
-        return (NULL);
-    ptr = new_node(env[0]);
-    if (!ptr)
-        return (NULL);
-    head = ptr;
-    while (env[size])
-    {
-        ptr->next = new_node(env[size]);
-        if (!ptr->next)
-        {
-            env_ruin(&head);
-            return (NULL);
-        }
-        ptr = ptr->next;
-        size++;
-    }
-    return (head);
+	size = 1;
+	if (!env || !env[0])
+		return (NULL);
+	ptr = new_node(env[0]);
+	if (!ptr)
+		return (NULL);
+	head = ptr;
+	while (env[size])
+	{
+		ptr->next = new_node(env[size]);
+		if (!ptr->next)
+		{
+			env_ruin(&head);
+			return (NULL);
+		}
+		ptr = ptr->next;
+		size++;
+	}
+	return (head);
 }
 
 void	env_add_last(t_env **env, char *target)

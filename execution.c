@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/16 12:43:24 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/17 23:39:27 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,24 @@ void	apply_fd(int fd1, int fd)
 	close(fd1);
 }
 
-void	wait_child(t_exec *shell, t_cmd *node)
+void	wait_child(t_exec *shell, t_cmd *cmd)
 {
 	int	status;
+	int	w;
 
-	waitpid(node->fork_id, &status, 0);
+	w = waitpid(cmd->fork_id, &status, 0);
+	if (w == -1)
+		return ;
 	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
+	{
 		shell->last_status = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGINT)
+			shell->sigint_received = 1;
+		else if (WTERMSIG(status) == SIGQUIT)
+			shell->sigquit_received = 1;
+	}
 }
 
 void	ft_fork_pipe(t_exec *shell, t_cmd *node, int option)

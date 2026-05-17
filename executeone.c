@@ -90,7 +90,7 @@ static void	execute_non_builtin(t_exec *shell, t_cmd *node)
 	wait_child(shell, node);
 }
 
-void    execute_one_cmd(t_exec *shell, t_cmd *node)
+void	execute_one_cmd(t_exec *shell, t_cmd *node)
 {
 	if (!node)
 		return ;

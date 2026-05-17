@@ -35,38 +35,37 @@ void	output_handle(t_redir *red, t_cmd **current_cmd, int option)
 	}
 }
 
-void    input_handle(t_redir *red, t_cmd **current_cmd)
+void	input_handle(t_redir *red, t_cmd **current_cmd)
 {
-    int fd;
+	int	fd;
 
-    fd = open(red->filename, O_RDONLY);
-    if (fd == -1)
-    {
-        perror(red->filename);
-        check_fds(*current_cmd);
-        (*current_cmd)->fd_in = -1;
-    }
-    else
-    {
-        if ((*current_cmd)->fd_in > 2)
-            close((*current_cmd)->fd_in);
-        (*current_cmd)->fd_in = fd;
-    }
+	fd = open(red->filename, O_RDONLY);
+	if (fd == -1)
+	{
+		perror(red->filename);
+		check_fds(*current_cmd);
+		(*current_cmd)->fd_in = -1;
+	}
+	else
+	{
+		if ((*current_cmd)->fd_in > 2)
+			close((*current_cmd)->fd_in);
+		(*current_cmd)->fd_in = fd;
+	}
 }
 
-void	redir_handle( t_redir *redir, t_cmd **cmd)
+void	redir_handle(t_redir *redir, t_cmd **cmd)
 {
 	while (redir)
-    {
-        if (redir->type == INPUT)
-            input_handle(redir, cmd);
-        else if (redir->type == TRUNC)
-            output_handle(redir, cmd, 1);
-        else if (redir->type == APPEND)
-            output_handle(redir, cmd, 2);
-        if ((*cmd)->fd_in == -1 || (*cmd)->fd_out == -1)
-            return ;
-        redir = redir->next;
-    }
+	{
+		if (redir->type == INPUT)
+			input_handle(redir, cmd);
+		else if (redir->type == TRUNC)
+			output_handle(redir, cmd, 1);
+		else if (redir->type == APPEND)
+			output_handle(redir, cmd, 2);
+		if ((*cmd)->fd_in == -1 || (*cmd)->fd_out == -1)
+			return ;
+		redir = redir->next;
 	}
-
+}

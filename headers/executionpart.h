@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/16 12:56:07 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/17 23:39:03 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ typedef struct s_exec
 	char						**envp;
 	int							cmds_count;
 	int							fd[2];
+	int							sigint_received;
+	int							sigquit_received;
 	int							last_status;
 	t_env						*first_env_node;
 	t_env						*sorted_env;

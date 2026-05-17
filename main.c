@@ -52,9 +52,9 @@ int	check_line(char *input)
 	return (option);
 }
 
-void    main2(t_exec *shell)
+void	main2(t_exec *shell)
 {
-	char    *input;
+	char	*input;
 
 	while (1)
 	{
@@ -67,7 +67,7 @@ void    main2(t_exec *shell)
 		}
 		if (!input)
 			break ;
-		if(check_line(input))
+		if (check_line(input))
 			add_history(input);
 		shell->cmds = prepare_for_execution(input, shell->first_env_node,
 				shell->last_status);

@@ -6,15 +6,15 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 09:54:05 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/16 16:28:27 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/17 23:38:41 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executionpart.h"
 
-static void wait_all(t_exec *shell)
+static void	wait_all(t_exec *shell)
 {
-	t_cmd   *cmd;
+	t_cmd	*cmd;
 
 	cmd = shell->cmds;
 	while (cmd)
@@ -23,19 +23,21 @@ static void wait_all(t_exec *shell)
 			wait_child(shell, cmd);
 		cmd = cmd->next;
 	}
-	if (WIFSIGNALED(shell->last_status) &&
-				WTERMSIG(shell->last_status) == SIGQUIT)
+	while (wait(NULL) != -1)
+		;
+	if (shell->sigquit_received)
 	{
 		write(2, "Quit (core dumped)\n", 19);
+		shell->sigquit_received = 0;
 	}
-	while (1)
+	if (shell->sigint_received)
 	{
-		if (wait(NULL) == -1)
-			break ;
+		write(1, "\n", 1);
+		shell->sigint_received = 0;
 	}
 }
 
-void close_all_saved_fds(t_cmd *cmds)
+void	close_all_saved_fds(t_cmd *cmds)
 {
 	while (cmds)
 	{
@@ -47,7 +49,7 @@ void close_all_saved_fds(t_cmd *cmds)
 	}
 }
 
-static void run_pipeline(t_exec *shell, t_cmd *node)
+static void	run_pipeline(t_exec *shell, t_cmd *node)
 {
 	default_signals();
 	if (node->fd_in == -1 || node->fd_out == -1)

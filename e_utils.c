@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/16 16:07:31 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/17 23:43:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,17 @@ void	init_vals(t_exec *shell, t_cmd *cmds)
 	}
 }
 
-int  preprocess_heredocs(t_exec *shell, t_cmd *cmds)
+int	preprocess_heredocs(t_exec *shell, t_cmd *cmds)
 {
-	t_redir *redir;
+	t_redir	*redir;
 
 	while (cmds)
 	{
 		redir = cmds->redir;
 		while (redir)
 		{
-			if (redir->type == HEREDOC && heredoc(shell,
-					redir->filename, &cmds, redir->quoted) == -1)
+			if (redir->type == HEREDOC && heredoc(shell, redir->filename, &cmds,
+					redir->quoted) == -1)
 			{
 				shell->last_status = 130;
 				return (-1);
