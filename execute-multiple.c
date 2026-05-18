@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/04 09:54:05 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/17 23:38:41 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 08:41:41 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,11 @@ static void	run_pipeline(t_exec *shell, t_cmd *node)
 		node->fd_out = 1;
 	}
 	if (node->next)
+	{
 		close(shell->fd[0]);
+		if (node->fd_out != shell->fd[1])
+			close(shell->fd[1]);
+	}
 	close_all_saved_fds(shell->cmds);
 	if (!node->args || !node->args[0])
 		exit(0);
@@ -80,14 +84,28 @@ static void	run_pipeline(t_exec *shell, t_cmd *node)
 
 static void	mcc(t_exec *shell, t_cmd **cmds, int prev_fd)
 {
+	int	pipe_created;
+
+	pipe_created = 0;
 	if ((*cmds)->next)
+	{
 		ft_fork_pipe(shell, *cmds, 2);
-	if ((*cmds)->fork_id == -1)
-		return ;
+		if ((*cmds)->fork_id == -1)
+			return ;
+		(*cmds)->fork_id = 0;
+		pipe_created = 1;
+	}
 	if ((*cmds)->redir)
 		redir_handle((*cmds)->redir, cmds);
 	if (!*cmds)
+	{
+		if (pipe_created)
+		{
+			close(shell->fd[0]);
+			close(shell->fd[1]);
+		}
 		return ;
+	}
 	if (prev_fd != -1 && (*cmds)->fd_in == 0)
 		(*cmds)->fd_in = prev_fd;
 	else if (prev_fd != -1)
@@ -95,7 +113,6 @@ static void	mcc(t_exec *shell, t_cmd **cmds, int prev_fd)
 	if ((*cmds)->next && (*cmds)->fd_out == 1)
 		(*cmds)->fd_out = shell->fd[1];
 }
-
 void	multiple_cmds(t_exec *shell, t_cmd *cmds)
 {
 	int	prev_fd;
@@ -109,26 +126,39 @@ void	multiple_cmds(t_exec *shell, t_cmd *cmds)
 		mcc(shell, &cmds, prev_fd);
 		if (!cmds)
 			break ;
+		if (cmds->fork_id == -1)
+		{
+			check_fds(cmds);
+			if (prev_fd != -1)
+				close(prev_fd);
+			break ;
+		}
 		ft_fork_pipe(shell, cmds, 1);
 		if (cmds->fork_id == -1)
+		{
+			if (cmds->next)
+			{
+				close(shell->fd[0]);
+				close(shell->fd[1]);
+			}
+			check_fds(cmds);
+			if (prev_fd != -1)
+				close(prev_fd);
 			break ;
+		}
 		if (cmds->fork_id == 0)
 			run_pipeline(shell, cmds);
 		if (cmds->next)
-		{
 			close(shell->fd[1]);
-			if (cmds->fd_out == shell->fd[1])
-				cmds->fd_out = 1;
-			prev_fd = shell->fd[0];
-			if (cmds->fd_in == prev_fd)
-				cmds->fd_in = 0;
-		}
-		else
-			prev_fd = -1;
 		check_fds(cmds);
+		if (cmds->next)
+			prev_fd = shell->fd[0];
+		else if (prev_fd != -1)
+			close(prev_fd);
 		cmds = cmds->next;
 	}
 	if (prev_fd != -1)
 		close(prev_fd);
 	wait_all(shell);
+	interactive_signals();
 }
