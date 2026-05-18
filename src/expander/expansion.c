@@ -6,7 +6,7 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:30:35 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/16 16:06:56 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/18 15:03:52 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 int	expand_shell_name(char **result, int *i)
 {
-	if (append_str(result, "minishell") == -1)
+	*result = append_str(*result, "minishell");
+	if (!*result)
 		return (-1);
 	*i += 2;
 	return (0);

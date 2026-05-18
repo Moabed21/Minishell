@@ -6,7 +6,7 @@
 /*   By: samarnah <samarnah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:29:33 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/16 16:24:38 by samarnah         ###   ########.fr       */
+/*   Updated: 2026/05/18 14:52:52 by samarnah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	handle_env_var(char *value, int i, char **result, t_env *env)
 	return (len + 1);
 }
 
-static int	expand_status(int *i, char **result, int last_status)
+int	expand_status(int *i, char **result, int last_status)
 {
 	int	step;
 
@@ -46,7 +46,7 @@ static int	expand_status(int *i, char **result, int last_status)
 	return (0);
 }
 
-static int	expand_env(char *value, int *i, char **result, t_env *env)
+int	expand_env(char *value, int *i, char **result, t_env *env)
 {
 	int	step;
 
@@ -82,7 +82,7 @@ char	*expand_value(char *value, t_env *env, int last_status, int i)
 		else if (value[i] == '$' && quote != '\'')
 		{
 			if (handle_dollar(value, &i, &result, data) == -1)
-				return (free(result), NULL);
+				return (NULL);
 		}
 		else
 			expand_char(value, &i, &result);
