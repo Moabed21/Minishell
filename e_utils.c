@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 06:03:41 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/17 23:43:38 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 15:44:59 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ int	ft_strcmp(char *s1, char *s2)
 		i++;
 	}
 	return (0);
+}
+
+void	close_pipe(t_exec *shell)
+{
+	close(shell->fd[0]);
+	close(shell->fd[1]);
 }
 
 void	init_vals(t_exec *shell, t_cmd *cmds)
@@ -60,4 +66,18 @@ int	preprocess_heredocs(t_exec *shell, t_cmd *cmds)
 		cmds = cmds->next;
 	}
 	return (0);
+}
+
+void	print_signal_messages(t_exec *shell)
+{
+	if (shell->sigquit_received)
+	{
+		write(2, "Quit (core dumped)\n", 19);
+		shell->sigquit_received = 0;
+	}
+	if (shell->sigint_received)
+	{
+		write(1, "\n", 1);
+		shell->sigint_received = 0;
+	}
 }

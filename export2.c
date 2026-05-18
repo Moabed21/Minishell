@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 07:54:00 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/14 18:30:18 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 13:41:51 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	e_export(t_cmd *node, t_exec *shell)
 		{
 			write(2, "minishell: export: `", 20);
 			write(2, node->args[i], ft_strlen(node->args[i]));
-			write(2, "': not a valid identifier\n", 25);
+			write(2, "': not a valid identifier\n", 27);
 			has_error = 1;
 		}
 		i++;

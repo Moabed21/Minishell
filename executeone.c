@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:49:23 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/16 16:15:25 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 15:42:41 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	execute_as_is(t_exec *shell, t_cmd *node)
 		execve(node->args[0], node->args, shell->envp);
 		err = errno;
 		perror(node->args[0]);
-		free_current_cmd(&node);
+		free_cmds_list(&shell->cmds);
 		if (err == ENOENT)
 			exit(127);
 		else
@@ -42,7 +42,7 @@ void	execute(t_exec *shell, t_cmd *node)
 	{
 		error_display(STDERR_FILENO, node->args[0],
 			": No such file or directory", shell);
-		free_current_cmd(&node);
+		free_cmds_list(&shell->cmds);
 		exit(127);
 	}
 	while (path[++i])
@@ -53,7 +53,7 @@ void	execute(t_exec *shell, t_cmd *node)
 	}
 	error_display(STDERR_FILENO, node->args[0], ": command not found", shell);
 	free2d_array(path);
-	free_current_cmd(&node);
+	free_cmds_list(&shell->cmds);
 	exit(127);
 }
 
@@ -92,8 +92,6 @@ static void	execute_non_builtin(t_exec *shell, t_cmd *node)
 
 void	execute_one_cmd(t_exec *shell, t_cmd *node)
 {
-	if (!node)
-		return ;
 	if (preprocess_heredocs(shell, node) == -1)
 		return ;
 	redir_handle(node->redir, &node);

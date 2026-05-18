@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 19:15:52 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/17 23:39:03 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 15:50:57 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,9 @@ void							e_export(t_cmd *node, t_exec *shell);
 t_env							*sort_workspace(t_env *env);
 void							no_args(t_exec *shell, t_cmd *node);
 int								preprocess_heredocs(t_exec *shell, t_cmd *cmds);
-
+void							close_pipe(t_exec *shell);
+void							print_signal_messages(t_exec *shell);
+void							wait_all(t_exec *shell);
+void							handle_fds(t_exec *shell, t_cmd *node);
+void							close_all_saved_fds(t_cmd *cmds);
 #endif

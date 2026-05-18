@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/07 16:23:48 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/14 18:28:28 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 12:33:14 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ int	shell_init(char **env, t_exec *shell)
 	if (!shell->first_env_node)
 		return (1);
 	shell->last_status = 0;
+	shell->sigint_received = 0;
+	shell->sigquit_received = 0;
+	shell->sorted_env = NULL;
+	shell->cmds_count = 0;
 	return (0);
 }
 

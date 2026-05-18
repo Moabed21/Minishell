@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/20 08:50:13 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/16 15:30:55 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 13:35:39 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	check_line(char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (!(input[i] == ' ' || (input[i] >= 9 && input[i] <= 13)))
+		if (!((input[i] >= 9 && input[i] <= 13)))
 			option = 1;
 		i++;
 	}

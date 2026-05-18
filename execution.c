@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 14:44:34 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/17 23:39:27 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 14:51:51 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,5 @@ void	execution(t_exec *shell)
 		execute_one_cmd(shell, shell->cmds);
 	else
 		multiple_cmds(shell, shell->cmds);
+	print_signal_messages(shell);
 }

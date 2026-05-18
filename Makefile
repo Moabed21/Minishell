@@ -13,7 +13,7 @@ SRC         = main.c signals.c io-redir.c \
               list_utils.c syntax_error.c syntax_error2.c \
               tokenization.c \
               parsing.c parsing_args.c parsing_cmd.c parsing_redir.c \
-              expansion.c expansion2.c inserting.c
+              expansion.c expansion2.c inserting.c execute_utils.c
 
 OBJ         = $(SRC:%.c=$(OBJ_DIR)/%.o)
 LIBFT       = libft/libft.a

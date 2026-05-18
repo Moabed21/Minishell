@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/08 12:41:21 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/18 08:46:17 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 14:34:16 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	e_cd(t_cmd *node, t_exec *shell)
 		if (current_pwd)
 			ft_strlcpy(old_path, current_pwd, BUFFERSIZE);
 	}
-	if (!node->args[1])
+	if (!node->args[1] || node->args[1][0] == '~')
 		path = get_value("HOME", shell->first_env_node);
 	else
 		path = node->args[1];
