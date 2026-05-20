@@ -1,62 +1,44 @@
 NAME        = minishell
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g -I$(HEADERS)
-LDFLAGS     = -L$(SRC_DIR)/libft -lft -lreadline
-SRC_DIR     = src
+CFLAGS      = -Wall -Wextra -Werror -I$(HEADERS)
+LDFLAGS     = -Llibft -lft -lreadline
 OBJ_DIR     = obj
 HEADERS     = headers
-
-EXEC_FILES  = main.c signals.c io-redir.c \
+SRC         = main.c signals.c io-redir.c \
               execution.c export.c export2.c env-exit.c \
               error-handle.c executeone.c execute-multiple.c \
-              heredoc.c unset-echo-pwd.c cd.c
-
-UTILS_FILES = e_utils.c e_utils2.c env-utils3.c \
+              heredoc.c unset-echo-pwd.c cd.c \
+              e_utils.c e_utils2.c env-utils3.c \
               expansion_utils.c lexer_utils.c \
-              list_utils.c syntax_error.c syntax_error2.c
+              list_utils.c syntax_error.c syntax_error2.c \
+              tokenization.c \
+              parsing.c parsing_args.c parsing_cmd.c parsing_redir.c \
+              expansion.c expansion2.c inserting.c execute_utils.c
 
-TOK_FILES   = tokenization.c
-PARSE_FILES = parsing.c parsing_args.c parsing_cmd.c parsing_redir.c
-EXP_FILES   = expansion.c expansion2.c inserting.c
-
-EXEC_SRC    = $(EXEC_FILES:%.c=$(SRC_DIR)/execution/%.c)
-UTILS_SRC   = $(UTILS_FILES:%.c=$(SRC_DIR)/utils/%.c)
-TOK_SRC     = $(TOK_FILES:%.c=$(SRC_DIR)/tokenizer/%.c)
-PARSE_SRC   = $(PARSE_FILES:%.c=$(SRC_DIR)/parse/%.c)
-EXP_SRC     = $(EXP_FILES:%.c=$(SRC_DIR)/expander/%.c)
-
-SRC         = $(EXEC_SRC) $(UTILS_SRC) $(TOK_SRC) $(PARSE_SRC) $(EXP_SRC)
-
-OBJ         = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-
-LIBFT       = $(SRC_DIR)/libft/libft.a
+OBJ         = $(SRC:%.c=$(OBJ_DIR)/%.o)
+LIBFT       = libft/libft.a
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJ_DIR) $(OBJ)
+$(NAME): $(LIBFT) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT):
-	$(MAKE) -C $(SRC_DIR)/libft
+	@$(MAKE) -C libft
+
+$(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
-	@mkdir -p $(OBJ_DIR)/execution
-	@mkdir -p $(OBJ_DIR)/utils
-	@mkdir -p $(OBJ_DIR)/tokenizer
-	@mkdir -p $(OBJ_DIR)/parse
-	@mkdir -p $(OBJ_DIR)/expander
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(MAKE) -C $(SRC_DIR)/libft clean
-	$(RM) -rf $(OBJ_DIR)
+	@$(MAKE) -C libft clean
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
-	$(MAKE) -C $(SRC_DIR)/libft fclean
-	$(RM) -f $(NAME)
+	@$(MAKE) -C libft fclean
+	rm -f $(NAME)
 
 re: fclean all
 
