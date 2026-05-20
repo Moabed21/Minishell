@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:29:33 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/14 18:31:18 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 16:07:38 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	handle_env_var(char *value, int i, char **result, t_env *env)
 	return (len + 1);
 }
 
-static int	expand_status(int *i, char **result, int last_status)
+int	expand_status(int *i, char **result, int last_status)
 {
 	int	step;
 
@@ -46,7 +46,7 @@ static int	expand_status(int *i, char **result, int last_status)
 	return (0);
 }
 
-static int	expand_env(char *value, int *i, char **result, t_env *env)
+int	expand_env(char *value, int *i, char **result, t_env *env)
 {
 	int	step;
 
@@ -67,24 +67,22 @@ char	*expand_value(char *value, t_env *env, int last_status, int i)
 {
 	char	*result;
 	char	quote;
+	void	*data[2];
 
 	result = ft_strdup("");
 	if (!result || !value)
 		return (result);
+	data[0] = env;
+	data[1] = &last_status;
 	quote = 0;
 	while (value[i])
 	{
 		if (handle_quotes(value[i], &quote))
 			i++;
-		else if (value[i] == '$' && quote != '\'' && value[i + 1] == '?')
-		{
-			if (expand_status(&i, &result, last_status) == -1)
-				return (free(result), NULL);
-		}
 		else if (value[i] == '$' && quote != '\'')
 		{
-			if (expand_env(value, &i, &result, env) == -1)
-				return (free(result), NULL);
+			if (handle_dollar(value, &i, &result, data) == -1)
+				return (NULL);
 		}
 		else
 			expand_char(value, &i, &result);

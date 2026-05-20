@@ -6,12 +6,21 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:30:35 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/14 18:31:09 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 16:07:44 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "headers/executionpart.h"
 #include "headers/parsingpart.h"
+
+int	expand_shell_name(char **result, int *i)
+{
+	*result = append_str(*result, "minishell");
+	if (!*result)
+		return (-1);
+	*i += 2;
+	return (0);
+}
 
 int	handle_quotes(char c, char *quote)
 {
@@ -80,32 +89,3 @@ int	expand_tokens(t_token **tokens, t_env *env, int last_status)
 	}
 	return (1);
 }
-
-// void	print_list(t_token *head)
-// {
-// 	t_token	*current;
-
-// 	current = head;
-// 	while (current)
-// 	{
-// 		if (current->next)
-// 			printf("%s-> ", current->value);
-// 		else
-// 			printf("%s", current->value);
-// 		current = current->next;
-// 	}
-// }
-
-// int	main(int ac, char **av, char **env)
-// {
-// 	t_token	*head;
-// 	t_token	*head1;
-
-// 	head = tokenization("echo \"$USER and $PATH\"");
-// 	head1 = tokenization("$?");
-// 	expand_tokens(&head, env, 0);
-// 	expand_tokens(&head1, env, 0);
-// 	print_list(head);
-// 	print_list(head1);
-// 	return (0);
-// }

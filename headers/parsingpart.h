@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:40:42 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/14 17:59:17 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 16:03:10 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,12 @@ int						expand_tokens(t_token **tokens, t_env *env,
 							int last_status);
 char					*get_env_value(char *key, t_env *env);
 t_token					*create_tokens_from_words(char **words);
+int						expand_shell_name(char **result, int *i);
+int						expand_status(int *i, char **result, int last_status);
+int						expand_env(char *value, int *i, char **result,
+							t_env *env);
+int						handle_dollar(char *value, int *i, char **result,
+							void **data);
 // parsing
 t_cmd					*parsing(t_token *tokens);
 int						arg_count(char **args);

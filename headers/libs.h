@@ -19,10 +19,10 @@
 # define FAILURE 1
 # include <stdio.h>
 // readline
-# include <signal.h>
 # include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 // #define _DEFAULT_SOURCE
 # include "../libft/libft.h"
 # include <fcntl.h>

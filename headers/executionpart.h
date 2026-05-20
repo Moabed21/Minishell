@@ -13,8 +13,8 @@
 #ifndef EXECUTIONPART_H
 # define EXECUTIONPART_H
 
-# include "parsingpart.h"
 # include "libs.h"
+# include "parsingpart.h"
 
 typedef struct s_cmd			t_cmd;
 typedef struct s_redir			t_redir;
@@ -52,8 +52,7 @@ void							e_unset(t_cmd *node, t_exec *shell);
 void							output_handle(t_redir *red, t_cmd **cmd,
 									int option);
 void							input_handle(t_redir *red, t_cmd **current_cmd);
-void							redir_handle(t_redir *red,
-									t_cmd **cmd);
+void							redir_handle(t_redir *red, t_cmd **cmd);
 void							env_ruin(t_env **head);
 void							env_add_last(t_env **env, char *target);
 t_env							*new_node(char *str);

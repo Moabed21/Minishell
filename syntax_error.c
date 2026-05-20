@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 19:40:51 by samarnah          #+#    #+#             */
-/*   Updated: 2026/05/14 18:28:20 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/18 16:08:02 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ static int	check_pipe_error(t_token *tmp)
 static int	check_redir_error(t_token *tmp)
 {
 	if (!tmp->next || tmp->next->type == END)
+	{
+		errmsg("syntax error near unexpected token", "newline", 1);
+		return (FAILURE);
+	}
+	if (tmp -> type == HEREDOC && tmp->next->type == INPUT)
 	{
 		errmsg("syntax error near unexpected token", "newline", 1);
 		return (FAILURE);
