@@ -18,28 +18,69 @@ SRC         = main.c signals.c io-redir.c \
 OBJ         = $(SRC:%.c=$(OBJ_DIR)/%.o)
 LIBFT       = libft/libft.a
 
-all: $(NAME)
+# ── Colors ────────────────────────────────────────────────────────────────────
+RESET       = \033[0m
+DIM         = \033[2m
+CYAN        = \033[36m
+BCYAN       = \033[1;36m
+BGREEN      = \033[1;32m
+YELLOW      = \033[1;33m
+BRED        = \033[1;31m
+WHITE       = \033[1;97m
 
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LDFLAGS) -o $(NAME)
+# ── Progress bar helper ───────────────────────────────────────────────────────
+TOTAL       := $(words $(SRC))
+CURRENT     := 0
+
+define progress
+	$(eval CURRENT := $(shell echo $$(($(CURRENT) + 1)))) \
+	$(eval PCT     := $(shell echo $$(($(CURRENT) * 100 / $(TOTAL))))) \
+	$(eval FILLED  := $(shell echo $$(($(CURRENT) * 30  / $(TOTAL))))) \
+	$(eval EMPTY   := $(shell echo $$((30 - $(FILLED))))) \
+	@printf "\033[2K\r  $(BRED)[$(BCYAN)"; \
+	printf '%0.s█' $$(seq 1 $(FILLED)); \
+	printf "$(DIM)$(WHITE)"; \
+	printf '%0.s░' $$(seq 1 $(EMPTY)); \
+	printf "$(BRED)] $(RESET)$(YELLOW)%3d%%$(RESET)  $(DIM)$(WHITE)%-28s$(RESET)" \
+		"$(PCT)" "$(1)";
+endef
+
+# ── Rules ─────────────────────────────────────────────────────────────────────
+all: $(LIBFT) _header $(OBJ)
+	@printf "\n\n"
+	@printf "  $(BRED)╔══════════════════════════════════════╗$(RESET)\n"
+	@printf "  $(BRED)║ $(YELLOW)%-36s$(BRED)║$(RESET)\n" "  Linking  →  $(NAME)"
+	@printf "  $(BRED)╚══════════════════════════════════════╝$(RESET)\n"
+	@$(CC) $(CFLAGS) $(OBJ) $(LDFLAGS) -o $(NAME)
+	@printf "\n  $(BGREEN)✓  Build complete!$(RESET)  $(DIM)→  ./$(NAME)$(RESET)\n\n"
+
+_header:
+	@printf "\n  $(BCYAN)Minishell$(RESET) $(DIM)│$(RESET) $(YELLOW)%d files to compile$(RESET)\n\n" $(TOTAL)
 
 $(LIBFT):
-	@$(MAKE) -C libft
+	@printf "  $(BRED)► Building libft...$(RESET) "
+	@$(MAKE) -s --no-print-directory -C libft
+	@printf "$(BGREEN)✓$(RESET)\n"
 
 $(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(call progress,$<)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 clean:
-	@$(MAKE) -C libft clean
-	rm -rf $(OBJ_DIR)
+	@printf "  $(BRED)► Cleaning...$(RESET) "
+	@$(MAKE) -s --no-print-directory -C libft clean
+	@rm -rf $(OBJ_DIR)
+	@printf "$(BGREEN)✓$(RESET)\n"
 
 fclean: clean
-	@$(MAKE) -C libft fclean
-	rm -f $(NAME)
+	@printf "  $(BRED)► Removing $(NAME)...$(RESET) "
+	@$(MAKE) -s --no-print-directory -C libft fclean
+	@rm -f $(NAME)
+	@printf "$(BGREEN)✓$(RESET)\n"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re _header

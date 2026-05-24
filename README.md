@@ -16,6 +16,9 @@ The goal of this project is to recreate the behavior of a basic shell while gain
 
 This shell reads user input, tokenizes and parses commands, expands variables, handles redirections and pipes, and executes commands similarly to Bash.
 
+## Demo
+![Minishell Demo](demo.gif)
+
 ### Features
 
 Implemented features include:

@@ -12,6 +12,51 @@
 
 #include "headers/executionpart.h"
 #include "headers/parsingpart.h"
+#include "headers/libs.h"
+
+void	print_banner(void)
+{
+	ft_putstr_fd("\n", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("  ███╗   ███╗██╗███╗  ██╗██╗", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("███████╗██╗  ██╗███████╗██╗     ██╗\n", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("  ████╗ ████║██║████╗ ██║██║", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("██╔════╝██║  ██║██╔════╝██║     ██║\n", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("  ██╔████╔██║██║██╔██╗ ██║██║", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("███████╗███████║█████╗  ██║     ██║\n", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("  ██║╚██╔╝██║██║██║╚██╗██║██║", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("╚════██║██╔══██║██╔══╝  ██║     ██║\n", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("  ██║ ╚═╝ ██║██║██║ ╚████║██║", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("███████║██║  ██║███████╗███████╗███████╗\n", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("  ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\n", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("  ╔══════════════════════════════════════════════════════════╗\n", 1);
+	ft_putstr_fd("  ║  ", 1);
+	ft_putstr_fd(BCYAN, 1);
+	ft_putstr_fd("42 Amman Shell v1.0", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("  │  ", 1);
+	ft_putstr_fd(DIM WHITE, 1);
+	ft_putstr_fd("by moabed & samarnah  │  2026", 1);
+	ft_putstr_fd(BRED, 1);
+	ft_putstr_fd("          ║\n", 1);
+	ft_putstr_fd("  ╚══════════════════════════════════════════════════════════╝\n", 1);
+	ft_putstr_fd(RESET, 1);
+	ft_putstr_fd("\n", 1);
+}
+
 
 t_cmd	*prepare_for_execution(char *input, t_env *env, int last_status)
 {
@@ -59,7 +104,7 @@ void	main2(t_exec *shell)
 	while (1)
 	{
 		interactive_signals();
-		input = readline("minishell> ");
+		input = readline(BCYAN "minishell" RESET BRED "❯ " RESET);
 		if (g_sig != 0)
 		{
 			shell->last_status = g_sig;
@@ -88,6 +133,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (shell_init(envp, &shell))
 		return (1);
+	print_banner();
 	main2(&shell);
 	ruin_everything(&shell);
 	return (shell.last_status);

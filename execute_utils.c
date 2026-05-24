@@ -6,7 +6,7 @@
 /*   By: moabed <moabed@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 15:47:51 by moabed            #+#    #+#             */
-/*   Updated: 2026/05/18 15:55:39 by moabed           ###   ########.fr       */
+/*   Updated: 2026/05/19 10:01:26 by moabed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,24 @@ void	close_all_saved_fds(t_cmd *cmds)
 	while (cmds)
 	{
 		if (cmds->fd_in > 2)
+		{
 			close(cmds->fd_in);
+			cmds->fd_in = 0;
+		}
 		if (cmds->fd_out > 2)
+		{
 			close(cmds->fd_out);
+			cmds->fd_out = 0;
+		}
 		cmds = cmds->next;
 	}
 }
 
 void	handle_fds(t_exec *shell, t_cmd *node)
 {
+	int	saved_fd_out;
+
+	saved_fd_out = node->fd_out;
 	if (node->fd_in > 2)
 	{
 		apply_fd(node->fd_in, 0);
@@ -62,7 +71,7 @@ void	handle_fds(t_exec *shell, t_cmd *node)
 	if (node->next)
 	{
 		close(shell->fd[0]);
-		if (node->fd_out != shell->fd[1])
+		if (saved_fd_out != shell->fd[1])
 			close(shell->fd[1]);
 	}
 }
